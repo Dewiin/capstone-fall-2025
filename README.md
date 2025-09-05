@@ -13,8 +13,15 @@ git clone https://github.com/Dewiin/capstone-fall-2025.git
 cd capstone-fall-2025
 ```
 
-### Install Dependencies
+### Installing Frontend Dependencies
 ```sh
+cd frontend
+npm install
+```
+
+### Installing Backend Dependencies
+```sh
+cd backend
 npm install
 ```
 
