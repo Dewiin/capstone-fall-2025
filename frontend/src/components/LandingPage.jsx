@@ -9,7 +9,7 @@ export function LandingPage() {
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/")
+        fetch("http://localhost:3000/api")
         .then(res => res.json())
         .then(data => data.text)
         .then(message => setMessage(message))
@@ -31,7 +31,7 @@ export function LandingPage() {
                     count is {count}
                 </button>
                 <p>
-                    The message is "{message}"
+                    The secret message is "{message}"
                 </p>
             </div>
             <Link to="/account">
