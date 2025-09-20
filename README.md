@@ -13,20 +13,21 @@ git clone https://github.com/Dewiin/capstone-fall-2025.git
 cd capstone-fall-2025
 ```
 
-### Installing Frontend Dependencies
+### Installing Dependencies
+In the root directory, run:
 ```sh
-cd frontend
-npm install
-```
-
-### Installing Backend Dependencies
-```sh
-cd backend
-npm install
+npm run init
 ```
 
 ### Run the App Locally
+Start the backend:
 ```sh
+cd backend
+npm run dev
+```
+Then, run the frontend:
+```sh
+cd ../frontend 
 npm run dev
 ```
 <p align="right"><a href="#readme-top">Back to top</a></p>
