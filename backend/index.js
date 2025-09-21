@@ -19,8 +19,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 app.use("/api", indexRouter);
-app.use("/login", indexRouter);
-app.use("/signup", indexRouter);
+app.use("/form", indexRouter);
 // app.use("/api/account", accountRouter);
 // app.use("/api/generate", generateRouter);
 app.use((req, res) => {

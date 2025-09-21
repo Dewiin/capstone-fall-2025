@@ -12,6 +12,28 @@ async function indexGet(req, res) {
     }
 }
 
+async function loginPost(req, res) {
+    try {
+        console.log(req.body);
+        const { username, password } = req.body;
+
+
+    } catch (err) {
+
+    }
+}
+
+async function signupPost(req, res) {
+    try {
+        console.log(req.body);
+        const { username, password } = req.body;
+    } catch (err) {
+
+    }
+}
+
 export const indexController = {
     indexGet,
+    loginPost,
+    signupPost
 }
