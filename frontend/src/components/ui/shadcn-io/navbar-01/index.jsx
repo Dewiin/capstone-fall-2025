@@ -1,9 +1,8 @@
 'use client';;
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
 import { useEffect, useState, useRef } from 'react';
+import { useAuth } from '@/components/contexts/Contexts';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from '@/components/ui/navigation-menu';
 import {
   Popover,
@@ -13,6 +12,7 @@ import {
 import { Moon } from 'lucide-react';
 import { Sun } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 // Simple logo component for the navbar
 const Logo = (props) => {
@@ -75,7 +75,7 @@ const HamburgerIcon = ({
 
 // Default navigation links
 const defaultNavigationLinks = [
-  { href: '#', label: 'Home', active: false },
+  { href: '/', label: 'Home', active: false },
   { href: '#features', label: 'Features' },
   { href: '#pricing', label: 'Pricing' },
   { href: '#about', label: 'About' },
@@ -91,8 +91,7 @@ export const Navbar01 = React.forwardRef((
     signInHref = '/form/login',
     ctaText = 'Sign Up',
     ctaHref = '/form/signup',
-    onSignInClick,
-    onCtaClick,
+    logoutText = 'Log Out',
     ...props
   },
   ref
@@ -100,9 +99,13 @@ export const Navbar01 = React.forwardRef((
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef(null);
   const [darkMode, setDarkMode]= useState(true);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const onSignInClick = () => navigate(signInHref);
+  const onCtaClick = () => navigate(ctaHref);
 
   useEffect(() => {
-      console.log("ping!");
       document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]); 
 
@@ -136,6 +139,20 @@ export const Navbar01 = React.forwardRef((
     }
   }, [ref]);
 
+  async function logoutSubmit() {
+    try{
+      const result = await logout();
+      
+      if(!result.loggedIn) {
+        navigate("/");
+      } else {
+        console.error(`Logout failed`);
+      }
+    } catch (err) {
+      console.error(`Error during logoutSubmit: `, err);
+    }
+  }
+
   return (
     <header
       ref={combinedRef}
@@ -165,7 +182,7 @@ export const Navbar01 = React.forwardRef((
                   {navigationLinks.map((link, index) => (
                     <NavigationMenuItem key={index} className="w-full">
                       <button
-                        onClick={(e) => e.preventDefault()}
+                        onClick={() => navigate(link.href)}
                         className={cn(
                           "flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer no-underline",
                           link.active 
@@ -184,7 +201,7 @@ export const Navbar01 = React.forwardRef((
           {/* Main nav */}
           <div className="flex items-center gap-6">
             <button
-              onClick={() => location.href=`${logoHref}`}
+              onClick={() => navigate(logoHref)}
               className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer">
               <div className="text-2xl">
                 {logo}
@@ -198,7 +215,7 @@ export const Navbar01 = React.forwardRef((
                 {navigationLinks.map((link, index) => (
                   <NavigationMenuItem key={index}>
                     <button
-                      onClick={(e) => e.preventDefault()}
+                      onClick={() => navigate(link.href)}
                       className={cn(
                         "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer no-underline",
                         link.active 
@@ -215,40 +232,47 @@ export const Navbar01 = React.forwardRef((
           </div>
         </div>
         {/* Right side */}
-        <div className="flex items-center gap-3">
-          <Button
-            className="font-medium h-9 w-9 hover:bg-accent hover:text-accent-foreground"
-            variant="ghost"
-            onClick={() => {
-              setDarkMode(!darkMode);
-            }}>
-            { darkMode ? (
-              <Moon 
-              strokeWidth={2} 
-              size={24} />
-            ) : (
-              <Sun 
-              strokeWidth={1.5} 
-              size={20} />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-            onClick={() => {
-              location.href = `${signInHref}`;
-            }}>
-            {signInText}
-          </Button>
-          <Button
-            size="sm"
-            className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
-            onClick={() => {
-              location.href=`${ctaHref}`;
-            }}>
-            {ctaText}
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              className="font-medium h-9 w-9 hover:bg-accent hover:text-accent-foreground"
+              variant="ghost"
+              onClick={() => {
+                setDarkMode(!darkMode);
+              }}>
+              { darkMode ? (
+                <Moon 
+                strokeWidth={2} 
+                size={24} />
+              ) : (
+                <Sun 
+                strokeWidth={1.5} 
+                size={20} />
+              )}
+            </Button>
+            { !user ? (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                  onClick={onSignInClick}>
+                  {signInText}
+                </Button>
+                <Button
+                  size="sm"
+                  className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
+                  onClick={onCtaClick}>
+                  {ctaText}
+                </Button>
+              </>
+              ) : (
+                <Button
+                size="sm"
+                className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
+                onClick={() => logoutSubmit()}>
+                  {logoutText}
+                </Button>
+              )}
         </div>
       </div>
     </header>
