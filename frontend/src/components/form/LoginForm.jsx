@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/Contexts"
 import { useEffect } from "react"
 
-//zod validator
+// zod validator
 const loginSchema = z.object({
   username: z.string().min(6, {
     message: "Username must be at least 6 characters."
@@ -67,6 +67,14 @@ export function LoginForm({
       navigate("/");
     } else {
       console.error(`Login failed`);
+      form.setError("username", {
+        type: "server",
+        message: "Username or password is incorrect.",
+      });
+      form.setError("password", {
+        type: "server",
+        message: "Username or password is incorrect.",
+      });
     }
   }
 
