@@ -44,6 +44,7 @@ model User {
 // ----- Flashcard Models ----- 
 model Deck {
   id        Int      @id @default(autoincrement())
+  name      String
   createdAt DateTime @default(now())
 
   // Relations
