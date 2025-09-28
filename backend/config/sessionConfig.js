@@ -13,5 +13,6 @@ export const sessionConfig = expressSession({
 		checkPeriod: 2 * 60 * 1000, 
 		dbRecordIdIsSessionId: true,
 		dbRecordIdFunction: undefined,
+		createIfNotExists: true,
 	}),
 });

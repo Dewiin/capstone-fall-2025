@@ -53,11 +53,9 @@ async function signupPost(req, res, next) {
 
             return res.json({
                 loggedIn: true,
-                user: {
-                    id: user.id,
-                    username: user.username,
-                    displayName: user.displayName,
-                }
+                id: user.id,
+                username: user.username,
+                displayName: user.displayName,
             });
         });
     } catch (err) {

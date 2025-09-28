@@ -65,7 +65,7 @@ export function SignupForm({
   ...props
 }) {
   const navigate = useNavigate();
-  const { user, signup } = useAuth();
+  const { user, signup, googleLogin } = useAuth();
 
   useEffect(() => {
     if(user) {
@@ -152,8 +152,8 @@ export function SignupForm({
                   <Button type="submit" className="w-full">
                     Sign Up
                   </Button>
-                  <Button variant="outline" className="w-full">
-                    Sign Up With Google
+                  <Button variant="outline" className="w-full" onClick={() => googleLogin()}>
+                    Sign In With Google
                   </Button>
                 </div>
               </div>

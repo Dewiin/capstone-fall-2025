@@ -38,11 +38,11 @@ async function googleVerifyCallback(accessToken, refreshToken, profile, cb) {
 
         if (!user) {
             user = await prisma.user.create({
-            data: {
-                username: profile.id,
-                displayName: profile.displayName,
-                provider: "google",
-            },
+				data: {
+					username: profile.id,
+					displayName: profile.displayName,
+					provider: "google",
+				},
             });
         }
 
@@ -58,7 +58,7 @@ passport.use(new LocalStrategy(localVerifyCallback));
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/oauth2/redirect/google",
+    callbackURL: "/api/auth/google/callback",
     scope: ["profile"]
 },
 googleVerifyCallback

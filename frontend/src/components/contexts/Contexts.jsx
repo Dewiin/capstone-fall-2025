@@ -8,21 +8,21 @@ export default function AuthProvider({ children }) {
     useEffect(() => {
         async function fetchUser() {
             try {
-                const res = await fetch("http://localhost:3000/api", {
+                const response = await fetch("http://localhost:3000/api", {
                     method: "GET",
                     credentials: "include"
                 });
-                if (!res.ok) {
+                if (!response.ok) {
                     setUser(null);
                     return;
                 }
 
-                const data = await res.json();
-                if(data.loggedIn) {
+                const result = await response.json();
+                if(result.loggedIn) {
                     setUser({
-                        id: data.id,
-                        username: data.username,
-                        displayName: data.displayName
+                        id: result.id,
+                        username: result.username,
+                        displayName: result.displayName
                     })
                 }
                 else {
@@ -45,8 +45,12 @@ export default function AuthProvider({ children }) {
                 body: JSON.stringify(data),
                 credentials: "include",
             });
-            const result = await response.json();
+            if (!response.ok) {
+                setUser(null);
+                return;
+            }
 
+            const result = await response.json();
             if(result.loggedIn) {
                 setUser({
                     id: result.id,
@@ -63,7 +67,7 @@ export default function AuthProvider({ children }) {
             console.error(`Error signing up: `, err);
             return {
                 loggedIn: false,
-            }
+            };
         }
     }
 
@@ -75,14 +79,18 @@ export default function AuthProvider({ children }) {
                 body: JSON.stringify(data),
                 credentials: "include",
             });
+            if(!response.ok) {
+                setUser(null);
+                return;
+            }
+            
             const result = await response.json();
-
             if(result.loggedIn) {
                 setUser({
                     id: result.id,
                     username: result.username,
                     displayName: result.displayName,
-                })
+                });
             }
             else {
                 setUser(null);
@@ -95,6 +103,10 @@ export default function AuthProvider({ children }) {
                 loggedIn: false,
             }
         }
+    }
+
+    function googleLogin() {
+        window.location.href = "http://localhost:3000/api/auth/google";
     }
 
     async function logout() {
@@ -118,6 +130,7 @@ export default function AuthProvider({ children }) {
         user,
         signup,
         login,
+        googleLogin,
         logout
     }
 

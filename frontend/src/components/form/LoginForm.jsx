@@ -43,7 +43,7 @@ export function LoginForm({
   ...props
 }) {
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const { user, login, googleLogin } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -123,8 +123,8 @@ export function LoginForm({
                     <Button type="submit" className="w-full">
                       Login
                     </Button>
-                    <Button variant="outline" className="w-full">
-                      Login with Google
+                    <Button variant="outline" className="w-full" onClick={() => googleLogin()}>
+                      Sign In with Google
                     </Button>
                   </div>
               </div>
