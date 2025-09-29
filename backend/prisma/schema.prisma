@@ -75,6 +75,7 @@ model Flashcard {
 // ----- Quiz Models ----- 
 model Quiz {
   id        Int      @id @default(autoincrement())
+  name      String
   createdAt DateTime @default(now())
   highScore Int?
 
