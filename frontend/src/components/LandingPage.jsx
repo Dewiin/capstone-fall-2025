@@ -26,27 +26,27 @@ export function LandingPage() {
       <div className="mt-12 flex flex-col sm:flex-row justify-center gap-8">
         {/* Feature 1 */}
         <div className="flex flex-col items-center gap-3 max-w-xs">
-          <FaBook className="text-4xl text-white" />
-          <h3 className="text-xl font-semibold text-gray-100">Generate Study Guides</h3>
-          <p className="text-gray-300 text-center">
+          <FaBook className="text-4xl" />
+          <h3 className="text-xl font-semibold dark:text-gray-100">Generate Study Guides</h3>
+          <p className="dark:text-gray-300 text-center">
             Quickly turn your notes into structured study guides.
           </p>
         </div>
 
         {/* Feature 2 */}
         <div className="flex flex-col items-center gap-3 max-w-xs">
-          <FaBrain className="text-4xl text-white" />
-          <h3 className="text-xl font-semibold text-gray-100">AI-Powered Learning</h3>
-          <p className="text-gray-300 text-center">
+          <FaBrain className="text-4xl" />
+          <h3 className="text-xl font-semibold dark:text-gray-100">AI-Powered Learning</h3>
+          <p className="dark:text-gray-300 text-center">
             Get AI suggestions to help remember key concepts faster.
           </p>
         </div>
 
         {/* Feature 3 */}
         <div className="flex flex-col items-center gap-3 max-w-xs">
-          <FaLightbulb className="text-4xl text-white" />
-          <h3 className="text-xl font-semibold text-gray-100">Organize Smarter</h3>
-          <p className="text-gray-300 text-center">
+          <FaLightbulb className="text-4xl" />
+          <h3 className="text-xl font-semibold dark:text-gray-100">Organize Smarter</h3>
+          <p className="dark:text-gray-300 text-center">
             Keep all your study materials neat and accessible.
           </p>
         </div>
