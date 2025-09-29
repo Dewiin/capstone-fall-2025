@@ -1,9 +1,21 @@
 'use client';;
 import * as React from 'react';
-import { Button } from '@/components/ui/button';
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@/components/contexts/Contexts';
-import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from '@/components/ui/navigation-menu';
+import { Button } from '@/components/ui/button';
+import { 
+  Avatar,
+  AvatarFallback,
+  AvatarImage
+} from '@/components/ui/avatar';
+import { 
+  NavigationMenu, 
+  NavigationMenuItem, 
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink
+} from '@/components/ui/navigation-menu';
 import {
   Popover,
   PopoverContent,
@@ -74,7 +86,7 @@ const HamburgerIcon = ({
 );
 
 // Default navigation links
-const defaultNavigationLinks = [
+let defaultNavigationLinks = [
   { href: '/', label: 'Home', active: false },
   { href: '#features', label: 'Features' },
   { href: '#pricing', label: 'Pricing' },
@@ -128,6 +140,23 @@ export const Navbar01 = React.forwardRef((
       resizeObserver.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      defaultNavigationLinks = [
+        { href: '/', label: 'Home', active: false },
+        { href: '#features', label: 'Features' },
+        { href: '#pricing', label: 'Pricing' },
+        { href: '#about', label: 'About' },
+      ];
+    } else {
+      defaultNavigationLinks = [
+        { href: '/', label: 'Home', active: false },
+        { href: '#about', label: 'Study Sets' },
+        { href: '#about', label: 'Generate' },
+      ];
+    }
+  });
 
   // Combine refs
   const combinedRef = React.useCallback((node) => {
@@ -266,12 +295,44 @@ export const Navbar01 = React.forwardRef((
                 </Button>
               </>
               ) : (
-                <Button
-                size="sm"
-                className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
-                onClick={() => logoutSubmit()}>
-                  {logoutText}
-                </Button>
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    <NavigationMenuItem >
+                      <NavigationMenuTrigger className="flex gap-x-2 p-2">
+                        <Avatar className="size-6 rounded-lg">
+                          <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                        {user.displayName}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="flex flex-col p-1 w-3xs list-none select-none">
+                          <li>
+                            <NavigationMenuLink>
+                              <p className="text-sm leading-tight text-muted-foreground">
+                                Profile
+                              </p>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink>
+                              <p className="text-sm leading-tight text-muted-foreground">
+                                Settings
+                              </p>
+                            </NavigationMenuLink>
+                          </li>
+                          <li onClick={() => logoutSubmit()}>
+                            <NavigationMenuLink>
+                              <p className="text-sm leading-tight text-muted-foreground">
+                                Log Out
+                              </p>
+                            </NavigationMenuLink>
+                          </li>
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
               )}
         </div>
       </div>
