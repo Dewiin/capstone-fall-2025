@@ -89,7 +89,6 @@ const HamburgerIcon = ({
 let defaultNavigationLinks = [
   { href: '/', label: 'Home', active: false },
   { href: '#features', label: 'Features' },
-  { href: '#pricing', label: 'Pricing' },
   { href: '#about', label: 'About' },
 ];
 
@@ -146,7 +145,6 @@ export const Navbar01 = React.forwardRef((
       defaultNavigationLinks = [
         { href: '/', label: 'Home', active: false },
         { href: '#features', label: 'Features' },
-        { href: '#pricing', label: 'Pricing' },
         { href: '#about', label: 'About' },
       ];
     } else {
