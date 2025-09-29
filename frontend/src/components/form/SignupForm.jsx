@@ -20,8 +20,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "../contexts/Contexts"
-import { useEffect } from "react"
+import { useAuth } from "@/components/contexts/Contexts"
+import { LoadingOverlay } from "@/components/LoadingOverlay"
+import { useState, useEffect } from "react"
 
 // zod validator
 const signupSchema = z.object({
@@ -66,6 +67,7 @@ export function SignupForm({
 }) {
   const navigate = useNavigate();
   const { user, signup, googleLogin } = useAuth();
+  const [ loading, setLoading ] = useState(false);
 
   useEffect(() => {
     if(user) {
@@ -84,18 +86,27 @@ export function SignupForm({
   })
 
   async function onSubmit(data) {
+    setLoading(true);
     const result = await signup(data);
     
     if(result.loggedIn) {
+      setLoading(false);
       navigate("/");
     } else {
+      setLoading(false);
       console.error("Signup failed");
     }
   }
 
+  async function onGoogleSubmit() {
+    setLoading(true);
+    googleLogin();
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card className="relative">
+        { loading && <LoadingOverlay></LoadingOverlay> }
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
           <CardDescription>
@@ -152,7 +163,10 @@ export function SignupForm({
                   <Button type="submit" className="w-full">
                     Sign Up
                   </Button>
-                  <Button variant="outline" className="w-full" onClick={() => googleLogin()}>
+                  <Button variant="outline" className="w-full" onClick={(e) => {
+                    e.preventDefault();
+                    onGoogleSubmit();
+                  }}>
                     Sign In With Google
                   </Button>
                 </div>

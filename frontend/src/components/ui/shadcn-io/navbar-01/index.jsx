@@ -21,8 +21,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Moon } from 'lucide-react';
-import { Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
+import { LoadingOverlay } from '@/components/LoadingOverlay';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 
@@ -283,7 +283,7 @@ export const Navbar01 = React.forwardRef((
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                  className="text-sm font-medium px-4 h-9 hover:bg-accent hover:text-accent-foreground"
                   onClick={onSignInClick}>
                   {signInText}
                 </Button>
@@ -298,17 +298,24 @@ export const Navbar01 = React.forwardRef((
                 <NavigationMenu>
                   <NavigationMenuList>
                     <NavigationMenuItem >
-                      <NavigationMenuTrigger className="flex gap-x-2 p-2">
+                      <NavigationMenuTrigger 
+                        className="flex gap-x-2 p-2"
+                        onPointerMove={(e) => e.preventDefault()}
+                        onPointerLeave={(e) => e.preventDefault()}
+                      >
                         <Avatar className="size-6 rounded-lg">
                           <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
-                          <AvatarFallback>CN</AvatarFallback>
+                          <AvatarFallback>Icon</AvatarFallback>
                         </Avatar>
                         {user.displayName}
                       </NavigationMenuTrigger>
-                      <NavigationMenuContent>
+                      <NavigationMenuContent
+                        onPointerEnter={(e) => e.preventDefault()}
+                        onPointerLeave={(e) => e.preventDefault()}
+                      >
                         <ul className="flex flex-col p-1 w-3xs list-none select-none">
                           <li>
-                            <NavigationMenuLink>
+                            <NavigationMenuLink asChild>
                               <p className="text-sm leading-tight text-muted-foreground">
                                 Profile
                               </p>

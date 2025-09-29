@@ -21,15 +21,38 @@ async function indexGet(req, res) {
 
 async function loginPost(req, res) {
     try {
-        return res.json({
-            loggedIn: true, 
-            id: req.user.id, 
-            username: req.user.username, 
-            displayName: req.user.displayName 
-        })
+        passport.authenticate("local", (err, user, info) => {
+            if (err) {
+                console.error("Error logging in user:", err);
+                return res.json({
+                    loggedIn: false
+                });
+            }
+            if (!user) {
+                return res.json({
+                    loggedIn: false
+                });
+            }
+
+            req.logIn(user, (err) => {
+                if (err) {
+                    console.error("Error during logIn:", err);
+                    return res.status(500).json({ loggedIn: false });
+                }
+
+                return res.json({
+                    loggedIn: true,
+                    id: user.id,
+                    username: user.username,
+                    displayName: user.displayName,
+                });
+            });
+        })(req, res);
     } catch (err) {
         console.error( `Error logging in user: `, err);
-        res.status(500).json({ error: "Login failed" });
+        return res.json({
+            loggedIn: false
+        })
     }
 }
 
@@ -100,10 +123,7 @@ function logoutPost(req, res, next) {
 
 export const indexController = {
     indexGet,
-    loginPost: [
-        passport.authenticate("local"),
-        loginPost
-    ],
+    loginPost,
     signupPost,
     validateSignup,
     logoutPost

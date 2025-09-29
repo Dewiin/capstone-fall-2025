@@ -17,11 +17,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { LoadingOverlay } from "../LoadingOverlay";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/Contexts"
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 
 // zod validator
 const loginSchema = z.object({
@@ -43,6 +44,7 @@ export function LoginForm({
   ...props
 }) {
   const navigate = useNavigate();
+  const [ loading, setLoading ] = useState(false);
   const { user, login, googleLogin } = useAuth();
 
   useEffect(() => {
@@ -61,11 +63,14 @@ export function LoginForm({
   });
 
   async function onSubmit(data) {
+    setLoading(true);
     const result = await login(data);
     
     if(result.loggedIn) {
+      setLoading(false);
       navigate("/");
     } else {
+      setLoading(false);
       console.error(`Login failed`);
       form.setError("username", {
         type: "server",
@@ -78,9 +83,15 @@ export function LoginForm({
     }
   }
 
+  function onGoogleSubmit() {
+    setLoading(true);
+    googleLogin();
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card className="relative">
+        { loading && <LoadingOverlay /> }
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
@@ -123,7 +134,10 @@ export function LoginForm({
                     <Button type="submit" className="w-full">
                       Login
                     </Button>
-                    <Button variant="outline" className="w-full" onClick={() => googleLogin()}>
+                    <Button variant="outline" className="w-full" onClick={(e) => {
+                      e.preventDefault();
+                      onGoogleSubmit();
+                    }}>
                       Sign In with Google
                     </Button>
                   </div>
