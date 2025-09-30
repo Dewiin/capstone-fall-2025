@@ -150,8 +150,8 @@ export const Navbar01 = React.forwardRef((
     } else {
       defaultNavigationLinks = [
         { href: '/', label: 'Home', active: false },
-        { href: '#about', label: 'Study Sets' },
-        { href: '#about', label: 'Generate' },
+        { href: '#about', label: 'Explore' },
+        { href: '/generate', label: 'Generate' },
       ];
     }
   });
@@ -314,8 +314,8 @@ export const Navbar01 = React.forwardRef((
                         <ul className="flex flex-col p-1 w-3xs list-none select-none">
                           <li>
                             <NavigationMenuLink asChild>
-                              <p className="text-sm leading-tight text-muted-foreground">
-                                Profile
+                              <p className="text-sm leading-tight text-muted-foreground" onClick={() => navigate(`/account/${user.id}`)}>
+                                Account
                               </p>
                             </NavigationMenuLink>
                           </li>

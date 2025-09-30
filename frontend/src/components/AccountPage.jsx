@@ -1,6 +1,6 @@
 
 
-export function Account() {
+export function AccountPage() {
     return (
         <>
             <div className='flex flex-col justify-center align-center p-16 text-center gap-10'>
@@ -8,7 +8,7 @@ export function Account() {
                     Account Page <br></br>
                 </h1>
                 <h3 className='text-5xl'>
-                    {user ? `Welcome, ${user.displayName}` : "Not Logged In"}
+                    Welcome
                 </h3>
             </div>
         </>

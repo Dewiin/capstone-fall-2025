@@ -23,6 +23,6 @@ indexRouter.get('/auth/google',
 indexRouter.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: "http://localhost:5173/login" }),
     (req, res) => {
-        res.redirect("http://localhost:5173");
+        res.redirect("http://localhost:5173/");
     }
 );
