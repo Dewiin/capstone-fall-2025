@@ -103,44 +103,44 @@ export function LoginForm({
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-6">
                 <FormField 
-                    className="grid gap-3"
-                    control={form.control}
-                    name="username"
-                    render={({field}) => (
-                      <FormItem>
-                        <FormLabel> Username </FormLabel>
-                        <FormControl>
-                          <Input id="username" type="text" required {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField 
-                    className="grid gap-3"
-                    control={form.control}
-                    name="password"
-                    render={({field}) => (
-                      <FormItem>
-                        <FormLabel> Password </FormLabel>
-                        <FormControl>
-                          <Input id="password" type="password" placeholder="●●●●●●●●" required {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex flex-col gap-3">
-                    <Button type="submit" className="w-full">
-                      Login
-                    </Button>
-                    <Button variant="outline" className="w-full" onClick={(e) => {
-                      e.preventDefault();
-                      onGoogleSubmit();
-                    }}>
-                      Sign In with Google
-                    </Button>
-                  </div>
+                  className="grid gap-3"
+                  control={form.control}
+                  name="username"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormLabel> Username </FormLabel>
+                      <FormControl>
+                        <Input id="username" type="text" required {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField 
+                  className="grid gap-3"
+                  control={form.control}
+                  name="password"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormLabel> Password </FormLabel>
+                      <FormControl>
+                        <Input id="password" type="password" placeholder="●●●●●●●●" required {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex flex-col gap-3">
+                  <Button type="submit" className="w-full">
+                    Login
+                  </Button>
+                  <Button variant="outline" className="w-full" onClick={(e) => {
+                    e.preventDefault();
+                    onGoogleSubmit();
+                  }}>
+                    Sign In with Google
+                  </Button>
+                </div>
               </div>
               <div className="mt-4 text-center text-sm">
                 Don't have an account?{" "}
