@@ -33,27 +33,46 @@ model User {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  flashcards Deck[]
-  quizzes    Quiz[]
+  studySets StudySet[]
+  favorites StudySet[] @relation("UserFavorites")
 
   @@index([id])
   @@index([username])
   @@map("users")
 }
 
-// ----- Flashcard Models ----- 
+// ---------- Study Set Model ----------
+model StudySet {
+  id     Int     @id @default(autoincrement())
+  name   String
+  public Boolean @default(false)
+
+  // Relations
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String
+  favoritedBy User[] @relation("UserFavorites")
+
+  deck Deck?
+  quiz Quiz?
+
+  @@index([userId])
+  @@index([public])
+  @@index([name])
+  @@map("studySets")
+}
+
+// ---------- Flashcard Models ---------- 
 model Deck {
   id        Int      @id @default(autoincrement())
-  name      String
   createdAt DateTime @default(now())
 
   // Relations
-  user   User        @relation(fields: [userId], references: [id])
-  userId String
-  cards  Flashcard[]
+  studySet   StudySet    @relation(fields: [studySetId], references: [id])
+  studySetId Int         @unique
+  cards      Flashcard[]
 
   @@index([id])
-  @@index([userId])
+  @@index([studySetId])
   @@map("decks")
 }
 
@@ -72,20 +91,19 @@ model Flashcard {
   @@map("flashcards")
 }
 
-// ----- Quiz Models ----- 
+// ---------- Quiz Models ---------- 
 model Quiz {
   id        Int      @id @default(autoincrement())
-  name      String
   createdAt DateTime @default(now())
   highScore Int?
 
   // Relations
-  user      User           @relation(fields: [userId], references: [id])
-  userId    String
-  questions QuizQuestion[]
+  studySet   StudySet       @relation(fields: [studySetId], references: [id])
+  studySetId Int            @unique
+  questions  QuizQuestion[]
 
   @@index([id])
-  @@index([userId])
+  @@index([studySetId])
   @@map("quizzes")
 }
 
