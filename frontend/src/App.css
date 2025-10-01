@@ -1,5 +1,11 @@
+body {
+  min-height: 100%;
+  max-height: fit-content;
+}
+
 #root {
   max-width: 1280px;
+  height: 100%;
   margin: 0 auto;
   padding: 0.25rem 0;
 }

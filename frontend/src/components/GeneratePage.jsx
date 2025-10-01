@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -14,7 +13,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { 
@@ -23,7 +21,6 @@ import {
     DropzoneEmptyState 
 } from '@/components/ui/shadcn-io/dropzone';
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/components/contexts/Contexts"
@@ -42,7 +39,11 @@ const generateSchema = z.object({
         message: "Text must be at least 300 characters."
     }).max(30000, {
         message: "Text must be less than 30,000 characters."
-    }).optional()
+    }).optional(),
+
+    fileInput: z.array(z.instanceof(File)).max(1, {
+        message: "You can only upload one file."
+    }).optional(),
 });
 
 export function GeneratePage() {    
@@ -50,6 +51,7 @@ export function GeneratePage() {
     const { user } = useAuth();
     const [ uploadType, setUploadType ] = useState("text");
     const [ loading, setLoading ] = useState(false);
+    const [ file, setFile ] = useState();
 
     useEffect(() => {
         if(!user) {
@@ -59,13 +61,25 @@ export function GeneratePage() {
 
     const form = useForm({
         resolver: zodResolver(generateSchema),
-    })
+        mode: "onChange",
+    });
+
+    function handleDrop(files, onChange) {
+        setLoading(true);
+
+        if (files && files.length == 1) {
+            setFile(files);
+        }
+        
+        onChange(files);
+        setLoading(false);
+    }
 
     return (
-        <div className="flex h-[70vh] w-full justify-center items-center mt-16">
+        <div className="flex h-full w-full justify-center mt-12 mb-12">
             <Tabs 
                 defaultValue={uploadType} 
-                className="h-full md:w-xl w-sm"
+                className="md:w-xl w-sm"
                 onValueChange={(val) => {
                     setUploadType(val);
                 }}
@@ -75,7 +89,7 @@ export function GeneratePage() {
                     <TabsTrigger value="pdf">PDF Upload</TabsTrigger>
                 </TabsList>
                 <TabsContent value="text">
-                    <Card className="relative h-full">
+                    <Card className="relative">
                         { loading && <LoadingOverlay /> }
                         <CardHeader>
                             <CardTitle>
@@ -85,19 +99,21 @@ export function GeneratePage() {
                                 Copy and paste your notes
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="h-full">
-                            <Form {...form} className="h-full">
-                                <form onSubmit={form.handleSubmit()} 
-                                    className="h-full flex flex-col gap-6"
+                        <CardContent>
+                            <Form {...form}>
+                                <form 
+                                    onSubmit={form.handleSubmit()} 
+                                    className="flex flex-col gap-6"
                                 >
                                     <FormField
                                         control={form.control}
                                         name="textInput"
                                         render={({ field }) => (
-                                            <FormItem className="h-full">
+                                            <FormItem>
                                                 <FormControl>
                                                     <Textarea
-                                                        className="resize-none flex-1"
+                                                        className="resize-none"
+                                                        rows={24}
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -105,7 +121,7 @@ export function GeneratePage() {
                                             </FormItem>
                                         )}
                                     />
-                                    <Button type="submit" className="w-fit">Submit</Button>
+                                    <Button type="submit" className="w-fit">Generate</Button>
                                 </form>
                             </Form>
                         </CardContent>
@@ -124,18 +140,37 @@ export function GeneratePage() {
                         </CardHeader>
                         <CardContent>
                             <Form {...form}>
-                                <form onSubmit={form.handleSubmit()}>
-                                    <Dropzone
-                                        accept={{ 'application/*': ['.pdf'] }}
-                                        maxFiles={1}
-                                        maxSize={1024 * 1024 * 10}
-                                        minSize={1024}
-                                        onDrop={(e) => e.preventDefault()}
-                                        onError={console.error}
-                                    >
-                                        <DropzoneEmptyState />
-                                        <DropzoneContent />
-                                    </Dropzone>
+                                <form 
+                                    onSubmit={form.handleSubmit()}
+                                    className="flex flex-col gap-6"
+                                >
+                                    <FormField
+                                        control={form.control}
+                                        name="fileInput"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormControl>
+                                                    <Dropzone
+                                                        accept={{ 'application/*': ['.pdf'] }}
+                                                        maxFiles={20}
+                                                        maxSize={1024 * 1024 * 10}
+                                                        minSize={1024}
+                                                        onDrop={(files) => handleDrop(files, field.onChange)}
+                                                        onError={console.error}
+                                                        src={file}
+                                                        className="h-100"
+                                                    >
+                                                        <DropzoneEmptyState />
+                                                        <DropzoneContent 
+                                                            className="w-full"
+                                                        />
+                                                    </Dropzone>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <Button type="submit" className="w-fit">Generate</Button>
                                 </form>
                             </Form>
                         </CardContent>
