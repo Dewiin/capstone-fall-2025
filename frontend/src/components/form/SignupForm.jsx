@@ -24,6 +24,8 @@ import { useAuth } from "@/components/contexts/Contexts"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
 import { useState, useEffect } from "react"
 
+const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
+
 // zod validator
 const signupSchema = z.object({
   username: z.string().min(6, {
@@ -45,7 +47,7 @@ const signupSchema = z.object({
   message: "Passwords do not match.",
   path: ["confirmPassword"]
 }).superRefine(async (data, ctx) => {
-  const res = await fetch("http://localhost:3000/api/validate/signup", {
+  const res = await fetch(`${API_URL_DOMAIN}/api/validate/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username: data.username }),

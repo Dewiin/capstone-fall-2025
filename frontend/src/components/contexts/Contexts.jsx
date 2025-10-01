@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-
 const AuthContext = createContext();
+
+const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN
 
 export default function AuthProvider({ children }) {
     const [ user, setUser ] = useState(null);
@@ -8,7 +9,7 @@ export default function AuthProvider({ children }) {
     useEffect(() => {
         async function fetchUser() {
             try {
-                const response = await fetch("http://localhost:3000/api", {
+                const response = await fetch(`${API_URL_DOMAIN}/api`, {
                     method: "GET",
                     credentials: "include"
                 });
@@ -39,7 +40,7 @@ export default function AuthProvider({ children }) {
 
     async function signup(data) {
         try {
-            const response = await fetch("http://localhost:3000/api/signup", {
+            const response = await fetch(`${API_URL_DOMAIN}/api/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -73,7 +74,7 @@ export default function AuthProvider({ children }) {
 
     async function login(data) {
         try {
-            const response = await fetch("http://localhost:3000/api/login", {
+            const response = await fetch(`${API_URL_DOMAIN}/api/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -106,12 +107,12 @@ export default function AuthProvider({ children }) {
     }
 
     function googleLogin() {
-        window.location.href = "http://localhost:3000/api/auth/google";
+        window.location.href = `${API_URL_DOMAIN}/api/auth/google`;
     }
 
     async function logout() {
         try {
-            const response = await fetch("http://localhost:3000/api/logout", {
+            const response = await fetch(`${API_URL_DOMAIN}/api/logout`, {
                 method: "POST",
                 credentials: "include",
             });

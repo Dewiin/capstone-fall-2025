@@ -75,6 +75,18 @@ export function GeneratePage() {
         setLoading(false);
     }
 
+    function onSubmit(data) {
+        try {
+            // console.log(`upload type: ${uploadType}`);
+            // const body = JSON.stringify(data);
+            // console.log(`data: ${body}`);
+
+
+        } catch (err) {
+            console.error(`Error submitting data for generation: `, err)
+        }
+    }
+
     return (
         <div className="flex h-full w-full justify-center mt-12 mb-12">
             <Tabs 
@@ -102,7 +114,7 @@ export function GeneratePage() {
                         <CardContent>
                             <Form {...form}>
                                 <form 
-                                    onSubmit={form.handleSubmit()} 
+                                    onSubmit={form.handleSubmit(onSubmit)} 
                                     className="flex flex-col gap-6"
                                 >
                                     <FormField
@@ -141,7 +153,7 @@ export function GeneratePage() {
                         <CardContent>
                             <Form {...form}>
                                 <form 
-                                    onSubmit={form.handleSubmit()}
+                                    onSubmit={form.handleSubmit(onSubmit)}
                                     className="flex flex-col gap-6"
                                 >
                                     <FormField
@@ -152,7 +164,7 @@ export function GeneratePage() {
                                                 <FormControl>
                                                     <Dropzone
                                                         accept={{ 'application/*': ['.pdf'] }}
-                                                        maxFiles={20}
+                                                        maxFiles={200}
                                                         maxSize={1024 * 1024 * 10}
                                                         minSize={1024}
                                                         onDrop={(files) => handleDrop(files, field.onChange)}
