@@ -1,14 +1,52 @@
 import { prisma } from "../config/prismaClient.js";
-import pdfParse from 'pdf-parse';
+import { gemini } from "../services/geminiModel.js";
 
 async function generateTextPost(req, res) {
     try {
-        const data = req.body.textInput;
+        const text = req.body.textInput;
+        const user = req.user
+        const { studySetName } = req.body;
+       
+        const result = await gemini.textInput(text);
 
-        console.log(`Text data: ${data}`);
-        return res.json({
+        // console.log(result);
 
-        });
+        if(result.status == 1) {
+            // // create study set
+            // const studySet = await prisma.studySet.create({
+            //     data: {
+            //         name: studySetName,
+            //         userId: user.id,
+            //     }
+            // });
+
+            // // create deck belonging to -> study set
+            // const deck = await prisma.deck.create({
+            //     data: {
+            //         studySetId: studySet.id,
+            //     }
+            // });
+
+            // // create each flash card belonging to -> deck
+            // result.flashCards.forEach( async (flashCard) => {
+            //     await prisma.flashcard.create({
+            //         data: {
+            //             question: flashCard.cardFront,
+            //             answer: flashCard.cardBack,
+            //             deckId: deck.id,
+            //         }
+            //     });
+            // });
+
+            return res.json({
+                status: 1,
+            });
+        }
+        else {
+            return res.json({
+                status: 0,
+            });
+        }
     } catch (err) {
         console.error(`Error posting text data for generating: `, err);
     }
@@ -17,9 +55,6 @@ async function generateTextPost(req, res) {
 async function generateFilePost(req, res) {
     try {
         const buffer = req.file.buffer;
-        pdfParse(buffer).then((data) => {
-            console.log(data.text);
-        });
 
         return res.json({
 

@@ -13,6 +13,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { 
@@ -21,6 +22,7 @@ import {
     DropzoneEmptyState 
 } from '@/components/ui/shadcn-io/dropzone';
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/components/contexts/Contexts"
@@ -35,7 +37,15 @@ import {
 
 // zod validator
 const generateSchema = z.object({
-    textInput: z.string().min(300, {
+    studySetName: z.string().trim().min(1, {
+        message: "Name must be at least a character."
+    }).max(50, {
+        message: "Name must be less than 50 characters"
+    }).regex(/^[a-zA-Z0-9 ]+$/, {
+        message: "Name can only contain alphanumeric characters (and space)."
+    }),
+
+    textInput: z.string().trim().min(300, {
         message: "Text must be at least 300 characters."
     }).max(30000, {
         message: "Text must be less than 30,000 characters."
@@ -71,12 +81,6 @@ export function GeneratePage() {
 
         if (files && files.length == 1) {
             setFile(files);
-
-            // const reader = new FileReader();
-            // reader.onload = (evt) => {
-            //     console.log(evt.target.result);
-            // };
-            // reader.readAsText(files[0]);
         }
         
         onChange(files);
@@ -98,17 +102,30 @@ export function GeneratePage() {
                 body.append("file", file[0]);
             }
             
-            const result = await fetch(`${API_URL_DOMAIN}/api/generate/${uploadType}`, {
+            const response = await fetch(`${API_URL_DOMAIN}/api/generate/${uploadType}`, {
                 method: "POST",
                 headers,
                 body,
                 credentials: "include",
             });
+            if (!response.ok) {
+                setLoading(false);
+                return;
+            }
+
+            const result = await response.json();
+
+            if(result.status == 1) {
+                setLoading(false);
+                navigate(`/account/${user.id}`);
+            } else {
+                console.error(`Error submitting data for generation: `, err);
+            }
 
             setLoading(false);
         } catch (err) {
             setLoading(false);
-            console.error(`Error submitting data for generation: `, err)
+            console.error(`Error submitting data for generation: `, err);
         }
     }
 
@@ -133,7 +150,7 @@ export function GeneratePage() {
                                 Text Input
                             </CardTitle>
                             <CardDescription>
-                                Copy and paste your notes
+                                Create a Study Set With Raw Text
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -142,15 +159,30 @@ export function GeneratePage() {
                                     onSubmit={form.handleSubmit(onSubmit)} 
                                     className="flex flex-col gap-6"
                                 >
+                                    <FormField 
+                                        control={form.control}
+                                        name="studySetName"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel> Study Set Name </FormLabel>
+                                                <FormControl>
+                                                    <Input id="studySetName" type="text" required {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                     <FormField
                                         control={form.control}
                                         name="textInput"
                                         render={({ field }) => (
                                             <FormItem>
+                                                <FormLabel> Text </FormLabel>
                                                 <FormControl>
                                                     <Textarea
                                                         className="resize-none"
                                                         rows={24}
+                                                        required
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -172,7 +204,7 @@ export function GeneratePage() {
                                 PDF Upload
                             </CardTitle>
                             <CardDescription>
-                                Upload your notes
+                                Create a Study Set With PDF
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -181,11 +213,25 @@ export function GeneratePage() {
                                     onSubmit={form.handleSubmit(onSubmit)}
                                     className="flex flex-col gap-6"
                                 >
+                                    <FormField 
+                                        control={form.control}
+                                        name="studySetName"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel> Study Set Name </FormLabel>
+                                                <FormControl>
+                                                    <Input id="studySetName" type="text" required {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                     <FormField
                                         control={form.control}
                                         name="fileInput"
                                         render={({ field }) => (
                                             <FormItem>
+                                                <FormLabel> PDF </FormLabel>
                                                 <FormControl type="file">
                                                     <Dropzone
                                                         accept={{ 'application/*': ['.pdf'] }}
