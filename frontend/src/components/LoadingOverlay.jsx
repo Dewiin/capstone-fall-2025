@@ -5,7 +5,7 @@ export function LoadingOverlay( {className} ) {
   return (
     <div 
         className={cn(
-            "absolute inset-0 flex items-center justify-center backdrop-blur-[1px] z-100 rounded-xl",
+            "absolute inset-0 flex items-center justify-center backdrop-blur-[3px] z-100 rounded-xl",
             className
         )}
     >

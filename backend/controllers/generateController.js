@@ -12,31 +12,31 @@ async function generateTextPost(req, res) {
         // console.log(result);
 
         if(result.status == 1) {
-            // // create study set
-            // const studySet = await prisma.studySet.create({
-            //     data: {
-            //         name: studySetName,
-            //         userId: user.id,
-            //     }
-            // });
+            // create study set
+            const studySet = await prisma.studySet.create({
+                data: {
+                    name: studySetName,
+                    userId: user.id,
+                }
+            });
 
-            // // create deck belonging to -> study set
-            // const deck = await prisma.deck.create({
-            //     data: {
-            //         studySetId: studySet.id,
-            //     }
-            // });
+            // create deck belonging to -> study set
+            const deck = await prisma.deck.create({
+                data: {
+                    studySetId: studySet.id,
+                }
+            });
 
-            // // create each flash card belonging to -> deck
-            // result.flashCards.forEach( async (flashCard) => {
-            //     await prisma.flashcard.create({
-            //         data: {
-            //             question: flashCard.cardFront,
-            //             answer: flashCard.cardBack,
-            //             deckId: deck.id,
-            //         }
-            //     });
-            // });
+            // create each flash card belonging to -> deck
+            result.flashCards.forEach( async (flashCard) => {
+                await prisma.flashcard.create({
+                    data: {
+                        question: flashCard.cardFront,
+                        answer: flashCard.cardBack,
+                        deckId: deck.id,
+                    }
+                });
+            });
 
             return res.json({
                 status: 1,

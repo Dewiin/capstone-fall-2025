@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 // routers
 import { indexRouter } from "./routes/indexRouter.js";
 import { generateRouter } from "./routes/generateRouter.js";
+import { accountRouter } from "./routes/accountRouter.js";
 
 // config
 import { sessionConfig } from "./config/sessionConfig.js";
@@ -36,7 +37,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 app.use("/api", indexRouter);
-// app.use("/api/account", accountRouter);
+app.use("/api/account", accountRouter);
 app.use("/api/generate", generateRouter);
 app.use((req, res) => {
 	res.status(404).json({ error: "Not Found" });
