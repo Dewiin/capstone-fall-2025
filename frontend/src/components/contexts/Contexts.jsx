@@ -5,9 +5,11 @@ const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN
 
 export default function AuthProvider({ children }) {
     const [ user, setUser ] = useState(null);
+    const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
         async function fetchUser() {
+            setLoading(true);
             try {
                 const response = await fetch(`${API_URL_DOMAIN}/api`, {
                     method: "GET",
@@ -32,11 +34,13 @@ export default function AuthProvider({ children }) {
             } catch (err) {
                 console.error("Error fetching user in AuthProvider:", err);
                 setUser(null);
+            } finally {
+                setLoading(false);
             }
         }
 
         fetchUser();
-    }, [user]);
+    }, []);
 
     async function signup(data) {
         try {
@@ -132,7 +136,9 @@ export default function AuthProvider({ children }) {
         signup,
         login,
         googleLogin,
-        logout
+        logout,
+        loading, 
+        setLoading
     }
 
     return (

@@ -1,10 +1,14 @@
 import { prisma } from "../config/prismaClient.js";
+import pdfParse from 'pdf-parse';
 
 async function generateTextPost(req, res) {
     try {
-        const data = req.textInput;
+        const data = req.body.textInput;
 
         console.log(`Text data: ${data}`);
+        return res.json({
+
+        });
     } catch (err) {
         console.error(`Error posting text data for generating: `, err);
     }
@@ -12,9 +16,14 @@ async function generateTextPost(req, res) {
 
 async function generateFilePost(req, res) {
     try {
-        const data = req.fileInput;
+        const buffer = req.file.buffer;
+        pdfParse(buffer).then((data) => {
+            console.log(data.text);
+        });
 
-        console.log(`File data: ${data}`);
+        return res.json({
+
+        });
     } catch (err) {
         console.error(`Error posting file data for generating: `, err);
     }

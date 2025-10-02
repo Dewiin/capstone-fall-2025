@@ -46,6 +46,8 @@ const generateSchema = z.object({
     }).optional(),
 });
 
+const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
+
 export function GeneratePage() {    
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -69,20 +71,43 @@ export function GeneratePage() {
 
         if (files && files.length == 1) {
             setFile(files);
+
+            // const reader = new FileReader();
+            // reader.onload = (evt) => {
+            //     console.log(evt.target.result);
+            // };
+            // reader.readAsText(files[0]);
         }
         
         onChange(files);
         setLoading(false);
     }
 
-    function onSubmit(data) {
+    async function onSubmit(data) {
+        setLoading(true);
+        
         try {
-            // console.log(`upload type: ${uploadType}`);
-            // const body = JSON.stringify(data);
-            // console.log(`data: ${body}`);
+            let body;
+            let headers = {};
 
+            if(uploadType === "text") {
+                body = JSON.stringify(data);
+                headers["Content-Type"] = "application/json";
+            } else if(uploadType === "pdf") {
+                body = new FormData();
+                body.append("file", file[0]);
+            }
+            
+            const result = await fetch(`${API_URL_DOMAIN}/api/generate/${uploadType}`, {
+                method: "POST",
+                headers,
+                body,
+                credentials: "include",
+            });
 
+            setLoading(false);
         } catch (err) {
+            setLoading(false);
             console.error(`Error submitting data for generation: `, err)
         }
     }
@@ -161,7 +186,7 @@ export function GeneratePage() {
                                         name="fileInput"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormControl>
+                                                <FormControl type="file">
                                                     <Dropzone
                                                         accept={{ 'application/*': ['.pdf'] }}
                                                         maxFiles={200}

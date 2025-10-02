@@ -108,9 +108,9 @@ export const Navbar01 = React.forwardRef((
   ref
 ) => {
   const [isMobile, setIsMobile] = useState(false);
-  const containerRef = useRef(null);
   const [darkMode, setDarkMode]= useState(true);
-  const { user, logout } = useAuth();
+  const containerRef = useRef(null);
+  const { user, logout, loading, setLoading } = useAuth();
   const navigate = useNavigate();
 
   const onSignInClick = () => navigate(signInHref);
@@ -154,7 +154,7 @@ export const Navbar01 = React.forwardRef((
         { href: '/generate', label: 'Generate' },
       ];
     }
-  });
+  }, [user, navigate]);
 
   // Combine refs
   const combinedRef = React.useCallback((node) => {
@@ -167,181 +167,189 @@ export const Navbar01 = React.forwardRef((
   }, [ref]);
 
   async function logoutSubmit() {
+    setLoading(true);
+
     try{
       const result = await logout();
       
       if(!result.loggedIn) {
+        setLoading(false);
         navigate("/");
       } else {
         console.error(`Logout failed`);
       }
+      setLoading(false);
     } catch (err) {
       console.error(`Error during logoutSubmit: `, err);
+      setLoading(false);
     }
   }
 
   return (
-    <header
-      ref={combinedRef}
-      className={cn(
-        'sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6 [&_*]:no-underline',
-        className
-      )}
-      {...props}>
-      <div
-        className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-4">
-        {/* Left side */}
-        <div className="flex items-center gap-2">
-          {/* Mobile menu trigger */}
-          {isMobile && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  className="group h-9 w-9 hover:bg-accent hover:text-accent-foreground"
-                  variant="ghost"
-                  size="icon">
-                  <HamburgerIcon />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="start" className="w-48 p-2">
-              <NavigationMenu className="max-w-none">
-                <NavigationMenuList className="flex-col items-start gap-1">
+    <>
+      { loading && <LoadingOverlay className="fixed" /> }
+      <header
+        ref={combinedRef}
+        className={cn(
+          'sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6 [&_*]:no-underline',
+          className
+        )}
+        {...props}>
+        <div
+          className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-4">
+          {/* Left side */}
+          <div className="flex items-center gap-2">
+            {/* Mobile menu trigger */}
+            {isMobile && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    className="group h-9 w-9 hover:bg-accent hover:text-accent-foreground"
+                    variant="ghost"
+                    size="icon">
+                    <HamburgerIcon />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-48 p-2">
+                <NavigationMenu className="max-w-none">
+                  <NavigationMenuList className="flex-col items-start gap-1">
+                    {navigationLinks.map((link, index) => (
+                      <NavigationMenuItem key={index} className="w-full">
+                        <button
+                          onClick={() => navigate(link.href)}
+                          className={cn(
+                            "flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer no-underline",
+                            link.active 
+                              ? "bg-accent text-accent-foreground" 
+                              : "text-foreground/80"
+                          )}>
+                          {link.label}
+                        </button>
+                      </NavigationMenuItem>
+                    ))}
+                  </NavigationMenuList>
+                </NavigationMenu>
+                </PopoverContent>
+              </Popover>
+            )}
+            {/* Main nav */}
+            <div className="flex items-center gap-6">
+              <button
+                onClick={() => navigate(logoHref)}
+                className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer">
+                <div className="text-2xl">
+                  {logo}
+                </div>
+                <span className="hidden font-bold text-xl sm:inline-block">Brainstorm</span>
+              </button>
+              {/* Navigation menu */}
+              {!isMobile && (
+                <NavigationMenu className="flex">
+                <NavigationMenuList className="gap-1">
                   {navigationLinks.map((link, index) => (
-                    <NavigationMenuItem key={index} className="w-full">
+                    <NavigationMenuItem key={index}>
                       <button
                         onClick={() => navigate(link.href)}
                         className={cn(
-                          "flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer no-underline",
+                          "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer no-underline",
                           link.active 
                             ? "bg-accent text-accent-foreground" 
-                            : "text-foreground/80"
+                            : "text-foreground/80 hover:text-foreground"
                         )}>
                         {link.label}
                       </button>
                     </NavigationMenuItem>
                   ))}
                 </NavigationMenuList>
-              </NavigationMenu>
-              </PopoverContent>
-            </Popover>
-          )}
-          {/* Main nav */}
-          <div className="flex items-center gap-6">
-            <button
-              onClick={() => navigate(logoHref)}
-              className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer">
-              <div className="text-2xl">
-                {logo}
-              </div>
-              <span className="hidden font-bold text-xl sm:inline-block">Brainstorm</span>
-            </button>
-            {/* Navigation menu */}
-            {!isMobile && (
-              <NavigationMenu className="flex">
-              <NavigationMenuList className="gap-1">
-                {navigationLinks.map((link, index) => (
-                  <NavigationMenuItem key={index}>
-                    <button
-                      onClick={() => navigate(link.href)}
-                      className={cn(
-                        "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer no-underline",
-                        link.active 
-                          ? "bg-accent text-accent-foreground" 
-                          : "text-foreground/80 hover:text-foreground"
-                      )}>
-                      {link.label}
-                    </button>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-              </NavigationMenu>
-            )}
-          </div>
-        </div>
-        {/* Right side */}
-          <div className="flex items-center gap-3">
-            <Button
-              className="font-medium h-9 w-9 hover:bg-accent hover:text-accent-foreground"
-              variant="ghost"
-              onClick={() => {
-                setDarkMode(!darkMode);
-              }}>
-              { darkMode ? (
-                <Moon 
-                strokeWidth={2} 
-                size={24} />
-              ) : (
-                <Sun 
-                strokeWidth={1.5} 
-                size={20} />
-              )}
-            </Button>
-            { !user ? (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-sm font-medium px-4 h-9 hover:bg-accent hover:text-accent-foreground"
-                  onClick={onSignInClick}>
-                  {signInText}
-                </Button>
-                <Button
-                  size="sm"
-                  className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
-                  onClick={onCtaClick}>
-                  {ctaText}
-                </Button>
-              </>
-              ) : (
-                <NavigationMenu>
-                  <NavigationMenuList>
-                    <NavigationMenuItem >
-                      <NavigationMenuTrigger 
-                        className="flex gap-x-2 p-2"
-                        onPointerMove={(e) => e.preventDefault()}
-                        onPointerLeave={(e) => e.preventDefault()}
-                      >
-                        <Avatar className="size-6 rounded-lg">
-                          <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
-                          <AvatarFallback>Icon</AvatarFallback>
-                        </Avatar>
-                        {user.displayName}
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent
-                        onPointerEnter={(e) => e.preventDefault()}
-                        onPointerLeave={(e) => e.preventDefault()}
-                      >
-                        <ul className="flex flex-col p-1 w-3xs list-none select-none">
-                          <li>
-                            <NavigationMenuLink asChild>
-                              <p className="text-sm leading-tight text-muted-foreground" onClick={() => navigate(`/account/${user.id}`)}>
-                                Account
-                              </p>
-                            </NavigationMenuLink>
-                          </li>
-                          <li>
-                            <NavigationMenuLink>
-                              <p className="text-sm leading-tight text-muted-foreground">
-                                Settings
-                              </p>
-                            </NavigationMenuLink>
-                          </li>
-                          <li onClick={() => logoutSubmit()}>
-                            <NavigationMenuLink>
-                              <p className="text-sm leading-tight text-muted-foreground">
-                                Log Out
-                              </p>
-                            </NavigationMenuLink>
-                          </li>
-                        </ul>
-                      </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  </NavigationMenuList>
                 </NavigationMenu>
               )}
+            </div>
+          </div>
+          {/* Right side */}
+            <div className="flex items-center gap-3">
+              <Button
+                className="font-medium h-9 w-9 hover:bg-accent hover:text-accent-foreground"
+                variant="ghost"
+                onClick={() => {
+                  setDarkMode(!darkMode);
+                }}>
+                { darkMode ? (
+                  <Moon 
+                  strokeWidth={2} 
+                  size={24} />
+                ) : (
+                  <Sun 
+                  strokeWidth={1.5} 
+                  size={20} />
+                )}
+              </Button>
+              { !user ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-sm font-medium px-4 h-9 hover:bg-accent hover:text-accent-foreground"
+                    onClick={onSignInClick}>
+                    {signInText}
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
+                    onClick={onCtaClick}>
+                    {ctaText}
+                  </Button>
+                </>
+                ) : (
+                  <NavigationMenu>
+                    <NavigationMenuList>
+                      <NavigationMenuItem >
+                        <NavigationMenuTrigger 
+                          className="flex gap-x-2 p-2"
+                          onPointerMove={(e) => e.preventDefault()}
+                          onPointerLeave={(e) => e.preventDefault()}
+                        >
+                          <Avatar className="size-6 rounded-lg">
+                            <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                            <AvatarFallback>Icon</AvatarFallback>
+                          </Avatar>
+                          {user.displayName}
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent
+                          onPointerEnter={(e) => e.preventDefault()}
+                          onPointerLeave={(e) => e.preventDefault()}
+                        >
+                          <ul className="flex flex-col p-1 w-3xs list-none select-none">
+                            <li>
+                              <NavigationMenuLink asChild>
+                                <p className="text-sm leading-tight text-muted-foreground" onClick={() => navigate(`/account/${user.id}`)}>
+                                  Account
+                                </p>
+                              </NavigationMenuLink>
+                            </li>
+                            <li>
+                              <NavigationMenuLink>
+                                <p className="text-sm leading-tight text-muted-foreground">
+                                  Settings
+                                </p>
+                              </NavigationMenuLink>
+                            </li>
+                            <li onClick={() => logoutSubmit()}>
+                              <NavigationMenuLink>
+                                <p className="text-sm leading-tight text-muted-foreground">
+                                  Log Out
+                                </p>
+                              </NavigationMenuLink>
+                            </li>
+                          </ul>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                )}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 });
 
