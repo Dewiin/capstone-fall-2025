@@ -1,16 +1,33 @@
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator"
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { useEffect, useState } from "react";
 import { useAuth } from "./contexts/Contexts";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { 
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsContent, 
+} from "@/components/ui/tabs";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function StudySetPage() {
-    const { user, loading, setLoading } = useAuth();
-    const [ quiz, setQuiz ] = useState({});
-    const [ deck, setDeck ] = useState({});
+    const { user } = useAuth();
+    const [ loading, setLoading ] = useState(false);
+    const [ quiz, setQuiz ] = useState({questions: [{}]});
+    const [ deck, setDeck ] = useState({cards: []});
     const [ studySet, setStudySet ] = useState({});
+    const [ notesType, setNotesType ] = useState("deck");
     const { studySetId } = useParams();
     const navigate = useNavigate();
 
@@ -35,6 +52,8 @@ export function StudySetPage() {
 
                 const result = await response.json();
                 if(result.status == 1) {
+                    // console.log(result.deck.cards);
+                    // console.log(result.quiz.questions);
                     setStudySet(result.studySet);
                     setDeck(result.deck);
                     setQuiz(result.quiz);
@@ -52,33 +71,63 @@ export function StudySetPage() {
     }, []);
 
     return (
-        <>
-            <div className="flex flex-col w-full h-[80dvh] justify-center items-center gap-32">
-                <p className="scroll-m-20 text-center text-4xl font-extrabold text-6xl tracking-tight text-balance">
-                    { studySet.name }
-                </p>
-                <div className="flex justify-center items-center gap-12 w-full h-1/4">
-                    <Card 
-                        className="flex justify-center w-full max-w-xs h-full cursor-pointer" 
-                        onClick={() => navigate(`/deck/${deck.id}`)}
+        <>  
+            <div className="p-24 h-full">
+                <Breadcrumb className="p-6">
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink
+                                className="select-none"
+                                onClick={() => navigate(`/account/${user.id}`)}
+                            >
+                                {user.displayName}
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage> {studySet.name} </BreadcrumbPage>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>
+                                { notesType === "deck" ? ("Deck") : ("Quiz") } 
+                            </BreadcrumbPage> 
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+                <Tabs
+                    defaultValue={notesType}
+                    className="flex gap-6"
+                    onValueChange={(val) => {
+                        setNotesType(val);
+                    }}
+                >
+                    <TabsList className="m-auto">
+                        <TabsTrigger value="deck"> Deck </TabsTrigger>    
+                        <TabsTrigger value="quiz"> Quiz </TabsTrigger>    
+                    </TabsList>
+                    <TabsContent 
+                        value="deck"
+                        className="flex flex-col justify-center items-center gap-2 relative"
                     >
-                        <CardContent className="flex items-center justify-center font-extrabold">
-                            <p className="text-4xl">
-                                Deck
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card 
-                        className="flex justify-center w-full max-w-xs h-full cursor-pointer" 
-                        onClick={() => navigate(`/quiz/${quiz.id}`)}
-                    >
-                        <CardContent className="flex items-center justify-center font-extrabold">
-                            <p className="text-4xl">
-                                Quiz
-                            </p>
-                        </CardContent>
-                    </Card>
-                </div>
+                        { loading && <LoadingOverlay /> }
+                        { deck.cards.map((card) => (
+                            <Card 
+                                key={card.id}
+                                className="md:w-3xl w-sm h-50"
+                            >
+                                <CardContent className="flex items-center justify-between text-sm h-full">
+                                    <p className="w-xs"> { card.question } </p>
+                                    <Separator orientation="vertical" />
+                                    <p className="w-xs"> { card.answer } </p>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </TabsContent>
+                    <TabsContent value="quiz">
+
+                    </TabsContent>
+                </Tabs>
             </div>
         </>
     )

@@ -60,7 +60,8 @@ const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function GeneratePage() {    
     const navigate = useNavigate();
-    const { user, loading, setLoading } = useAuth();
+    const { user } = useAuth();
+    const [ loading, setLoading ] = useState(false);
     const [ uploadType, setUploadType ] = useState("text");
     const [ file, setFile ] = useState();
 

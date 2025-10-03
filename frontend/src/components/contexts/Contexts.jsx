@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import { LoadingOverlay } from '../LoadingOverlay';
 const AuthContext = createContext();
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN
@@ -137,12 +138,11 @@ export default function AuthProvider({ children }) {
         login,
         googleLogin,
         logout,
-        loading, 
-        setLoading
     }
 
     return (
         <AuthContext value={value}>
+            {loading && <LoadingOverlay />}
             {children}
         </AuthContext>
     )

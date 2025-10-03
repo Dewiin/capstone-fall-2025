@@ -1,8 +1,9 @@
-import passport from "passport"
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import bcrypt from "bcryptjs";
 import { prisma } from "./prismaClient.js";
+import passport from "passport"
+import bcrypt from "bcryptjs";
+import "dotenv/config";
 
 // LocalStrategy callback
 async function localVerifyCallback(username, password, done) {

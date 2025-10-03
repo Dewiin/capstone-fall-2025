@@ -1,6 +1,7 @@
 import expressSession from 'express-session';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { prisma } from "./prismaClient.js";
+import "dotenv/config";
 
 export const sessionConfig = expressSession({
 	cookie: {

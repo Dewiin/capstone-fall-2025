@@ -16,6 +16,9 @@ async function studySetGet(req, res) {
             where: {
                 studySetId: parseInt(studySetId),
             },
+            include: {
+                cards: true,
+            }
         });
 
         // get study set's quiz
@@ -23,6 +26,9 @@ async function studySetGet(req, res) {
             where: {
                 studySetId: parseInt(studySetId),
             },
+            include: {
+                questions: true,
+            }
         })
 
         if (deck || quiz) {

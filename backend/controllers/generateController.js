@@ -9,7 +9,7 @@ async function generateTextPost(req, res) {
        
         const deckResult = await gemini.textInputDeck(text);
         const quizResult = await gemini.textInputQuiz(text);
-        console.log(quizResult);
+        // console.log(quizResult);
 
         // console.log(result);
 

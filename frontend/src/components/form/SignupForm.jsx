@@ -68,7 +68,8 @@ export function SignupForm({
   ...props
 }) {
   const navigate = useNavigate();
-  const { user, signup, googleLogin, loading, setLoading } = useAuth();
+  const [ loading, setLoading ] = useState(false);
+  const { user, signup, googleLogin } = useAuth();
 
   useEffect(() => {
     if(user) {
@@ -107,7 +108,7 @@ export function SignupForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="relative">
-        { loading && <LoadingOverlay></LoadingOverlay> }
+        { loading && <LoadingOverlay /> }
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
           <CardDescription>

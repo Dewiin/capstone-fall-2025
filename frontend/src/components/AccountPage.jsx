@@ -55,7 +55,7 @@ export function AccountPage() {
 
     return (
         <>
-            { loading && <LoadingOverlay className="fixed" /> }
+            { loading && <LoadingOverlay /> }
             <div className='flex flex-col justify-center align-center p-16 text-center gap-10'>
                 <h1 className='text-9xl'>
                     Account Page <br></br>
@@ -69,7 +69,7 @@ export function AccountPage() {
                 {studySets.map((studySet) => (
                     <Card 
                         key={ studySet.id }
-                        className="w-full max-w-xs max-h-1/5 select-none" 
+                        className="w-full max-w-xs max-h-1/5 select-none transform hover:scale-110 transition-transform duration-150" 
                         onClick={() => navigate(`/study-set/${studySet.id}`)}
                     >
                         <CardHeader>

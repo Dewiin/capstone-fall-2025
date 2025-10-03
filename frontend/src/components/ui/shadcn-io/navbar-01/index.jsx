@@ -109,8 +109,9 @@ export const Navbar01 = React.forwardRef((
 ) => {
   const [isMobile, setIsMobile] = useState(false);
   const [darkMode, setDarkMode]= useState(true);
+  const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
-  const { user, logout, loading, setLoading } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const onSignInClick = () => navigate(signInHref);
@@ -173,14 +174,13 @@ export const Navbar01 = React.forwardRef((
       const result = await logout();
       
       if(!result.loggedIn) {
-        setLoading(false);
         navigate("/");
       } else {
         console.error(`Logout failed`);
       }
-      setLoading(false);
     } catch (err) {
       console.error(`Error during logoutSubmit: `, err);
+    } finally {
       setLoading(false);
     }
   }
