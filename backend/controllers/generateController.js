@@ -7,11 +7,13 @@ async function generateTextPost(req, res) {
         const user = req.user
         const { studySetName } = req.body;
        
-        const result = await gemini.textInput(text);
+        const deckResult = await gemini.textInputDeck(text);
+        const quizResult = await gemini.textInputQuiz(text);
+        console.log(quizResult);
 
         // console.log(result);
 
-        if(result.status == 1) {
+        if(deckResult.status == 1 && quizResult.status == 1) {
             // create study set
             const studySet = await prisma.studySet.create({
                 data: {
@@ -28,13 +30,33 @@ async function generateTextPost(req, res) {
             });
 
             // create each flash card belonging to -> deck
-            result.flashCards.forEach( async (flashCard) => {
+            deckResult.flashCards.forEach( async (flashCard) => {
                 await prisma.flashcard.create({
                     data: {
                         question: flashCard.cardFront,
                         answer: flashCard.cardBack,
                         deckId: deck.id,
                     }
+                });
+            });
+
+            // create quiz belonging to -> user
+            const quiz = await prisma.quiz.create({
+                data: {
+                    studySetId: studySet.id,
+                    highScore: 0,
+                }
+            });
+
+            // create quizQuestions belonging to -> quiz
+            quizResult.quiz.forEach(async (question) => {
+                await prisma.quizQuestion.create({
+                    data: {
+                        question: question.quizQuestion,
+                        choices: question.quizOptions,
+                        correctAnswer: question.answer,
+                        quizId: quiz.id,
+                    } 
                 });
             });
 

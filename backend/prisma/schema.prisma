@@ -95,7 +95,7 @@ model Flashcard {
 model Quiz {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  highScore Int?
+  highScore Int?     
 
   // Relations
   studySet   StudySet       @relation(fields: [studySetId], references: [id])
