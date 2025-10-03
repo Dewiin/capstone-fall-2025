@@ -62,6 +62,7 @@ async function generateTextPost(req, res) {
 
             return res.json({
                 status: 1,
+                studySetId: studySet.id,
             });
         }
         else {

@@ -44,8 +44,7 @@ export function LoginForm({
   ...props
 }) {
   const navigate = useNavigate();
-  const [ loading, setLoading ] = useState(false);
-  const { user, login, googleLogin } = useAuth();
+  const { user, login, googleLogin, loading, setLoading } = useAuth();
 
   useEffect(() => {
     if (user) {

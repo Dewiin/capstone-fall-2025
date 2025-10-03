@@ -31,11 +31,17 @@ export function AccountPage() {
                     method: "GET",
                     credentials: "include",
                 });
+                if(!response.ok) {
+                    console.error(`Error getting a response for study set: `, response.status);
+                    return;
+                }
 
                 const result = await response.json();
-                const studySets = result.userStudySets;
 
-                setStudySets(studySets);
+                if(result.status == 1) {
+                    const studySets = result.userStudySets;
+                    setStudySets(studySets);
+                }
             } catch (err) {
                 console.error(`Error getting account info: `, err);
             }
@@ -45,7 +51,6 @@ export function AccountPage() {
         }
 
         getAccount();
-        console.log("called");
     }, []);
 
     return (
@@ -60,12 +65,12 @@ export function AccountPage() {
                 </h3>
             </div>
 
-            <div className="flex justify-center align-center h-dvh">
+            <div className="flex justify-center align-center h-dvh gap-12">
                 {studySets.map((studySet) => (
                     <Card 
                         key={ studySet.id }
-                        className="w-full max-w-xs max-h-1/5" 
-                        onClick={() => console.log("")}
+                        className="w-full max-w-xs max-h-1/5 select-none" 
+                        onClick={() => navigate(`/study-set/${studySet.id}`)}
                     >
                         <CardHeader>
                             <CardTitle>

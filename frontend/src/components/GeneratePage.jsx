@@ -60,16 +60,15 @@ const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function GeneratePage() {    
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, loading, setLoading } = useAuth();
     const [ uploadType, setUploadType ] = useState("text");
-    const [ loading, setLoading ] = useState(false);
     const [ file, setFile ] = useState();
 
     useEffect(() => {
         if(!user) {
             navigate("/");
         }
-    }, [user, navigate]);
+    }, []);
 
     const form = useForm({
         resolver: zodResolver(generateSchema),
@@ -116,16 +115,15 @@ export function GeneratePage() {
             const result = await response.json();
 
             if(result.status == 1) {
-                setLoading(false);
-                navigate(`/account/${user.id}`);
+                navigate(`/study-set/${result.studySetId}`);
             } else {
                 console.error(`Error submitting data for generation: `, err);
             }
 
-            setLoading(false);
         } catch (err) {
-            setLoading(false);
             console.error(`Error submitting data for generation: `, err);
+        } finally {
+            setLoading(false);
         }
     }
 

@@ -10,12 +10,20 @@ async function accountGet(req, res) {
             }
         });
 
+        if(userStudySets) {
+            return res.json({
+                status: 1,
+                userStudySets,
+            });
+        }
         return res.json({
-            userStudySets,
+            status: 0,
         });
-
     } catch (err) {
         console.error(`Error getting account page: `, err);
+        return res.json({
+            status: 0,
+        })
     }
 }
 

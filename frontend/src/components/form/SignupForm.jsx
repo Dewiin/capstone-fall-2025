@@ -68,8 +68,7 @@ export function SignupForm({
   ...props
 }) {
   const navigate = useNavigate();
-  const { user, signup, googleLogin } = useAuth();
-  const [ loading, setLoading ] = useState(false);
+  const { user, signup, googleLogin, loading, setLoading } = useAuth();
 
   useEffect(() => {
     if(user) {
