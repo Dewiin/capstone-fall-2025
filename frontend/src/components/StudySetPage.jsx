@@ -1,6 +1,7 @@
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator"
+import { Progress } from "@/components/ui/progress"
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -9,27 +10,44 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { useEffect, useState } from "react";
-import { useAuth } from "./contexts/Contexts";
-import { useNavigate, useParams, Link } from "react-router-dom";
 import { 
     Tabs,
     TabsList,
     TabsTrigger,
     TabsContent, 
 } from "@/components/ui/tabs";
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel";
+
+import { useEffect, useState } from "react";
+import { useAuth } from "./contexts/Contexts";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function StudySetPage() {
     const { user } = useAuth();
+    const [ notesType, setNotesType ] = useState("deck");
     const [ loading, setLoading ] = useState(false);
+    const { studySetId } = useParams();
+    const navigate = useNavigate();
+
+    // notes
     const [ quiz, setQuiz ] = useState({questions: [{}]});
     const [ deck, setDeck ] = useState({cards: []});
     const [ studySet, setStudySet ] = useState({});
-    const [ notesType, setNotesType ] = useState("deck");
-    const { studySetId } = useParams();
-    const navigate = useNavigate();
+
+    // carousel state
+    const [api, setApi] = useState(null);
+    const [current, setCurrent] = useState(0);
+    const [count, setCount] = useState(0);
+    const [flipped, setFlipped] = useState({});
+    
 
     useEffect(() => {
         if (!user) {
@@ -70,6 +88,19 @@ export function StudySetPage() {
         fetchStudySet();
     }, []);
 
+    useEffect(() => {
+        if (!api) {
+            return;
+        }
+
+        setCount(api.scrollSnapList().length);
+        setCurrent(api.selectedScrollSnap() + 1);
+
+        api.on("select", () => {
+            setCurrent(api.selectedScrollSnap() + 1)
+        });
+    }, [api, current, count])
+
     return (
         <>  
             <div className="p-24 h-full">
@@ -80,7 +111,7 @@ export function StudySetPage() {
                                 className="select-none"
                                 onClick={() => navigate(`/account/${user.id}`)}
                             >
-                                {user.displayName}
+                                {user?.displayName}
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
@@ -111,6 +142,35 @@ export function StudySetPage() {
                         className="flex flex-col justify-center items-center gap-2 relative"
                     >
                         { loading && <LoadingOverlay /> }
+
+                        <Carousel
+                            setApi={setApi}
+                            className="w-full max-w-2xl"
+                        >
+                            <CarouselContent>
+                                { deck.cards.map((card) => (
+                                    <>
+                                        <CarouselItem key={card.id}>
+                                            <div className="relative">
+                                                <Card>
+                                                    <CardContent className="flex aspect-video items-center justify-center p-24">
+                                                        <span className="text-2xl font-semibold">{ card.question }</span>
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        </CarouselItem>
+                                    </>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious />
+                            <CarouselNext />
+                        </Carousel>
+                        <p> {current} / {count > 0 ? count : deck.cards.length} </p>
+                        <Progress 
+                            className="max-w-2xl mb-20"
+                            value={ count > 0 ? (100/count) * (current) : (100/deck.cards.length) * current }
+                        />
+
                         { deck.cards.map((card) => (
                             <Card 
                                 key={card.id}
