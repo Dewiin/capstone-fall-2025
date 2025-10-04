@@ -152,9 +152,27 @@ export function StudySetPage() {
                                     <>
                                         <CarouselItem key={card.id}>
                                             <div className="relative">
-                                                <Card>
-                                                    <CardContent className="flex aspect-video items-center justify-center p-24">
-                                                        <span className="text-2xl font-semibold">{ card.question }</span>
+                                                <Card onClick={() => setFlipped((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        [card.id]: !prev[card.id],
+                                                    }
+                                                })}>
+                                                    <CardContent className={`flex aspect-video ${!flipped[card.id] && "items-center"} justify-center p-24`}>
+                                                        { flipped[card.id] ? (
+                                                            <div className="w-full flex flex-col gap-6">
+                                                                <span className="text-sm text-gray-500">
+                                                                    {card.question}
+                                                                </span>
+                                                                <span className="text-2xl font-semibold">
+                                                                    {card.answer}
+                                                                </span>
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-2xl font-semibold">
+                                                                {card.question}
+                                                            </span>
+                                                        )}
                                                     </CardContent>
                                                 </Card>
                                             </div>
