@@ -38,7 +38,7 @@ export function StudySetPage() {
     const navigate = useNavigate();
 
     // notes
-    const [ quiz, setQuiz ] = useState({questions: [{}]});
+    const [ quiz, setQuiz ] = useState({questions: []});
     const [ deck, setDeck ] = useState({cards: []});
     const [ studySet, setStudySet ] = useState({});
 
@@ -47,6 +47,7 @@ export function StudySetPage() {
     const [current, setCurrent] = useState(0);
     const [count, setCount] = useState(0);
     const [flipped, setFlipped] = useState({});
+    const [selected, setSelected] = useState({});
     
 
     useEffect(() => {
@@ -70,8 +71,8 @@ export function StudySetPage() {
 
                 const result = await response.json();
                 if(result.status == 1) {
-                    // console.log(result.deck.cards);
-                    // console.log(result.quiz.questions);
+                    console.log(result.quiz);
+
                     setStudySet(result.studySet);
                     setDeck(result.deck);
                     setQuiz(result.quiz);
@@ -103,7 +104,7 @@ export function StudySetPage() {
 
     return (
         <>  
-            <div className="p-24 h-full">
+            <div className="md:p-24 p-8 h-full min-w-sm">
                 <Breadcrumb className="p-6">
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -128,7 +129,7 @@ export function StudySetPage() {
                 </Breadcrumb>
                 <Tabs
                     defaultValue={notesType}
-                    className="flex gap-6"
+                    className="flex gap-12"
                     onValueChange={(val) => {
                         setNotesType(val);
                     }}
@@ -136,6 +137,7 @@ export function StudySetPage() {
                     <TabsList className="m-auto">
                         <TabsTrigger value="deck"> Deck </TabsTrigger>    
                         <TabsTrigger value="quiz"> Quiz </TabsTrigger>    
+                        <TabsTrigger value="progress"> Progress </TabsTrigger>    
                     </TabsList>
                     <TabsContent 
                         value="deck"
@@ -143,6 +145,8 @@ export function StudySetPage() {
                     >
                         { loading && <LoadingOverlay /> }
 
+                        { !loading && 
+                        <>
                         <Carousel
                             setApi={setApi}
                             className="w-full max-w-2xl"
@@ -188,6 +192,8 @@ export function StudySetPage() {
                             className="max-w-2xl mb-20"
                             value={ count > 0 ? (100/count) * (current) : (100/deck.cards.length) * current }
                         />
+                        </>
+                        }
 
                         { deck.cards.map((card) => (
                             <Card 
@@ -202,8 +208,61 @@ export function StudySetPage() {
                             </Card>
                         ))}
                     </TabsContent>
-                    <TabsContent value="quiz">
+                    <TabsContent 
+                        value="quiz"
+                        className="flex flex-col justify-center items-center gap-2 relative"
+                    >
+                        { loading && <LoadingOverlay /> }
 
+                        <Carousel
+                            orientation="vertical"
+                            className="w-full max-w-2xl"
+                        >
+                            <CarouselContent>
+                                {quiz.questions.map((question, index) => (
+                                    <CarouselItem 
+                                        key={question.id}
+                                    >
+                                        <Card
+                                            className="flex aspect-video p-12 justify-between relative"
+                                        >
+                                            <p className="absolute top-5 right-5 text-gray-500">
+                                                {index+1} of {quiz.questions.length}
+                                            </p>
+                                            <CardContent>
+                                                {question.question}
+                                            </CardContent>
+                                            <div className="grid sm:grid-cols-2 grid-cols-1 h-1/1.5 gap-6 p-6">
+                                                {Object.entries(question.choices).map(([key, value]) => (
+                                                    <Card 
+                                                        key={key}
+                                                        className={`md:text-sm text-xs ${key == selected[question.id] && "border-green-800"} border-2 select-none`}
+                                                        onClick= {() => {
+                                                            setSelected((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    [question.id]: key,
+                                                                }
+                                                            })
+                                                        }}
+                                                    >
+                                                        <CardContent>
+                                                            <b>{key.toUpperCase()}.</b> &nbsp;{value}
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        </Card>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                        </Carousel>
+                    </TabsContent>
+                    <TabsContent
+                        value="progress"
+                    >
+                        { loading && <LoadingOverlay /> }
+                        Chart goes here
                     </TabsContent>
                 </Tabs>
             </div>
