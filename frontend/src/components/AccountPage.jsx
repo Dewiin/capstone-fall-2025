@@ -72,23 +72,23 @@ export function AccountPage() {
 
             <div className="flex flex-col justify-center items-center align-center gap-12 relative">
                 { loading && <LoadingOverlay /> }
-                { !loading && "My Study Sets" }
-                <div className="grid grid-cols-4 h-full gap-12 w-full">
+                { !loading &&
+                    <p className="text-xl">My Study Sets</p>
+                }
+                <div className="flex flex-wrap justify-center gap-4 h-full w-full">
                     {studySets.map((studySet) => (
                         <Card 
                             key={ studySet.id }
-                            className="w-full max-w-xs h-50 select-none" 
+                            className="w-full max-w-xs h-35 select-none" 
                             onClick={() => navigate(`/study-set/${studySet.id}`)}
                         >
-                            <CardHeader>
-                                <CardTitle>
-                                    <p className="text-xs">
-                                        { studySet.public ? "Public" : "Private" }
-                                    </p>
-                                </CardTitle>
+                            <CardHeader className="relative">
+                                <p className="text-xs absolute top-0 left-5">
+                                    { studySet.public ? "Public" : "Private" }
+                                </p>
                             </CardHeader>
-                            <CardContent className="flex items-center justify-center">
-                                <p className="text-4xl">
+                            <CardContent className="flex  justify-center h-full">
+                                <p className="text-3xl">
                                     { studySet.name }
                                 </p>
                             </CardContent>

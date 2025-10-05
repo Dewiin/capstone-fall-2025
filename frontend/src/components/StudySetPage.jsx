@@ -1,5 +1,6 @@
 import { LoadingOverlay } from "./LoadingOverlay";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
 import {
@@ -24,9 +25,9 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "./contexts/Contexts";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
@@ -35,6 +36,7 @@ export function StudySetPage() {
     const [ notesType, setNotesType ] = useState("deck");
     const [ loading, setLoading ] = useState(false);
     const { studySetId } = useParams();
+    const smoothScroll = useRef(null);
     const navigate = useNavigate();
 
     // notes
@@ -48,6 +50,8 @@ export function StudySetPage() {
     const [count, setCount] = useState(0);
     const [flipped, setFlipped] = useState({});
     const [selected, setSelected] = useState({});
+    const [correct, setCorrect] = useState({});
+    const [submitted, setSubmitted] = useState(false);
     
 
     useEffect(() => {
@@ -100,11 +104,25 @@ export function StudySetPage() {
         api.on("select", () => {
             setCurrent(api.selectedScrollSnap() + 1)
         });
-    }, [api, current, count])
+    }, [api, current, count]);
+
+    async function handleSubmit() {
+        setLoading(true);
+        try {
+
+        } catch (err) {
+            console.error(`Error handling quiz submission: `, err);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <>  
-            <div className="md:p-24 p-8 h-full min-w-sm">
+            <div 
+                className="md:p-24 p-8 h-full min-w-sm"
+                ref={smoothScroll}
+            >
                 <Breadcrumb className="p-6">
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -236,12 +254,30 @@ export function StudySetPage() {
                                                 {Object.entries(question.choices).map(([key, value]) => (
                                                     <Card 
                                                         key={key}
-                                                        className={`md:text-sm text-xs ${key == selected[question.id] && "border-green-800"} border-2 select-none`}
-                                                        onClick= {() => {
+                                                        className={
+                                                            `md:text-sm text-xs 
+                                                            ${key == selected[question.id] &&
+                                                            (submitted ?
+                                                            (
+                                                                correct[question.id] ? "bg-green-600 border-green-800" : "border-red-600 bg-red-800"
+                                                            ) : (
+                                                                "border-cyan-800"
+                                                            ))} 
+                                                            ${submitted && key == question.correctAnswer && "bg-transparent border-green-800"}
+                                                            border-2 select-none`
+                                                        }
+                                                        onClick={() => {
+                                                            if(submitted) return;
                                                             setSelected((prev) => {
                                                                 return {
                                                                     ...prev,
                                                                     [question.id]: key,
+                                                                }
+                                                            })
+                                                            setCorrect((prev) => {
+                                                                return {
+                                                                    ...prev,
+                                                                    [question.id]: key == question.correctAnswer
                                                                 }
                                                             })
                                                         }}
@@ -256,6 +292,21 @@ export function StudySetPage() {
                                     </CarouselItem>
                                 ))}
                             </CarouselContent>
+                            <Button 
+                                className="block m-auto mt-5"
+                                onClick={() => {
+                                    smoothScroll.current.scrollIntoView({behavior: "smooth"});
+                                    if(!submitted) {
+                                        setSubmitted(true);
+                                    } else {
+                                        setSubmitted(false);
+                                        setCorrect([]);
+                                        setSelected([]);
+                                    }
+                                }}
+                            >
+                                {submitted ? "Retry" : "Submit"}
+                            </Button>
                         </Carousel>
                     </TabsContent>
                     <TabsContent
