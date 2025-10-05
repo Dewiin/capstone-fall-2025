@@ -8,6 +8,11 @@ import {
     CardTitle,
     CardContent,
 } from "@/components/ui/card";
+import { 
+    Avatar,
+    AvatarFallback,
+    AvatarImage
+} from '@/components/ui/avatar';
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
@@ -55,37 +60,41 @@ export function AccountPage() {
 
     return (
         <>
-            { loading && <LoadingOverlay /> }
-            <div className='flex flex-col justify-center align-center p-16 text-center gap-10'>
-                <h1 className='text-9xl'>
-                    Account Page <br></br>
-                </h1>
-                <h3 className='text-5xl'>
-                    Welcome
+            <div className='flex flex-col justify-center items-center p-24 gap-5'>
+                <Avatar className="size-30 rounded-2xl">
+                    <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                    <AvatarFallback>Icon</AvatarFallback>
+                </Avatar>
+                <h3 className='text-3xl '>
+                    {user?.displayName}
                 </h3>
             </div>
 
-            <div className="flex justify-center align-center h-dvh gap-12">
-                {studySets.map((studySet) => (
-                    <Card 
-                        key={ studySet.id }
-                        className="w-full max-w-xs max-h-1/5 select-none transform hover:scale-110 transition-transform duration-150" 
-                        onClick={() => navigate(`/study-set/${studySet.id}`)}
-                    >
-                        <CardHeader>
-                            <CardTitle>
-                                <p className="text-xs">
-                                    { studySet.public ? "Public" : "Private" }
+            <div className="flex flex-col justify-center items-center align-center gap-12 relative">
+                { loading && <LoadingOverlay /> }
+                { !loading && "My Study Sets" }
+                <div className="grid grid-cols-4 h-full gap-12 w-full">
+                    {studySets.map((studySet) => (
+                        <Card 
+                            key={ studySet.id }
+                            className="w-full max-w-xs h-50 select-none" 
+                            onClick={() => navigate(`/study-set/${studySet.id}`)}
+                        >
+                            <CardHeader>
+                                <CardTitle>
+                                    <p className="text-xs">
+                                        { studySet.public ? "Public" : "Private" }
+                                    </p>
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex items-center justify-center">
+                                <p className="text-4xl">
+                                    { studySet.name }
                                 </p>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex items-center justify-center">
-                            <p className="text-4xl">
-                                { studySet.name }
-                            </p>
-                        </CardContent>
-                    </Card>
-                ))}
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
             </div>
         </>
     );
