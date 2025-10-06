@@ -47,14 +47,14 @@ async function textInputDeck(text) {
     return result;
 }
 
-async function textInputQuiz(text) {
+async function textInputQuiz(deck) {
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: `You are an AI model designed to generate a quiz from a text input. Return one quiz with quizQuestions and 
-        quizOptions (a, b, c, d). The answer to the quizQuestion should be a character (a, b, c, d). If the text
-        has no meaning, or if no material can be generated from the text, set the 'status' to the integer 0. 
-        Otherwise, set the 'status' to the integer 1. Here is the text:
-        ${text}
+        contents: `You are an AI model designed to generate a quiz from an object. The object represents a deck of flash cards. Return one quiz with 
+        quizQuestions and quizOptions (a, b, c, d). The answer to the quizQuestion should be a character (a, b, c, d). Try to generate as many questions 
+        as the amount of flash cards in the deck object. If the object has a status of 0, or if no material can be generated from the object, 
+        set the of your response 'status' to the integer 0. Otherwise, set the 'status' to the integer 1. Here is the object:
+        ${deck}
         `,
         config: {
             responseMimeType: "application/json",

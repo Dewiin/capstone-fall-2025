@@ -3,6 +3,7 @@ import { prisma } from "../config/prismaClient.js";
 async function studySetGet(req, res) {
     try {
         const { studySetId } = req.params;
+        const user = req.user;
 
         // get study set
         const studySet = await prisma.studySet.findUnique({
@@ -28,6 +29,11 @@ async function studySetGet(req, res) {
             },
             include: {
                 questions: true,
+                attempts: {
+                    where: {
+                        userId: user.id,
+                    }
+                }
             }
         })
 
@@ -54,28 +60,57 @@ async function studySetUpdate(req, res) {
     try {
         const { studySetId } = req.params;
         const { score } = req.body;
-
-        const quiz = await prisma.quiz.update({
+        const user = req.user;
+        
+        let quiz = await prisma.quiz.findUnique({
             where: {
                 studySetId: parseInt(studySetId),
             },
-            data: {
-                highScore: score,
-            },
             include: {
                 questions: true,
+                attempts: true,
             }
         });
 
-        if(quiz) {
+
+        if(!quiz) {
             return res.json({
-                status: 1,
-                quiz,
+                status: 0,
+            })
+        } 
+
+        if(score > quiz.highScore) {
+            quiz = await prisma.quiz.update({
+                where: {
+                    studySetId: parseInt(studySetId),
+                },
+                data: {
+                    highScore: score,
+                },
+                include: {
+                    questions: true,
+                    attempts: {
+                        where: {
+                            userId: user.id,
+                        }
+                    },
+                }
             });
         }
+
+        await prisma.quizAttempt.create({
+            data: {
+                score,  
+                userId: user.id,
+                quizId: quiz.id,
+            }
+        });
+
         return res.json({
-            status: 0,
-        })
+            status: 1,
+            quiz,
+        });
+        
     } catch (err) {
         console.error(`Error updating quiz score: `, err);
         return res.json({

@@ -34,7 +34,8 @@ model User {
 
   // Relations
   studySets StudySet[]
-  favorites StudySet[] @relation("UserFavorites")
+  favorites StudySet[]    @relation("UserFavorites")
+  attempts  QuizAttempt[]
 
   @@index([id])
   @@index([username])
@@ -95,12 +96,13 @@ model Flashcard {
 model Quiz {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  highScore Int?     
+  highScore Int?
 
   // Relations
   studySet   StudySet       @relation(fields: [studySetId], references: [id], onDelete: Cascade)
   studySetId Int            @unique
   questions  QuizQuestion[]
+  attempts   QuizAttempt[]
 
   @@index([id])
   @@index([studySetId])
@@ -119,4 +121,20 @@ model QuizQuestion {
 
   @@index([id])
   @@map("quizQuestions")
+}
+
+model QuizAttempt {
+  id        Int      @id @default(autoincrement())
+  score     Int
+  createdAt DateTime @default(now())
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId Int
+
+  @@index([userId])
+  @@index([quizId])
+  @@map("quizAttempts")
 }

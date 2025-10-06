@@ -26,15 +26,21 @@ import {
 } from "@/components/ui/carousel";
 
 // chart
-import { Label, Pie, PieChart } from "recharts"
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
+import { 
+    Label, 
+    Pie, 
+    PieChart,
+    CartesianGrid,
+    Line,
+    LineChart,
+    XAxis, 
+    ResponsiveContainer,
+    YAxis,
+    Tooltip
+} from "recharts"
 
 // react
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "./contexts/Contexts";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -65,6 +71,7 @@ export function StudySetPage() {
 
     // chart
     const [ chartData, setChartData ] = useState([]);
+    const [ progressData, setProgressData ] = useState([]);
     
 
     useEffect(() => {
@@ -88,7 +95,11 @@ export function StudySetPage() {
 
                 const result = await response.json();
                 if(result.status == 1) {
-                    // console.log(result.quiz);
+                    const allAttempts = result.quiz.attempts.map((attempt, index) => ({
+                        attempt: index + 1,
+                        score: attempt.score,
+                    }));
+                    setProgressData(allAttempts);
 
                     setStudySet(result.studySet);
                     setDeck(result.deck);
@@ -120,11 +131,20 @@ export function StudySetPage() {
     }, [api, current, count]);
 
     useEffect(() => {
+        console.log("attempt called")
         if (quiz?.questions?.length > 0) {
             setChartData([
                 { status: "correct", count: score, fill: "rgba(5, 150, 105, 1)" },
                 { status: "incorrect", count: quiz.questions.length - score, fill: "rgba(185, 28, 28, 1)" }
             ]);
+        }
+
+        if (quiz?.attempts?.length > 0) {
+            const allAttempts = quiz.attempts.map((attempt, index) => ({
+                attempt: index + 1,
+                score: attempt.score,
+            }));
+            setProgressData(allAttempts);
         }
     }, [score, quiz, submitted]);
 
@@ -136,55 +156,59 @@ export function StudySetPage() {
 
     async function handleSubmit(score) {
         setLoading(true);
+        if(!submitted) {
+            setSubmitted(true);
+        } else {
+            setSubmitted(false);
+            setScore(0);
+            setCorrect({});
+            setSelected({});
+        }
+
         try {
-            // count correct answers
-            const count = Object.values(correct).filter(Boolean).length;
-            
-            if(!submitted) {
-                setSubmitted(true);
-                // smoothScroll.current.scrollIntoView({behavior: "smooth"});
+            // update database (attempts & highScore)
+            try {
+                const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
+                    method: "PUT",
+                    body: JSON.stringify({ 
+                        score,
+                    }),
+                    credentials: "include",
+                    headers: {"Content-Type": "application/json"}
+                })
+                if(!response.ok) {
+                    console.error(`Error getting a response for updating quiz: `, response.status);
+                    return;
+                }
 
-                // update score
-                setScore(count);
-            } else {
-                setSubmitted(false);
-                setScore(0);
-                
-                setCorrect({});
-                setSelected({});
-
-                // smoothScroll.current.scrollIntoView({behavior: "smooth"});
-            }
-
-            // update quiz score in database
-            if(count > quiz.highScore) {
-                try {
-                    const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
-                        method: "PUT",
-                        body: JSON.stringify({ score }),
-                        credentials: "include",
-                        headers: {"Content-Type": "application/json"}
-                    })
-                    if(!response.ok) {
-                        console.error(`Error getting a response for updating quiz: `, response.status);
-                        return;
-                    }
-
-                    const result = await response.json();
-                    if(result.status == 1) {
-                        setQuiz(result.quiz);
-                    } else {
-                        console.error(`Quiz not found`);
-                    }
-                } catch (err) {
-                    console.error(`Error updating quiz score: `, err);
-                } 
-            }
+                const result = await response.json();
+                if(result.status == 1) {
+                    setQuiz(result.quiz);
+                } else {
+                    console.error(`Quiz not found`);
+                }
+            } catch (err) {
+                console.error(`Error updating quiz score: `, err);
+            } 
         } catch (err) {
             console.error(`Error handling quiz submission: `, err);
         } finally {
             setLoading(false);
         }
+    }
+
+    // Custom tooltip component
+    function CustomTooltip({ active, payload, label }) {
+        if (!active || !payload || payload.length === 0) return null;
+
+        const data = payload[0];
+
+        return (
+            <div className="flex dark:bg-black bg-white gap-4 shadow-lg rounded-lg border px-2 py-1 border-gray-200 text-xs">
+                <p className="dark:text-gray-300 text-gray-700">Attempt {label}</p>
+                <p className="dark:text-white font-semibold">{data.value} {data.value == 1 ? "pt" : "pts"}</p>
+            </div>
+        );
     }
 
     return (
@@ -236,74 +260,72 @@ export function StudySetPage() {
 
                         { !loading && 
                         <>
-                        <Carousel
-                            setApi={setApi}
-                            className="w-full max-w-2xl"
-                        >
-                            <CarouselContent>
-                                { deck.cards.map((card) => (
-                                    <>
-                                        <CarouselItem key={card.id}>
-                                            <div className="relative">
-                                                <Card onClick={() => setFlipped((prev) => {
-                                                    return {
-                                                        ...prev,
-                                                        [card.id]: !prev[card.id],
-                                                    }
-                                                })}>
-                                                    <CardContent className={`flex aspect-video ${!flipped[card.id] && "items-center"} justify-center p-24`}>
-                                                        { flipped[card.id] ? (
-                                                            <div className="w-full flex flex-col gap-6">
-                                                                <span className="text-sm text-gray-500">
+                            <Carousel
+                                setApi={setApi}
+                                className="w-full max-w-2xl"
+                            >
+                                <CarouselContent>
+                                    { deck.cards.map((card) => (
+                                        <>
+                                            <CarouselItem key={card.id}>
+                                                <div className="relative">
+                                                    <Card onClick={() => setFlipped((prev) => {
+                                                        return {
+                                                            ...prev,
+                                                            [card.id]: !prev[card.id],
+                                                        }
+                                                    })}>
+                                                        <CardContent className={`flex aspect-video ${!flipped[card.id] && "items-center"} justify-center p-24`}>
+                                                            { flipped[card.id] ? (
+                                                                <div className="w-full flex flex-col gap-6">
+                                                                    <span className="text-sm text-gray-500">
+                                                                        {card.question}
+                                                                    </span>
+                                                                    <span className="text-2xl font-semibold">
+                                                                        {card.answer}
+                                                                    </span>
+                                                                </div>
+                                                            ) : (
+                                                                <span className="text-2xl font-semibold">
                                                                     {card.question}
                                                                 </span>
-                                                                <span className="text-2xl font-semibold">
-                                                                    {card.answer}
-                                                                </span>
-                                                            </div>
-                                                        ) : (
-                                                            <span className="text-2xl font-semibold">
-                                                                {card.question}
-                                                            </span>
-                                                        )}
-                                                    </CardContent>
-                                                </Card>
-                                            </div>
-                                        </CarouselItem>
-                                    </>
-                                ))}
-                            </CarouselContent>
-                            <CarouselPrevious />
-                            <CarouselNext />
-                        </Carousel>
-                        <p> {current} / {count > 0 ? count : deck.cards.length} </p>
-                        <Progress 
-                            className="max-w-2xl mb-20"
-                            value={ count > 0 ? (100/count) * (current) : (100/deck.cards.length) * current }
-                        />
-                        </>
-                        }
+                                                            )}
+                                                        </CardContent>
+                                                    </Card>
+                                                </div>
+                                            </CarouselItem>
+                                        </>
+                                    ))}
+                                </CarouselContent>
+                                <CarouselPrevious />
+                                <CarouselNext />
+                            </Carousel>
+                            <p> {current} / {count > 0 ? count : deck.cards.length} </p>
+                            <Progress 
+                                className="max-w-2xl mb-20"
+                                value={ count > 0 ? (100/count) * (current) : (100/deck.cards.length) * current }
+                            />
 
-                        { deck.cards.map((card) => (
-                            <Card 
+                            { deck.cards.map((card) => (
+                                <Card 
                                 key={card.id}
                                 className="md:w-3xl w-sm h-50"
-                            >
-                                <CardContent className="flex items-center justify-between text-sm h-full">
-                                    <p className="w-xs"> { card.question } </p>
-                                    <Separator orientation="vertical" />
-                                    <p className="w-xs"> { card.answer } </p>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                >
+                                    <CardContent className="flex items-center justify-between text-sm h-full">
+                                        <p className="w-xs"> { card.question } </p>
+                                        <Separator orientation="vertical" />
+                                        <p className="w-xs"> { card.answer } </p>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                            </>
+                        }
                     </TabsContent>
                     {/* ------------------------------------------------------- QUIZ ------------------------------------------------------- */}
                     <TabsContent 
                         value="quiz"
                         className="flex flex-col justify-center items-center gap-2 relative"
                     >
-                        { loading && <LoadingOverlay /> }
-
                         { submitted && 
                             <Card className="md:items-start items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
                                 <CardContent className="flex flex-wrap md:gap-12 gap-2 justify-center items-center">
@@ -358,7 +380,7 @@ export function StudySetPage() {
                                 </CardContent>
                             </Card>
                         }
-
+                        
                         <Carousel
                             orientation="vertical"
                             className="w-full max-w-2xl"
@@ -422,7 +444,10 @@ export function StudySetPage() {
                             <Button 
                                 className="block m-auto mt-5"
                                 onClick={() => {
-                                    handleSubmit(score);
+                                    // count correct answers
+                                    const count = Object.values(correct).filter(Boolean).length;
+                                    setScore(count);
+                                    handleSubmit(count);
                                 }}
                             >
                                 {submitted ? "Retry" : "Submit"}
@@ -433,7 +458,41 @@ export function StudySetPage() {
                         value="progress"
                     >
                         { loading && <LoadingOverlay /> }
-                        Chart goes here
+                        
+                        <Card className="w-full h-96">
+                            <CardContent className="w-full h-full">
+                                <ResponsiveContainer>
+                                    <LineChart 
+                                        accessibilityLayer
+                                        data={progressData} 
+                                        margin={{
+                                            right: 12, 
+                                            left: 12,
+                                            top: 8,
+                                        }}
+                                    >
+                                        <CartesianGrid vertical={false} />
+                                        <XAxis
+                                            dataKey="attempt"
+                                            tickLine={true}
+                                            axisLine={true}
+                                            tickMargin={8}
+                                        />
+                                        <Tooltip
+                                            content={<CustomTooltip />}
+                                        />
+                                        <Line
+                                            dataKey="score"
+                                            type="monotone"
+                                            stroke="oklch(60.9% 0.126 221.723)"
+                                            strokeWidth={2}
+                                            dot={false}
+                                            animationDuration={800}
+                                        />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
                     </TabsContent>
                 </Tabs>
             </div>
