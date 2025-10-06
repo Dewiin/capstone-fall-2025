@@ -25,7 +25,16 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { useEffect, useState, useRef } from "react";
+// chart
+import { Label, Pie, PieChart } from "recharts"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+
+// react
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useAuth } from "./contexts/Contexts";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -45,13 +54,17 @@ export function StudySetPage() {
     const [ studySet, setStudySet ] = useState({});
 
     // carousel state
-    const [api, setApi] = useState(null);
-    const [current, setCurrent] = useState(0);
-    const [count, setCount] = useState(0);
-    const [flipped, setFlipped] = useState({});
-    const [selected, setSelected] = useState({});
-    const [correct, setCorrect] = useState({});
-    const [submitted, setSubmitted] = useState(false);
+    const [ api, setApi ] = useState(null);
+    const [ current, setCurrent ] = useState(0);
+    const [ count, setCount ] = useState(0);
+    const [ flipped, setFlipped ] = useState({});
+    const [ selected, setSelected ] = useState({});
+    const [ correct, setCorrect ] = useState({});
+    const [ submitted, setSubmitted ] = useState(false);
+    const [ score, setScore ] = useState(0);
+
+    // chart
+    const [ chartData, setChartData ] = useState([]);
     
 
     useEffect(() => {
@@ -75,7 +88,7 @@ export function StudySetPage() {
 
                 const result = await response.json();
                 if(result.status == 1) {
-                    console.log(result.quiz);
+                    // console.log(result.quiz);
 
                     setStudySet(result.studySet);
                     setDeck(result.deck);
@@ -106,10 +119,67 @@ export function StudySetPage() {
         });
     }, [api, current, count]);
 
-    async function handleSubmit() {
+    useEffect(() => {
+        if (quiz?.questions?.length > 0) {
+            setChartData([
+                { status: "correct", count: score, fill: "rgba(5, 150, 105, 1)" },
+                { status: "incorrect", count: quiz.questions.length - score, fill: "rgba(185, 28, 28, 1)" }
+            ]);
+        }
+    }, [score, quiz, submitted]);
+
+    useEffect(() => {
+        if (smoothScroll.current) {
+            smoothScroll.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [submitted]);
+
+    async function handleSubmit(score) {
         setLoading(true);
         try {
+            // count correct answers
+            const count = Object.values(correct).filter(Boolean).length;
+            
+            if(!submitted) {
+                setSubmitted(true);
+                // smoothScroll.current.scrollIntoView({behavior: "smooth"});
 
+                // update score
+                setScore(count);
+            } else {
+                setSubmitted(false);
+                setScore(0);
+                
+                setCorrect({});
+                setSelected({});
+
+                // smoothScroll.current.scrollIntoView({behavior: "smooth"});
+            }
+
+            // update quiz score in database
+            if(count > quiz.highScore) {
+                try {
+                    const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
+                        method: "PUT",
+                        body: JSON.stringify({ score }),
+                        credentials: "include",
+                        headers: {"Content-Type": "application/json"}
+                    })
+                    if(!response.ok) {
+                        console.error(`Error getting a response for updating quiz: `, response.status);
+                        return;
+                    }
+
+                    const result = await response.json();
+                    if(result.status == 1) {
+                        setQuiz(result.quiz);
+                    } else {
+                        console.error(`Quiz not found`);
+                    }
+                } catch (err) {
+                    console.error(`Error updating quiz score: `, err);
+                } 
+            }
         } catch (err) {
             console.error(`Error handling quiz submission: `, err);
         } finally {
@@ -118,7 +188,7 @@ export function StudySetPage() {
     }
 
     return (
-        <>  
+        <> 
             <div 
                 className="md:p-24 p-8 h-full min-w-sm"
                 ref={smoothScroll}
@@ -157,6 +227,7 @@ export function StudySetPage() {
                         <TabsTrigger value="quiz"> Quiz </TabsTrigger>    
                         <TabsTrigger value="progress"> Progress </TabsTrigger>    
                     </TabsList>
+                    {/* ------------------------------------------------------- DECK ------------------------------------------------------- */}
                     <TabsContent 
                         value="deck"
                         className="flex flex-col justify-center items-center gap-2 relative"
@@ -226,11 +297,67 @@ export function StudySetPage() {
                             </Card>
                         ))}
                     </TabsContent>
+                    {/* ------------------------------------------------------- QUIZ ------------------------------------------------------- */}
                     <TabsContent 
                         value="quiz"
                         className="flex flex-col justify-center items-center gap-2 relative"
                     >
                         { loading && <LoadingOverlay /> }
+
+                        { submitted && 
+                            <Card className="md:items-start items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
+                                <CardContent className="flex flex-wrap md:gap-12 gap-2 justify-center items-center">
+                                    <div
+                                        className="aspect-square mx-10"
+                                    >
+                                        <PieChart width={200} height={200}>
+                                            <Pie
+                                                data={chartData}
+                                                dataKey="count"
+                                                nameKey="status"
+                                                innerRadius={70}
+                                                outerRadius={80}
+                                                stroke="none"
+                                                isAnimationActive={true}
+                                                animationBegin={200}
+                                                animationDuration={2000}
+                                                animationEasing="ease"
+                                            >
+                                                <Label
+                                                    content={({ viewBox }) => {
+                                                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                                            const scorePercentage = quiz?.questions?.length 
+                                                            ? Math.round((score / quiz.questions.length) * 100) : 0;
+                                                            return (
+                                                            <text
+                                                                x={viewBox.cx}
+                                                                y={viewBox.cy}
+                                                                textAnchor="middle"
+                                                                dominantBaseline="middle"
+                                                            >
+                                                                <tspan
+                                                                    x={viewBox.cx}
+                                                                    y={viewBox.cy}
+                                                                    className="fill-foreground text-3xl font-bold"
+                                                                    >
+                                                                    {scorePercentage.toLocaleString()}%
+                                                                </tspan>
+                                                            </text>
+                                                            )
+                                                        }
+                                                    }}
+                                                />
+                                            </Pie>
+                                        </PieChart>
+                                    </div>
+                                    <div className="w-fit flex flex-col justify-center gap-2 text-xl font-semibold">
+                                        <p className="text-green-300"> Correct {score} </p>
+                                        <p className="text-red-500"> Incorrect {quiz.questions.length - score} </p>
+                                        <p> High Score {quiz.highScore} </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        }
 
                         <Carousel
                             orientation="vertical"
@@ -259,11 +386,11 @@ export function StudySetPage() {
                                                             ${key == selected[question.id] &&
                                                             (submitted ?
                                                             (
-                                                                correct[question.id] ? "bg-green-600 border-green-800" : "border-red-600 bg-red-800"
+                                                                correct[question.id] ? "bg-green-600 border-green-800" : "bg-red-600 border-red-800"
                                                             ) : (
                                                                 "border-cyan-800"
                                                             ))} 
-                                                            ${submitted && key == question.correctAnswer && "bg-transparent border-green-800"}
+                                                            ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "border-green-800 border-dashed"}
                                                             border-2 select-none`
                                                         }
                                                         onClick={() => {
@@ -295,14 +422,7 @@ export function StudySetPage() {
                             <Button 
                                 className="block m-auto mt-5"
                                 onClick={() => {
-                                    smoothScroll.current.scrollIntoView({behavior: "smooth"});
-                                    if(!submitted) {
-                                        setSubmitted(true);
-                                    } else {
-                                        setSubmitted(false);
-                                        setCorrect([]);
-                                        setSelected([]);
-                                    }
+                                    handleSubmit(score);
                                 }}
                             >
                                 {submitted ? "Retry" : "Submit"}

@@ -3,3 +3,4 @@ import { studySetController } from "../controllers/studySetController.js";
 export const studySetRouter = Router();
 
 studySetRouter.get("/:studySetId", studySetController.studySetGet);
+studySetRouter.put("/:studySetId", studySetController.studySetUpdate);

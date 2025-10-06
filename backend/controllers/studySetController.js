@@ -41,16 +41,50 @@ async function studySetGet(req, res) {
         }
         return res.json({
             status: 0,
-        })
+        });
     } catch (err) {
         console.error(`Error getting study set from database: `, err);
+        return res.json({
+            status: 0,
+        });
+    }
+}
+
+async function studySetUpdate(req, res) {
+    try {
+        const { studySetId } = req.params;
+        const { score } = req.body;
+
+        const quiz = await prisma.quiz.update({
+            where: {
+                studySetId: parseInt(studySetId),
+            },
+            data: {
+                highScore: score,
+            },
+            include: {
+                questions: true,
+            }
+        });
+
+        if(quiz) {
+            return res.json({
+                status: 1,
+                quiz,
+            });
+        }
+        return res.json({
+            status: 0,
+        })
+    } catch (err) {
+        console.error(`Error updating quiz score: `, err);
         return res.json({
             status: 0,
         })
     }
 }
 
-
 export const studySetController = {
     studySetGet,
+    studySetUpdate
 }
