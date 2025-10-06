@@ -262,31 +262,33 @@ export function StudySetPage() {
                         <>
                             <Carousel
                                 setApi={setApi}
-                                className="w-full max-w-2xl"
+                                className="w-full md:w-2xl md:aspect-video w-2xs mb-5"
                             >
                                 <CarouselContent>
                                     { deck.cards.map((card) => (
                                         <>
                                             <CarouselItem key={card.id}>
-                                                <div className="relative">
-                                                    <Card onClick={() => setFlipped((prev) => {
-                                                        return {
-                                                            ...prev,
-                                                            [card.id]: !prev[card.id],
-                                                        }
-                                                    })}>
-                                                        <CardContent className={`flex aspect-video ${!flipped[card.id] && "items-center"} justify-center p-24`}>
+                                                <div>
+                                                    <Card 
+                                                        onClick={() => setFlipped((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                [card.id]: !prev[card.id],
+                                                            }
+                                                        })}
+                                                    >
+                                                        <CardContent className={`flex aspect-video ${!flipped[card.id] && "items-center"} justify-center md:px-24 md:p-20 px-8 h-fit`}>
                                                             { flipped[card.id] ? (
-                                                                <div className="w-full flex flex-col gap-6">
-                                                                    <span className="text-sm text-gray-500">
+                                                                <div className="w-full flex flex-col gap-6 overflow-scroll">
+                                                                    <span className="md:text-sm text-xs text-gray-500">
                                                                         {card.question}
                                                                     </span>
-                                                                    <span className="text-2xl font-semibold">
+                                                                    <span className="md:text-2xl text-sm font-semibold">
                                                                         {card.answer}
                                                                     </span>
                                                                 </div>
                                                             ) : (
-                                                                <span className="text-2xl font-semibold">
+                                                                <span className="md:text-2xl font-semibold">
                                                                     {card.question}
                                                                 </span>
                                                             )}
@@ -302,7 +304,7 @@ export function StudySetPage() {
                             </Carousel>
                             <p> {current} / {count > 0 ? count : deck.cards.length} </p>
                             <Progress 
-                                className="max-w-2xl mb-20"
+                                className="max-w-2xl mb-10"
                                 value={ count > 0 ? (100/count) * (current) : (100/deck.cards.length) * current }
                             />
 
