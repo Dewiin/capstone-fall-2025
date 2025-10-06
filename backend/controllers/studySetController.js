@@ -84,7 +84,35 @@ async function studySetUpdate(req, res) {
     }
 }
 
+async function studySetDelete(req, res) {
+    try {
+    const { studySetId } = req.params;
+
+    const studySet = await prisma.studySet.delete({
+        where: {
+            id: parseInt(studySetId),
+        }
+    });
+
+    if(studySet) {
+        return res.json({
+            status: 1,
+        });
+    }
+    return res.json({
+        status: 0,
+    });
+
+    } catch (err) { 
+        console.error(`Error deleting study set: `, err);
+        return res.json({
+            status: 0,
+        });
+    }
+}
+
 export const studySetController = {
     studySetGet,
-    studySetUpdate
+    studySetUpdate,
+    studySetDelete
 }

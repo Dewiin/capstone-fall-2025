@@ -5,7 +5,6 @@ import { LoadingOverlay } from "./LoadingOverlay";
 import {
     Card, 
     CardHeader,
-    CardTitle,
     CardContent,
 } from "@/components/ui/card";
 import { 
@@ -13,6 +12,7 @@ import {
     AvatarFallback,
     AvatarImage
 } from '@/components/ui/avatar';
+import { MdDeleteOutline } from "react-icons/md";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
@@ -58,6 +58,32 @@ export function AccountPage() {
         getAccount();
     }, []);
 
+    async function handleDelete(studySetId) {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                console.error(`Error getting response for deleting study set: `, response.status);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status == 1) {
+                setStudySets(prev => prev.filter(s => s.id !== studySetId));
+            }
+            else {
+                console.error("Could not find study set to delete");
+            }
+        } catch (err) {
+            console.error(`Error deleting study set: `, err);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <>
             <div className='flex flex-col justify-center items-center p-24 gap-5'>
@@ -65,7 +91,7 @@ export function AccountPage() {
                     <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
                     <AvatarFallback>Icon</AvatarFallback>
                 </Avatar>
-                <h3 className='text-3xl '>
+                <h3 className='text-3xl font-extrabold'>
                     {user?.displayName}
                 </h3>
             </div>
@@ -73,28 +99,42 @@ export function AccountPage() {
             <div className="flex flex-col justify-center items-center align-center gap-12 relative">
                 { loading && <LoadingOverlay /> }
                 { !loading &&
-                    <p className="text-xl">My Study Sets</p>
-                }
-                <div className="flex flex-wrap justify-center gap-4 h-full w-full">
-                    {studySets.map((studySet) => (
-                        <Card 
-                            key={ studySet.id }
-                            className="w-full max-w-xs h-35 select-none" 
-                            onClick={() => navigate(`/study-set/${studySet.id}`)}
-                        >
-                            <CardHeader className="relative">
-                                <p className="text-xs absolute top-0 left-5">
-                                    { studySet.public ? "Public" : "Private" }
-                                </p>
-                            </CardHeader>
-                            <CardContent className="flex  justify-center h-full">
-                                <p className="text-3xl">
-                                    { studySet.name }
-                                </p>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
+                <>
+                    <p className="text-2xl font-semibold">My Study Sets</p>
+                    <div className="flex flex-wrap justify-center gap-4 h-full w-full">
+                        {studySets.length === 0 && 
+                            <p className="2xl dark:text-gray-300">
+                                No study sets. Create one in the 'Generate' tab!
+                            </p>
+                        }
+                        {studySets.map((studySet) => (
+                            <Card 
+                                key={ studySet.id }
+                                className="w-full max-w-xs h-35 select-none" 
+                                onClick={() => navigate(`/study-set/${studySet.id}`)}
+                            >
+                                <CardHeader className="relative">
+                                    <p className="text-sm absolute top-0 left-5">
+                                        { studySet.public ? "Public" : "Private" }
+                                    </p>
+                                    <MdDeleteOutline 
+                                        className="absolute top-1 right-5 text-red-400 text-md cursor-pointer" 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDelete( studySet.id )
+                                        }}
+                                    />
+                                </CardHeader>
+                                <CardContent className="flex  justify-center h-full">
+                                    <p className="text-3xl">
+                                        { studySet.name }
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </>
+                }           
             </div>
         </>
     );

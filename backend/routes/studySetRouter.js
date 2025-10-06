@@ -4,3 +4,4 @@ export const studySetRouter = Router();
 
 studySetRouter.get("/:studySetId", studySetController.studySetGet);
 studySetRouter.put("/:studySetId", studySetController.studySetUpdate);
+studySetRouter.delete("/:studySetId", studySetController.studySetDelete);

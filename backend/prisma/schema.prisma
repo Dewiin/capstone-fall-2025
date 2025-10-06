@@ -67,7 +67,7 @@ model Deck {
   createdAt DateTime @default(now())
 
   // Relations
-  studySet   StudySet    @relation(fields: [studySetId], references: [id])
+  studySet   StudySet    @relation(fields: [studySetId], references: [id], onDelete: Cascade)
   studySetId Int         @unique
   cards      Flashcard[]
 
@@ -83,7 +83,7 @@ model Flashcard {
   createdAt DateTime @default(now())
 
   // Relations
-  deck   Deck @relation(fields: [deckId], references: [id])
+  deck   Deck @relation(fields: [deckId], references: [id], onDelete: Cascade)
   deckId Int
 
   @@index([id])
@@ -98,7 +98,7 @@ model Quiz {
   highScore Int?     
 
   // Relations
-  studySet   StudySet       @relation(fields: [studySetId], references: [id])
+  studySet   StudySet       @relation(fields: [studySetId], references: [id], onDelete: Cascade)
   studySetId Int            @unique
   questions  QuizQuestion[]
 
