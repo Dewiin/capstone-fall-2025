@@ -328,7 +328,7 @@ export function StudySetPage() {
                     >
                         { loading && <LoadingOverlay /> }
                         { submitted && !loading && 
-                            <Card className="md:items-start items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
+                            <Card className="md:items-start bg-transparent items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
                                 <CardContent className="flex flex-wrap md:gap-12 gap-2 justify-center items-center">
                                     <div
                                         className="aspect-square mx-10"
@@ -374,7 +374,7 @@ export function StudySetPage() {
                                             </Pie>
                                         </PieChart>
                                     </div>
-                                    <div className="w-fit flex flex-col justify-center gap-2 text-xl font-semibold">
+                                    <div className="w-fit flex flex-col justify-center gap-2 text-lg font-semibold">
                                         <p className="text-green-300"> Correct {score} </p>
                                         <p className="text-red-500"> Incorrect {quiz.questions.length - score} </p>
                                         <p> High Score {quiz.highScore} </p>
