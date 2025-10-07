@@ -68,11 +68,10 @@ export function StudySetPage() {
     const [ correct, setCorrect ] = useState({});
     const [ submitted, setSubmitted ] = useState(false);
     const [ score, setScore ] = useState(0);
-
+    
     // chart
     const [ chartData, setChartData ] = useState([]);
     const [ progressData, setProgressData ] = useState([]);
-    
 
     useEffect(() => {
         if (!user) {
@@ -131,7 +130,6 @@ export function StudySetPage() {
     }, [api, current, count]);
 
     useEffect(() => {
-        console.log("attempt called")
         if (quiz?.questions?.length > 0) {
             setChartData([
                 { status: "correct", count: score, fill: "rgba(5, 150, 105, 1)" },
@@ -328,7 +326,8 @@ export function StudySetPage() {
                         value="quiz"
                         className="flex flex-col justify-center items-center gap-2 relative"
                     >
-                        { submitted && 
+                        { loading && <LoadingOverlay /> }
+                        { submitted && !loading && 
                             <Card className="md:items-start items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
                                 <CardContent className="flex flex-wrap md:gap-12 gap-2 justify-center items-center">
                                     <div
@@ -336,6 +335,7 @@ export function StudySetPage() {
                                     >
                                         <PieChart width={200} height={200}>
                                             <Pie
+                                                key={Math.random() + score}
                                                 data={chartData}
                                                 dataKey="count"
                                                 nameKey="status"
@@ -343,7 +343,7 @@ export function StudySetPage() {
                                                 outerRadius={80}
                                                 stroke="none"
                                                 isAnimationActive={true}
-                                                animationBegin={200}
+                                                animationBegin={1000}
                                                 animationDuration={2000}
                                                 animationEasing="ease"
                                             >
