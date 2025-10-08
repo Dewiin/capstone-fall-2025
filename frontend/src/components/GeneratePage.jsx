@@ -100,6 +100,7 @@ export function GeneratePage() {
             } else if(uploadType === "pdf") {
                 body = new FormData();
                 body.append("file", file[0]);
+                body.append("studySetName", data.studySetName);
             }
             
             const response = await fetch(`${API_URL_DOMAIN}/api/generate/${uploadType}`, {

@@ -72,6 +72,7 @@ export function StudySetPage() {
     // chart
     const [ chartData, setChartData ] = useState([]);
     const [ progressData, setProgressData ] = useState([]);
+    const [progressKey, setProgressKey] = useState(0);
 
     useEffect(() => {
         if (!user) {
@@ -136,14 +137,6 @@ export function StudySetPage() {
                 { status: "incorrect", count: quiz.questions.length - score, fill: "rgba(185, 28, 28, 1)" }
             ]);
         }
-
-        if (quiz?.attempts?.length > 0) {
-            const allAttempts = quiz.attempts.map((attempt, index) => ({
-                attempt: index + 1,
-                score: attempt.score,
-            }));
-            setProgressData(allAttempts);
-        }
     }, [score, quiz, submitted]);
 
     useEffect(() => {
@@ -154,40 +147,45 @@ export function StudySetPage() {
 
     async function handleSubmit(score) {
         setLoading(true);
-        if(!submitted) {
-            setSubmitted(true);
-        } else {
+
+        if (submitted) {
             setSubmitted(false);
             setScore(0);
             setCorrect({});
             setSelected({});
-        }
+            setLoading(false);
+            return;
+        } 
 
         try {
             // update database (attempts & highScore)
-            try {
-                const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
-                    method: "PUT",
-                    body: JSON.stringify({ 
-                        score,
-                    }),
-                    credentials: "include",
-                    headers: {"Content-Type": "application/json"}
-                })
-                if(!response.ok) {
-                    console.error(`Error getting a response for updating quiz: `, response.status);
-                    return;
-                }
+            const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
+                method: "PUT",
+                body: JSON.stringify({ 
+                    score,
+                }),
+                credentials: "include",
+                headers: {"Content-Type": "application/json"}
+            })
+            if(!response.ok) {
+                console.error(`Error getting a response for updating quiz: `, response.status);
+                return;
+            }
 
-                const result = await response.json();
-                if(result.status == 1) {
-                    setQuiz(result.quiz);
-                } else {
-                    console.error(`Quiz not found`);
-                }
-            } catch (err) {
-                console.error(`Error updating quiz score: `, err);
-            } 
+            const result = await response.json();
+            if(result.status == 1) {
+                setQuiz(result.quiz);
+
+                const allAttempts = result.quiz.attempts.map((attempt, index) => ({
+                    attempt: index + 1,
+                    score: attempt.score,
+                }));
+                setProgressData(allAttempts);
+
+                setSubmitted(true);
+            } else {
+                console.error(`Quiz not found`);
+            }
         } catch (err) {
             console.error(`Error handling quiz submission: `, err);
         } finally {
@@ -242,6 +240,10 @@ export function StudySetPage() {
                     className="flex gap-12"
                     onValueChange={(val) => {
                         setNotesType(val);
+
+                        if(val === "progress") {
+                            setProgressKey(prev => prev + 1);
+                        }
                     }}
                 >
                     <TabsList className="m-auto">
@@ -275,9 +277,9 @@ export function StudySetPage() {
                                                             }
                                                         })}
                                                     >
-                                                        <CardContent className={`flex aspect-video ${!flipped[card.id] && "items-center"} justify-center md:px-24 md:p-20 px-8 h-fit`}>
+                                                        <CardContent className={`flex aspect-video justify-center items-center md:px-24 md:p-20 px-8 h-full`}>
                                                             { flipped[card.id] ? (
-                                                                <div className="w-full flex flex-col gap-6 overflow-scroll">
+                                                                <div className="w-full flex flex-col justify-center items-center gap-6 overflow-scroll">
                                                                     <span className="md:text-sm text-xs text-gray-500">
                                                                         {card.question}
                                                                     </span>
@@ -343,7 +345,7 @@ export function StudySetPage() {
                                                 outerRadius={80}
                                                 stroke="none"
                                                 isAnimationActive={true}
-                                                animationBegin={1000}
+                                                animationBegin={800}
                                                 animationDuration={2000}
                                                 animationEasing="ease"
                                             >
@@ -463,36 +465,48 @@ export function StudySetPage() {
                         
                         <Card className="w-full h-96">
                             <CardContent className="w-full h-full">
-                                <ResponsiveContainer>
-                                    <LineChart 
-                                        accessibilityLayer
-                                        data={progressData} 
-                                        margin={{
-                                            right: 12, 
-                                            left: 12,
-                                            top: 8,
-                                        }}
-                                    >
-                                        <CartesianGrid vertical={false} />
-                                        <XAxis
-                                            dataKey="attempt"
-                                            tickLine={true}
-                                            axisLine={true}
-                                            tickMargin={8}
-                                        />
-                                        <Tooltip
-                                            content={<CustomTooltip />}
-                                        />
-                                        <Line
-                                            dataKey="score"
-                                            type="monotone"
-                                            stroke="oklch(60.9% 0.126 221.723)"
-                                            strokeWidth={2}
-                                            dot={false}
-                                            animationDuration={800}
-                                        />
-                                    </LineChart>
-                                </ResponsiveContainer>
+                                { progressData.length == 0 ? (
+                                    <div className=" flex w-full h-full justify-center items-center text-lg font-semibold">
+                                        <p>
+                                            No progress data available.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <ResponsiveContainer>
+                                        <LineChart
+                                            accessibilityLayer
+                                            data={progressData} 
+                                            margin={{
+                                                right: 12, 
+                                                left: 12,
+                                                top: 8,
+                                            }}
+                                        >
+                                            <CartesianGrid stroke="none" />
+                                            <XAxis
+                                                dataKey="attempt"
+                                                tickLine={true}
+                                                axisLine={true}
+                                                tickMargin={8}
+                                            />
+                                            <YAxis
+                                                type="number"
+                                                domain={[0, quiz.questions.length]}
+                                            />
+                                            <Tooltip
+                                                content={<CustomTooltip />}
+                                            />
+                                            <Line
+                                                dataKey="score"
+                                                type="monotone"
+                                                stroke="oklch(60.9% 0.126 221.723)"
+                                                strokeWidth={2}
+                                                dot={false}
+                                                animationDuration={1000}
+                                            />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                )}
                             </CardContent>
                         </Card>
                     </TabsContent>
