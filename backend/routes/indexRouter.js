@@ -21,8 +21,9 @@ indexRouter.get('/auth/google',
     })
 );
 indexRouter.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: "http://localhost:5173/login" }),
+    passport.authenticate('google', { failureRedirect: `${VITE_URL_DOMAIN}/login` }),
     (req, res) => {
-        res.redirect("http://localhost:5173/");
+        const VITE_URL_DOMAIN = process.env.VITE_URL_DOMAIN;
+        res.redirect(`${VITE_URL_DOMAIN}`);
     }
 );
