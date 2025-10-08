@@ -25,9 +25,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "pg": "^8.16.3",
-    "prettier": "^3.6.2"
-  },
-  "devDependencies": {
+    "prettier": "^3.6.2",
     "dotenv": "^17.2.3",
     "prisma": "^6.16.2"
   }
