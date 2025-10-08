@@ -26,9 +26,9 @@ app.use(cors({
         "http://localhost:5174", 
         "https://brainstorm-frontend-c89t.onrender.com"
     ],
-    // origin: (origin, ctx) => {
-    //     console.log(origin);
-    // },
+    origin: (origin, ctx) => {
+        console.log(origin);
+    },
     credentials: true,
 }));
 app.use(express.urlencoded({ extended: true }));
