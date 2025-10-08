@@ -66,10 +66,6 @@ async function studySetUpdate(req, res) {
             where: {
                 studySetId: parseInt(studySetId),
             },
-            include: {
-                questions: true,
-                attempts: true,
-            }
         });
 
 
@@ -80,20 +76,12 @@ async function studySetUpdate(req, res) {
         } 
 
         if(score > quiz.highScore) {
-            quiz = await prisma.quiz.update({
+            await prisma.quiz.update({
                 where: {
                     studySetId: parseInt(studySetId),
                 },
                 data: {
                     highScore: score,
-                },
-                include: {
-                    questions: true,
-                    attempts: {
-                        where: {
-                            userId: user.id,
-                        }
-                    },
                 }
             });
         }
@@ -103,6 +91,20 @@ async function studySetUpdate(req, res) {
                 score,  
                 userId: user.id,
                 quizId: quiz.id,
+            }
+        });
+
+        quiz = await prisma.quiz.findUnique({
+            where: {
+                studySetId: parseInt(studySetId),
+            },
+            include: {
+                questions: true,
+                attempts: {
+                    where: {
+                        userId: user.id,
+                    }
+                }
             }
         });
 
