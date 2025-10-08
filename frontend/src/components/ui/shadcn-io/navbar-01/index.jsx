@@ -151,7 +151,7 @@ export const Navbar01 = React.forwardRef((
     } else {
       defaultNavigationLinks = [
         { href: '/', label: 'Home', active: false },
-        { href: '#about', label: 'Explore' },
+        { href: '/explore', label: 'Explore' },
         { href: '/generate', label: 'Generate' },
       ];
     }
