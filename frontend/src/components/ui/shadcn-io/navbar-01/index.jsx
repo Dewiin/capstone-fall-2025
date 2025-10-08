@@ -187,7 +187,7 @@ export const Navbar01 = React.forwardRef((
 
   return (
     <>
-      { loading && <LoadingOverlay className="fixed" /> }
+      { loading && <LoadingOverlay fixed /> }
       <header
         ref={combinedRef}
         className={cn(
