@@ -21,9 +21,8 @@ indexRouter.get('/auth/google',
     })
 );
 indexRouter.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: `${VITE_URL_DOMAIN}/login` }),
+    passport.authenticate('google', { failureRedirect: `${process.env.VITE_URL_DOMAIN}/login` }),
     (req, res) => {
-        const VITE_URL_DOMAIN = process.env.VITE_URL_DOMAIN;
-        res.redirect(`${VITE_URL_DOMAIN}`);
+        res.redirect(`${process.env.VITE_URL_DOMAIN}`);
     }
 );
