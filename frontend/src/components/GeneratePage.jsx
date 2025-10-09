@@ -45,9 +45,7 @@ const generateSchema = z.object({
         message: "Name can only contain alphanumeric characters (and space)."
     }),
 
-    textInput: z.string().trim().min(300, {
-        message: "Text must be at least 300 characters."
-    }).max(30000, {
+    textInput: z.string().trim().max(30000, {
         message: "Text must be less than 30,000 characters."
     }).optional(),
 
