@@ -142,7 +142,7 @@ export default function AuthProvider({ children }) {
 
     return (
         <AuthContext value={value}>
-            {loading && <LoadingOverlay />}
+            {loading && <LoadingOverlay fixed />}
             {children}
         </AuthContext>
     )
