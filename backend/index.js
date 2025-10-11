@@ -19,15 +19,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 
 app.use(cors({
-    // origin: [
-    //     "http://127.0.0.1:5173", 
-    //     "http://localhost:5173", 
-    //     "http://127.0.0.1:5174", 
-    //     "http://localhost:5174", 
-    //     "https://brainstorm-frontend-c89t.onrender.com"
-    // ],
     origin: (origin, ctx) => {
-        console.log(origin);
         const allowed = [
             "http://127.0.0.1:5173", 
             "http://localhost:5173", 
@@ -35,7 +27,6 @@ app.use(cors({
             "https://app.brainstorm-app.com",
         ];
         if (!origin || allowed.includes(origin)) {
-            console.log("ok origin");
             ctx(null, true);
         } else {
             ctx(new Error("Not allowed by CORS: ", origin));
