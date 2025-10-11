@@ -31,11 +31,11 @@ app.use(cors({
         const allowed = [
             "http://127.0.0.1:5173", 
             "http://localhost:5173", 
-            "http://127.0.0.1:5174", 
-            "http://localhost:5174", 
-            "https://brainstorm-frontend-c89t.onrender.com"
+            "https://brainstorm-frontend-c89t.onrender.com",
+            "https://app.brainstorm-app.com",
         ];
         if (!origin || allowed.includes(origin)) {
+            console.log("ok origin");
             ctx(null, true);
         } else {
             ctx(new Error("Not allowed by CORS: ", origin));
