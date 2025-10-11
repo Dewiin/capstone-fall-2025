@@ -22,6 +22,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Moon, Sun } from 'lucide-react';
+import { GiBrainstorm } from "react-icons/gi";
 import { LoadingOverlay } from '@/components/LoadingOverlay';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
@@ -236,9 +237,9 @@ export const Navbar01 = React.forwardRef((
             <div className="flex items-center gap-6">
               <button
                 onClick={() => navigate(logoHref)}
-                className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer">
+                className="flex items-center space-x-3 text-primary hover:text-primary/90 transition-colors cursor-pointer">
                 <div className="text-2xl">
-                  {logo}
+                  <GiBrainstorm className='text-2xl' />
                 </div>
                 <span className="hidden font-bold text-xl sm:inline-block">Brainstorm</span>
               </button>

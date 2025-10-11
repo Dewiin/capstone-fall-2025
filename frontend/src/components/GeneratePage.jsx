@@ -60,7 +60,7 @@ export function GeneratePage() {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [ loading, setLoading ] = useState(false);
-    const [ uploadType, setUploadType ] = useState("text");
+    const [ uploadType, setUploadType ] = useState("pdf");
     const [ file, setFile ] = useState();
 
     useEffect(() => {
@@ -179,7 +179,7 @@ export function GeneratePage() {
                                                 <FormControl>
                                                     <Textarea
                                                         className="resize-none"
-                                                        rows={24}
+                                                        rows={20}
                                                         required
                                                         {...field}
                                                     />
