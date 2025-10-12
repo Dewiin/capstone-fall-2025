@@ -1,6 +1,6 @@
 import { useAuth } from './contexts/Contexts';
 import { FaBook, FaBrain, FaLightbulb } from "react-icons/fa";
-import { RippleButton } from '@/components/ui/shadcn-io/ripple-button';
+import { RiGeminiFill } from "react-icons/ri";
 import { FlipButton } from '@/components/ui/shadcn-io/flip-button';
 import { Separator } from '@/components/ui/separator';
 import { Footer } from './Footer';
@@ -27,25 +27,12 @@ export function LandingPage() {
 
         {/* Call to Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4">
-          {/* <RippleButton 
-            size="lg" 
-            className="px-8 py-4 text-lg font-semibold"
-          >
-            Start Generating
-          </RippleButton>
-          <RippleButton 
-            size="lg" 
-            variant="secondary" 
-            className="px-8 py-4 text-lg font-semibold"
-          >
-            My Study Sets
-          </RippleButton> */}
           <FlipButton 
             className="px-8 py-4 font-semibold whitespace-nowrap w-40" 
             frontText={ user ? "Create" : "Get Started" } 
-            frontClassName="bg-primary dark:text-secondary text-secondary"
+            frontClassName="dark:bg-primary dark:text-secondary bg-gray-900 text-secondary"
             backText={ user ? "Generate Study Sets" : "Sign Up" }
-            backClassName="bg-secondary text-primary"
+            backClassName="dark:bg-gray-900 dark:text-gray-200 bg-secondary text-gray-900"
             onClick={() => navigate(user ? "/generate" : "/form/signup")}
           />
         </div>
@@ -68,7 +55,7 @@ export function LandingPage() {
           </div>
 
           <div className="flex flex-col items-center gap-4 max-w-xs">
-            <FaBrain className="text-5xl text-indigo-500 dark:text-indigo-400" />
+            <RiGeminiFill className="text-5xl text-indigo-500 dark:text-indigo-400" />
             <h3 className="text-xl font-semibold dark:text-gray-100">AI-Powered Learning</h3>
             <p className="text-gray-600 dark:text-gray-300">
               Get intelligent suggestions to help remember key concepts faster.

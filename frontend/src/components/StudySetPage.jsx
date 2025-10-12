@@ -1,4 +1,5 @@
-import { LoadingOverlay } from "./LoadingOverlay";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator"
@@ -237,7 +238,7 @@ export function StudySetPage() {
                 </Breadcrumb>
                 <Tabs
                     defaultValue={notesType}
-                    className="flex gap-12"
+                    className="flex gap-12 min-h-screen"
                     onValueChange={(val) => {
                         setNotesType(val);
 
@@ -512,6 +513,9 @@ export function StudySetPage() {
                     </TabsContent>
                 </Tabs>
             </div>
+
+            {/* Footer */}
+            <Footer />
         </div>
     )
 }
