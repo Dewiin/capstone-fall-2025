@@ -208,7 +208,7 @@ export function StudySetPage() {
     }
 
     return (
-        <> 
+        <div className="select-none"> 
             <div 
                 className="md:p-24 p-8 h-full min-w-sm"
                 ref={smoothScroll}
@@ -512,6 +512,6 @@ export function StudySetPage() {
                     </TabsContent>
                 </Tabs>
             </div>
-        </>
+        </div>
     )
 }
