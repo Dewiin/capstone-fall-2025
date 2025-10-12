@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./contexts/Contexts";
 import { useNavigate } from "react-router-dom";
-import { LoadingOverlay } from "./LoadingOverlay";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { Footer } from "@/components/Footer";
 import {
     Card, 
     CardHeader,
     CardContent,
+    CardTitle,
+    CardDescription,
 } from "@/components/ui/card";
 import { 
     Avatar,
@@ -19,6 +22,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import { MdDeleteOutline } from "react-icons/md";
+import { FaHeart } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 
 
@@ -26,11 +30,15 @@ const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function AccountPage() {
     const { user } = useAuth();
+
+    // backend
     const [ studySets, setStudySets ] = useState(null);
     const [ loading, setLoading ] = useState(false);
     const [ flashcardCount, setFlashcardCount ] = useState("...");
     const [ attemptCount, setAttemptCount ] = useState("...");
     const [ createdAt, setCreatedAt ] = useState(null);
+    const [ favorites, setFavorites ] = useState(null);
+
     const [ accountTab, setAccountTab ] = useState("studySets");
     const navigate = useNavigate();
 
@@ -60,6 +68,7 @@ export function AccountPage() {
                     setFlashcardCount(result.flashcardCount);
                     setAttemptCount(result.attemptCount);
                     setCreatedAt(result.createdAt);
+                    setFavorites(result.userFavorites);
                 }
             } catch (err) {
                 console.error(`Error getting account info: `, err);
@@ -99,11 +108,14 @@ export function AccountPage() {
     }
 
     return (
-        <div className="flex flex-col md:m-24 m-8 gap-32">
+        <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 md:gap-16 gap-8 min-h-screen">
             {/* First Section */}
-            <section className='flex md:flex-row flex-col gap-8 p-4 rounded-lg bg-indigo-200 dark:bg-indigo-900 md:h-30 select-none'>
+            <section className='flex md:flex-row flex-col gap-8 p-4 rounded-lg md:h-30 select-none
+                bg-indigo-200 dark:bg-indigo-900 
+                border-1 border-indigo-900
+                dark:border-indigo-300'>
                 {/* Avatar/Name */}
-                <div className="flex gap-4 items-center pr-8 max-w-1/4">
+                <div className="flex gap-4 items-center pr-8 md:max-w-1/4 text-indigo-900 dark:text-indigo-200">
                     <Avatar className="size-20 rounded-2xl">
                         <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
                         <AvatarFallback>Icon</AvatarFallback>
@@ -119,12 +131,12 @@ export function AccountPage() {
                 </div>
 
                 {/* Divider */}
-                <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl" />
+                <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl dark:border-indigo-300 border-indigo-700" />
 
                 {/* Personal Stats */}
-                <div className=" flex-1 grid md:grid-cols-3 grid-cols-1 gap-2 items-center">
+                <div className=" flex-1 grid md:grid-cols-3 grid-cols-1 gap-2 items-center text-indigo-900 dark:text-indigo-100">
                     <span>
-                        <p className="text-sm">
+                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
                             study sets created
                         </p>
                         <p className="text-4xl font-semibold">
@@ -132,7 +144,7 @@ export function AccountPage() {
                         </p>
                     </span>
                     <span>
-                        <p className="text-sm">
+                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
                             flash cards created
                         </p>
                         <p className="text-4xl font-semibold">
@@ -140,7 +152,7 @@ export function AccountPage() {
                         </p>
                     </span>
                     <span>
-                        <p className="text-sm">
+                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
                             quiz attempts recorded
                         </p>
                         <p className="text-4xl font-semibold">
@@ -151,65 +163,109 @@ export function AccountPage() {
             </section>
 
             {/* Second Section */}
-            <section>
+            <section className="flex-1 flex">
                 <Tabs 
                     defaultValue={accountTab}
                     onValueChange={(val) => setAccountTab(val)}
+                    className="flex-1"
                 >
-                    <TabsList>
-                        <TabsTrigger value="studySets">Study Sets</TabsTrigger>
-                        <TabsTrigger value="favorites">Favorites</TabsTrigger>
+                    <TabsList
+                        className="dark:bg-indigo-900 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900 mb-4"
+                    >
+                        <TabsTrigger 
+                            value="studySets" 
+                            className="dark:data-[state=active]:bg-transparent data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                        >
+                            Study Sets
+                        </TabsTrigger>
+                        <TabsTrigger 
+                            value="favorites" 
+                            className="dark:data-[state=active]:bg-transparent data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                        >
+                            Favorites
+                        </TabsTrigger>
                     </TabsList>
                     <TabsContent value="studySets">
-                        { loading && <LoadingOverlay /> }
-
+                        <Card
+                            className="w-full h-full border-1 
+                                dark:border-indigo-200 border-indigo-900
+                                dark:bg-indigo-900 bg-indigo-200"
+                        >
+                            <CardHeader>
+                                <CardTitle>
+                                    My Study Sets
+                                </CardTitle>
+                                <CardDescription>
+                                    Collection of my study sets
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent
+                                className="flex flex-col gap-2 relative"
+                            >
+                                { loading && <LoadingOverlay className="md:my-24 my-12" /> }
+                                { !studySets || studySets.length === 0 && 
+                                    <p className="text-md dark:text-gray-300 text-gray-700 text-center my-8">
+                                        No study sets. Create one from the 'Generate' tab!
+                                    </p>
+                                }
+                                { studySets?.map((studySet) => (
+                                    <Card
+                                        className="bg-indigo-400 border-1 border-indigo-700 dark:border-indigo-200 cursor-pointer"
+                                        onClick={() => navigate(`/study-set/${studySet.id}`)}
+                                    >
+                                        <CardHeader>
+                                            <CardTitle className="font-bold dark:text-indigo-100 text-indigo-950">
+                                                {studySet.name}
+                                            </CardTitle>
+                                            <CardDescription
+                                                className="text-indigo-900"
+                                            >
+                                                {studySet.public ? "Public " : "Private "}
+                                                • {studySet.deck.cards.length} flashcards 
+                                                • {studySet.quiz.attempts.length} quiz attempts
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p className="flex items-center gap-2 text-sm font-semibold dark:text-indigo-100 text-indigo-950">
+                                                <FaHeart /> 
+                                                {studySet.favoritedBy.length} favorites
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                )) }
+                            </CardContent>
+                        </Card>
                     </TabsContent>
                     <TabsContent value="favorites">
-                        { loading && <LoadingOverlay /> }
-
+                        <Card
+                            className="w-full h-full relative border-1 
+                            dark:border-indigo-200 border-indigo-900
+                            dark:bg-indigo-900 bg-indigo-200"
+                        >
+                            { loading && <LoadingOverlay /> }
+                            <CardHeader>
+                                <CardTitle>
+                                    My Favorites
+                                </CardTitle>
+                                <CardDescription>
+                                    Collection of my favorited study sets
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                { !favorites || favorites.length === 0 && 
+                                    <p className="text-md dark:text-gray-300 text-gray-700 text-center my-8">
+                                        No favorites. Find some study sets from the 'Explore' tab!
+                                    </p>
+                                }
+                                {  }
+                            </CardContent>
+                        </Card>
                     </TabsContent>
                 </Tabs>
             </section>
-            <div className="flex flex-col justify-center items-center align-center gap-12 relative">
-                { loading && <LoadingOverlay /> }
-                { !loading &&
-                <>
-                    <p className="text-2xl font-semibold">My Study Sets</p>
-                    <div className="flex flex-wrap justify-center gap-4 h-full w-full">
-                        {!studySets || studySets.length === 0 && 
-                            <p className="2xl dark:text-gray-300">
-                                No study sets. Create one in the 'Generate' tab!
-                            </p>
-                        }
-                        {studySets?.map((studySet) => (
-                            <Card 
-                                key={ studySet.id }
-                                className="w-full max-w-xs h-35 select-none" 
-                                onClick={() => navigate(`/study-set/${studySet.id}`)}
-                            >
-                                <CardHeader className="relative">
-                                    <p className="text-sm absolute top-0 left-5">
-                                        { studySet.public ? "Public" : "Private" }
-                                    </p>
-                                    <MdDeleteOutline 
-                                        className="absolute top-1 right-5 text-red-400 text-md cursor-pointer" 
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleDelete( studySet.id )
-                                        }}
-                                    />
-                                </CardHeader>
-                                <CardContent className="flex  justify-center h-full">
-                                    <p className="text-3xl">
-                                        { studySet.name }
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </>
-                }           
-            </div>
+
+            {/* Footer */}
+            <Footer />
         </div>
     );
 } 

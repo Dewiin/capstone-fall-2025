@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { LoginForm } from "./LoginForm"; 
 import { SignupForm } from "./SignupForm";
+import { Footer } from "@/components/Footer";
 
 export function Form() {
     const { method } = useParams();
@@ -16,6 +17,9 @@ export function Form() {
                     ) : null }
                 </div>
             </div>
+            
+            {/* Footer */}
+            <Footer />
         </>
     );
 } 

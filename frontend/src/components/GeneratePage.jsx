@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { Footer } from "@/components/Footer"
 import {
   Card,
   CardContent,
@@ -128,7 +129,7 @@ export function GeneratePage() {
     }
 
     return (
-        <div className="flex h-full w-full justify-center mt-12 mb-12">
+        <div className="flex flex-col h-full w-full gap-16 items-center mt-24">
             <Tabs 
                 defaultValue={uploadType} 
                 className="md:w-xl w-sm"
@@ -136,7 +137,7 @@ export function GeneratePage() {
                     setUploadType(val);
                 }}
             >
-                <TabsList className="m-auto">
+                <TabsList>
                     <TabsTrigger value="text" >Text Input</TabsTrigger>
                     <TabsTrigger value="pdf">PDF Upload</TabsTrigger>
                 </TabsList>
@@ -258,6 +259,9 @@ export function GeneratePage() {
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            {/* Footer */}
+            <Footer />
         </div>
     )
 }
