@@ -15,10 +15,21 @@ async function accountGet(req, res) {
                             include: {
                                 cards: true,
                             }
-                        }
+                        },
+                        quiz: {
+                            include: {
+                                attempts: {
+                                    where: {
+                                        userId,
+                                    }
+                                }
+                            }
+                        },
+                        favoritedBy: true,
                     }
                 },
                 attempts: true,
+                favorites: true,
             }
         })
 
@@ -34,12 +45,15 @@ async function accountGet(req, res) {
 
             const createdAt = user.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
+            const userFavorites = user.favorites;
+
             return res.json({
                 status: 1,
                 userStudySets,
                 flashcardCount,
                 attemptCount,
                 createdAt,
+                userFavorites,
             });
         }
         return res.json({
