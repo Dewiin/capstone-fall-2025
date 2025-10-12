@@ -262,42 +262,42 @@ export function StudySetPage() {
                         { !loading && 
                         <>
                             <Carousel
-                                setApi={setApi}
                                 className="w-full md:w-2xl md:aspect-video w-2xs mb-5"
+                                setApi={setApi}
+                                opts={{
+                                    loop: true,
+                                }}
                             >
                                 <CarouselContent>
                                     { deck.cards.map((card) => (
-                                        <>
-                                            <CarouselItem key={card.id}>
-                                                <div>
-                                                    <Card 
-                                                        onClick={() => setFlipped((prev) => {
-                                                            return {
-                                                                ...prev,
-                                                                [card.id]: !prev[card.id],
-                                                            }
-                                                        })}
-                                                    >
-                                                        <CardContent className={`flex aspect-video justify-center items-center md:px-24 md:p-20 px-8 h-full`}>
-                                                            { flipped[card.id] ? (
-                                                                <div className="w-full flex flex-col justify-center items-center gap-6 overflow-scroll">
-                                                                    <span className="md:text-sm text-xs text-gray-500">
-                                                                        {card.question}
-                                                                    </span>
-                                                                    <span className="md:text-2xl text-sm font-semibold">
-                                                                        {card.answer}
-                                                                    </span>
-                                                                </div>
-                                                            ) : (
-                                                                <span className="md:text-2xl font-semibold">
-                                                                    {card.question}
-                                                                </span>
-                                                            )}
-                                                        </CardContent>
-                                                    </Card>
-                                                </div>
-                                            </CarouselItem>
-                                        </>
+                                        <CarouselItem key={card.id}>
+                                            <Card 
+                                                className="aspect-video justify-center items-center md:p-20 p-8 overflow-hidden"
+                                                onClick={() => setFlipped((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        [card.id]: !prev[card.id],
+                                                    }
+                                                })}
+                                            >
+                                                <CardContent className="flex overflow-scroll">
+                                                    { flipped[card.id] ? (
+                                                        <div className="flex flex-col h-full overflow-scroll gap-2">
+                                                            <span className="md:text-sm text-xs text-gray-500">
+                                                                {card.question}
+                                                            </span>
+                                                            <span className="md:text-xl text-sm font-semibold">
+                                                                {card.answer}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="md:text-xl font-semibold">
+                                                            {card.question}
+                                                        </span>
+                                                    )}
+                                                </CardContent>
+                                            </Card>
+                                        </CarouselItem>
                                     ))}
                                 </CarouselContent>
                                 <CarouselPrevious />
@@ -309,19 +309,28 @@ export function StudySetPage() {
                                 value={ count > 0 ? (100/count) * (current) : (100/deck.cards.length) * current }
                             />
 
-                            { deck.cards.map((card) => (
+                            {deck.cards.map((card) => (
                                 <Card 
-                                key={card.id}
-                                className="md:w-3xl w-sm h-50"
+                                    key={card.id}
+                                    className="md:w-3xl w-full h-40"
                                 >
-                                    <CardContent className="flex items-center justify-between text-sm h-full">
-                                        <p className="w-xs"> { card.question } </p>
+                                    <CardContent className="flex justify-between h-full">
+                                        {/* Question */}
+                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll text-sm md:mx-auto mx-4">
+                                            <p className="whitespace-pre-wrap">{card.question}</p>
+                                        </div>
+
+                                        {/* Divider */}
                                         <Separator orientation="vertical" />
-                                        <p className="w-xs"> { card.answer } </p>
+
+                                        {/* Answer */}
+                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll text-sm md:mx-auto mx-4">
+                                            <p className="whitespace-pre-wrap">{card.answer}</p>
+                                        </div>
                                     </CardContent>
                                 </Card>
                             ))}
-                            </>
+                        </>
                         }
                     </TabsContent>
                     {/* ------------------------------------------------------- QUIZ ------------------------------------------------------- */}
