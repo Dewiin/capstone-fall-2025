@@ -1,6 +1,6 @@
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Footer } from "@/components/Footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
@@ -70,10 +70,14 @@ export function StudySetPage() {
     const [ submitted, setSubmitted ] = useState(false);
     const [ score, setScore ] = useState(0);
     
-    // chart
+    // pie chart
     const [ chartData, setChartData ] = useState([]);
     const [ progressData, setProgressData ] = useState([]);
-    const [progressKey, setProgressKey] = useState(0);
+
+    // line chart
+    const [ globalAttempts, setGlobalAttempts ] = useState(null);
+    const [ globalAverageScore, setGlobalAverageScore ] = useState(null);
+    const [ userAverageScore, setUserAverageScore ] = useState(null);
 
     useEffect(() => {
         if (!user) {
@@ -96,15 +100,21 @@ export function StudySetPage() {
 
                 const result = await response.json();
                 if(result.status == 1) {
-                    const allAttempts = result.quiz.attempts.map((attempt, index) => ({
+                    console.log(result);
+
+                    const allAttempts = result.studySet.quiz.attempts.map((attempt, index) => ({
                         attempt: index + 1,
                         score: attempt.score,
                     }));
                     setProgressData(allAttempts);
 
                     setStudySet(result.studySet);
-                    setDeck(result.deck);
-                    setQuiz(result.quiz);
+                    setQuiz(result.studySet.quiz);
+                    setDeck(result.studySet.deck);
+                    setGlobalAttempts(result.globalAttempts);
+                    setGlobalAverageScore(result.globalAverageScore);
+                    setUserAverageScore(result.userAverageScore);
+                    
                 } else {
                     console.error('Study Set not found');
                 }
@@ -241,10 +251,6 @@ export function StudySetPage() {
                     className="flex gap-12 min-h-screen"
                     onValueChange={(val) => {
                         setNotesType(val);
-
-                        if(val === "progress") {
-                            setProgressKey(prev => prev + 1);
-                        }
                     }}
                 >
                     <TabsList 
@@ -558,10 +564,82 @@ export function StudySetPage() {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card 
+                            className="md:w-4xl mx-auto my-16
+                            dark:bg-indigo-900 bg-indigo-300
+                            border-2 dark:border-indigo-200 border-indigo-800
+                            "
+                        >
                             <CardHeader>
-
+                                <CardTitle>
+                                    Quiz Data
+                                </CardTitle>
+                                <CardDescription>
+                                    Some information on this quiz
+                                </CardDescription>
                             </CardHeader>
+                            <CardContent
+                                className="flex h-25 justify-evenly"
+                            >
+                                <div 
+                                    className="flex-1 grid grid-cols-2 px-6"
+                                >
+                                    <span>
+                                        <p 
+                                            className="text-sm dark:text-indigo-300 text-indigo-900"
+                                        >
+                                            total attempts recorded
+                                        </p>
+                                        <p
+                                            className="text-4xl font-semibold"
+                                        >
+                                            {globalAttempts ? globalAttempts : "..."}
+                                        </p>
+                                    </span>
+                                    <span>
+                                        <p 
+                                            className="text-sm dark:text-indigo-300 text-indigo-900"
+                                        >
+                                            total average score
+                                        </p>
+                                        <p
+                                            className="text-4xl font-semibold"
+                                        >
+                                            {globalAverageScore ? globalAverageScore : "..."}
+                                        </p>
+                                    </span>
+                                </div>
+
+                                <Separator orientation="vertical" className="border-3 rounded-lg" />
+                                <div
+                                    className="flex-1 grid grid-cols-2 px-6"
+                                >
+                                    <span>
+                                        <p 
+                                            className="text-sm dark:text-indigo-300 text-indigo-900"
+                                        >
+                                            your attempts recorded
+                                        </p>
+                                        <p 
+                                            className="text-4xl font-semibold"
+                                        >
+                                            {quiz?.attempts?.length > 0 ? quiz.attempts.length : "..."}
+                                        </p>
+                                    </span>
+                                    <span>
+                                        <p 
+                                            className="text-sm dark:text-indigo-300 text-indigo-900"
+                                        >
+                                            your average score
+                                        </p>
+                                        <p
+                                            className="text-4xl font-semibold"
+                                        >   
+                                            {userAverageScore ? userAverageScore : "..."}
+                                        </p>
+                                    </span>
+                                </div>
+                            </CardContent>
                         </Card>
                     </TabsContent>
                 </Tabs>
