@@ -111,7 +111,7 @@ export function AccountPage() {
         <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 md:gap-16 gap-8 min-h-screen">
             {/* First Section */}
             <section className='flex md:flex-row flex-col gap-8 p-4 rounded-lg md:h-30 select-none
-                bg-indigo-200 dark:bg-indigo-900 
+                bg-indigo-200 dark:bg-indigo-950 
                 border-1 border-indigo-900
                 dark:border-indigo-300'>
                 {/* Avatar/Name */}
@@ -170,7 +170,7 @@ export function AccountPage() {
                     className="flex-1"
                 >
                     <TabsList
-                        className="dark:bg-indigo-900 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900 mb-4"
+                        className="dark:bg-indigo-950 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900 mb-4"
                     >
                         <TabsTrigger 
                             value="studySets" 
@@ -189,7 +189,7 @@ export function AccountPage() {
                         <Card
                             className="w-full h-full border-1 
                                 dark:border-indigo-200 border-indigo-900
-                                dark:bg-indigo-900 bg-indigo-200"
+                                dark:bg-indigo-950 bg-indigo-200"
                         >
                             <CardHeader>
                                 <CardTitle>
@@ -210,7 +210,7 @@ export function AccountPage() {
                                 }
                                 { studySets?.map((studySet) => (
                                     <Card
-                                        className="dark:bg-indigo-400 bg-indigo-300 border-1 border-indigo-700 dark:border-indigo-200 cursor-pointer"
+                                        className="dark:bg-indigo-400 bg-indigo-100 border-1 border-indigo-700 dark:border-indigo-200 cursor-pointer"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
                                         <CardHeader>
@@ -240,7 +240,7 @@ export function AccountPage() {
                         <Card
                             className="w-full h-full relative border-1 
                             dark:border-indigo-200 border-indigo-900
-                            dark:bg-indigo-900 bg-indigo-200"
+                            dark:bg-indigo-950 bg-indigo-200"
                         >
                             <CardHeader>
                                 <CardTitle>
