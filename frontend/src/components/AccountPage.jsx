@@ -131,10 +131,10 @@ export function AccountPage() {
                 </div>
 
                 {/* Divider */}
-                <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl dark:border-indigo-300 border-indigo-400" />
+                <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl border-indigo-300" />
 
                 {/* Personal Stats */}
-                <div className=" flex-1 grid md:grid-cols-3 grid-cols-1 gap-2 items-center text-indigo-900 dark:text-indigo-100">
+                <div className=" flex-1 grid md:grid-cols-3 grid-cols-1 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
                     <span>
                         <p className="text-sm dark:text-indigo-300 text-indigo-900">
                             study sets created
