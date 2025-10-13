@@ -215,7 +215,7 @@ export function StudySetPage() {
                 ref={smoothScroll}
             >
                 <Breadcrumb className="p-6">
-                    <BreadcrumbList>
+                    <BreadcrumbList className="text-muted-foreground">
                         <BreadcrumbItem>
                             <BreadcrumbLink
                                 className="select-none"
@@ -226,12 +226,12 @@ export function StudySetPage() {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage> {studySet.name} </BreadcrumbPage>
+                            <BreadcrumbPage> { loading ? "..." : studySet.name } </BreadcrumbPage>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                             <BreadcrumbPage>
-                                { notesType === "deck" ? ("Deck") : ("Quiz") } 
+                                { notesType.charAt(0).toLocaleUpperCase() + notesType.slice(1) } 
                             </BreadcrumbPage> 
                         </BreadcrumbItem>
                     </BreadcrumbList>
@@ -247,15 +247,32 @@ export function StudySetPage() {
                         }
                     }}
                 >
-                    <TabsList className="m-auto">
-                        <TabsTrigger value="deck"> Deck </TabsTrigger>    
-                        <TabsTrigger value="quiz"> Quiz </TabsTrigger>    
-                        <TabsTrigger value="progress"> Progress </TabsTrigger>    
+                    <TabsList 
+                        className="m-auto dark:bg-indigo-900 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900"
+                    >
+                        <TabsTrigger 
+                            value="deck"
+                            className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                        >
+                            Deck 
+                        </TabsTrigger>    
+                        <TabsTrigger 
+                            value="quiz"
+                            className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                        > 
+                            Quiz 
+                        </TabsTrigger>    
+                        <TabsTrigger 
+                            value="progress"
+                            className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                        > 
+                            Progress 
+                        </TabsTrigger>    
                     </TabsList>
                     {/* ------------------------------------------------------- DECK ------------------------------------------------------- */}
                     <TabsContent 
                         value="deck"
-                        className="flex flex-col justify-center items-center gap-2 relative"
+                        className="flex flex-col items-center gap-2 relative"
                     >
                         { loading && <LoadingOverlay /> }
 
@@ -272,7 +289,10 @@ export function StudySetPage() {
                                     { deck.cards.map((card) => (
                                         <CarouselItem key={card.id}>
                                             <Card 
-                                                className="aspect-video justify-center items-center md:p-20 p-8 overflow-hidden"
+                                                className="aspect-video justify-center items-center md:p-20 p-8 overflow-hidden
+                                                    dark:bg-indigo-900 bg-indigo-200
+                                                    border-1 dark:border-indigo-200 border-indigo-900
+                                                    dark:text-indigo-50 text-indigo-950"
                                                 onClick={() => setFlipped((prev) => {
                                                     return {
                                                         ...prev,
@@ -312,7 +332,10 @@ export function StudySetPage() {
                             {deck.cards.map((card) => (
                                 <Card 
                                     key={card.id}
-                                    className="md:w-3xl w-full h-40"
+                                    className="md:w-3xl w-full h-40
+                                        dark:bg-indigo-900 bg-indigo-200 
+                                        border-1 dark:border-indigo-200 border-indigo-900
+                                        dark:text-indigo-50 text-indigo-950"
                                 >
                                     <CardContent className="flex justify-between h-full">
                                         {/* Question */}
@@ -321,7 +344,7 @@ export function StudySetPage() {
                                         </div>
 
                                         {/* Divider */}
-                                        <Separator orientation="vertical" />
+                                        <Separator orientation="vertical" className="border-1 border-indigo-300" />
 
                                         {/* Answer */}
                                         <div className="md:w-3xs w-1/2 max-h-full overflow-scroll text-sm md:mx-auto mx-4">
@@ -340,7 +363,7 @@ export function StudySetPage() {
                     >
                         { loading && <LoadingOverlay fixed /> }
                         { submitted && !loading && 
-                            <Card className="md:items-start bg-transparent items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
+                            <Card className="md:items-start bg-transparent shadow-none items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
                                 <CardContent className="flex flex-wrap md:gap-12 gap-2 justify-center items-center">
                                     <div
                                         className="aspect-square mx-10"
@@ -387,9 +410,9 @@ export function StudySetPage() {
                                         </PieChart>
                                     </div>
                                     <div className="w-fit flex flex-col justify-center gap-2 text-lg font-semibold">
-                                        <p className="text-green-300"> Correct {score} </p>
-                                        <p className="text-red-500"> Incorrect {quiz.questions.length - score} </p>
-                                        <p> High Score {quiz.highScore} </p>
+                                        <p className="dark:text-green-400 text-green-700"> Correct {score} </p>
+                                        <p className="dark:text-red-400 text-red-700"> Incorrect {quiz.questions.length - score} </p>
+                                        <p className="dark:text-indigo-200 text-indigo-950"> High Score {quiz.highScore} </p>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -405,7 +428,9 @@ export function StudySetPage() {
                                         key={question.id}
                                     >
                                         <Card
-                                            className="flex aspect-video p-12 justify-between relative"
+                                            className="flex aspect-video p-12 justify-between relative
+                                                dark:bg-indigo-900 bg-indigo-200
+                                                border-1 dark:border-indigo-200 border-indigo-900"
                                         >
                                             <p className="absolute top-5 right-5 text-gray-500">
                                                 {index+1} of {quiz.questions.length}
@@ -418,16 +443,18 @@ export function StudySetPage() {
                                                     <Card 
                                                         key={key}
                                                         className={
-                                                            `md:text-sm text-xs 
+                                                            `md:text-sm text-xs cursor-pointer
+                                                            dark:bg-[rgba(255,255,255,0.15)]
+                                                            bg-[rgba(255,255,255,0.5)]
                                                             ${key == selected[question.id] &&
                                                             (submitted ?
                                                             (
-                                                                correct[question.id] ? "bg-green-600 border-green-800" : "bg-red-600 border-red-800"
+                                                                correct[question.id] ? "dark:bg-green-900 bg-green-200 border-green-400" : "dark:bg-red-900 bg-red-200 border-red-400"
                                                             ) : (
-                                                                "border-cyan-800"
+                                                                "border-indigo-700 dark:border-indigo-50"
                                                             ))} 
-                                                            ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "border-green-800 border-dashed"}
-                                                            border-2 select-none`
+                                                            ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "dark:border-green-300 border-green-700 border-dashed"}
+                                                            border-2`
                                                         }
                                                         onClick={() => {
                                                             if(submitted) return;
@@ -473,7 +500,11 @@ export function StudySetPage() {
                     >
                         { loading && <LoadingOverlay /> }
                         
-                        <Card className="w-full h-96">
+                        <Card 
+                            className="w-full h-96
+                                dark:bg-indigo-950 bg-indigo-200
+                                border-2 dark:border-indigo-200 border-indigo-900"
+                        >
                             <CardContent className="w-full h-full">
                                 { progressData.length == 0 ? (
                                     <div className=" flex w-full h-full justify-center items-center text-lg font-semibold">
@@ -495,21 +526,24 @@ export function StudySetPage() {
                                             <CartesianGrid stroke="none" />
                                             <XAxis
                                                 dataKey="attempt"
+                                                stroke="var(--primary)"
                                                 tickLine={true}
                                                 axisLine={true}
                                                 tickMargin={8}
                                             />
                                             <YAxis
                                                 type="number"
+                                                stroke="var(--primary)"
                                                 domain={[0, quiz.questions.length]}
                                             />
                                             <Tooltip
+                                                cursor={{ stroke: "var(--muted-foreground)", strokeWidth: 2 }}
                                                 content={<CustomTooltip />}
                                             />
                                             <Line
                                                 dataKey="score"
                                                 type="monotone"
-                                                stroke="oklch(60.9% 0.126 221.723)"
+                                                stroke="var(--primary)"
                                                 strokeWidth={2}
                                                 dot={false}
                                                 animationDuration={1000}
