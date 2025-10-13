@@ -107,7 +107,7 @@ export function SignupForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="relative">
+      <Card className="relative border-1 dark:bg-indigo-900 bg-indigo-200 dark:border-indigo-200 border-indigo-900">
         { loading && <LoadingOverlay /> }
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
@@ -127,7 +127,13 @@ export function SignupForm({
                     <FormItem>
                       <FormLabel> Username </FormLabel>
                       <FormControl>
-                        <Input id="username" type="text" required {...field} />
+                        <Input 
+                          className="dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.5)]" 
+                          id="username" 
+                          type="text" 
+                          required 
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -141,7 +147,14 @@ export function SignupForm({
                     <FormItem>
                       <FormLabel> Password </FormLabel>
                       <FormControl>
-                        <Input id="password" type="password" placeholder="●●●●●●●●" required {...field} />
+                        <Input 
+                          className="dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.5)]" 
+                          id="password" 
+                          type="password" 
+                          placeholder="●●●●●●" 
+                          required 
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -155,7 +168,14 @@ export function SignupForm({
                     <FormItem>
                       <FormLabel> Confirm Password </FormLabel>
                       <FormControl>
-                        <Input id="confirmPassword" type="password" placeholder="●●●●●●●●" required {...field} />
+                        <Input 
+                          className="dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.5)]" 
+                          id="confirmPassword" 
+                          type="password" 
+                          placeholder="●●●●●●" 
+                          required 
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
