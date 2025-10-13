@@ -1,6 +1,6 @@
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Footer } from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
@@ -501,7 +501,7 @@ export function StudySetPage() {
                         { loading && <LoadingOverlay /> }
                         
                         <Card 
-                            className="w-full h-96
+                            className="md:w-4xl mx-auto md:h-96 h-50
                                 dark:bg-indigo-950 bg-indigo-200
                                 border-2 dark:border-indigo-200 border-indigo-900"
                         >
@@ -519,7 +519,7 @@ export function StudySetPage() {
                                             data={progressData} 
                                             margin={{
                                                 right: 12, 
-                                                left: 12,
+                                                left: -30,
                                                 top: 8,
                                             }}
                                         >
@@ -552,6 +552,12 @@ export function StudySetPage() {
                                     </ResponsiveContainer>
                                 )}
                             </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                
+                            </CardHeader>
                         </Card>
                     </TabsContent>
                 </Tabs>
