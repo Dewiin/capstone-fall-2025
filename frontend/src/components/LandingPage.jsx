@@ -42,7 +42,10 @@ export function LandingPage() {
       <Separator className="max-w-1/2" />
 
       {/* Features Section */}
-      <section className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12">
+      <section 
+        className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12" 
+        id='features'
+      >
         <h2 className="text-4xl font-bold mb-10">Features</h2>
 
         <div className="flex flex-col sm:flex-row justify-center items-center gap-10">
@@ -76,7 +79,10 @@ export function LandingPage() {
       <Separator className="max-w-1/2" /> 
 
       {/* About Section */}
-      <section className="w-full max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between px-8 py-12 gap-10 text-left my-12">
+      <section 
+        className="w-full max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between px-8 py-12 gap-10 text-left my-12"
+        id="about"
+      >
         <div className="flex-1">
           <h2 className="text-4xl font-bold mb-4">About Brainstorm</h2>
           <p className="text-md text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -98,8 +104,11 @@ export function LandingPage() {
       {/* Divider */}
       <Separator className="max-w-1/2" /> 
 
-            {/* Meet the Team Section */}
-      <section className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12">
+      {/* Meet the Team Section */}
+      <section 
+        className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12"
+        id="team"
+      >
         <h2 className="text-4xl font-bold mb-6">Meet the Team</h2>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed mb-10">
           Meet the team of five undergraduate students at Hunter College working together on Brainstorm: 
