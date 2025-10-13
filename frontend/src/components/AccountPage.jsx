@@ -131,7 +131,7 @@ export function AccountPage() {
                 </div>
 
                 {/* Divider */}
-                <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl dark:border-indigo-300 border-indigo-700" />
+                <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl dark:border-indigo-300 border-indigo-400" />
 
                 {/* Personal Stats */}
                 <div className=" flex-1 grid md:grid-cols-3 grid-cols-1 gap-2 items-center text-indigo-900 dark:text-indigo-100">
@@ -174,13 +174,13 @@ export function AccountPage() {
                     >
                         <TabsTrigger 
                             value="studySets" 
-                            className="dark:data-[state=active]:bg-transparent data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                            className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
                         >
                             Study Sets
                         </TabsTrigger>
                         <TabsTrigger 
                             value="favorites" 
-                            className="dark:data-[state=active]:bg-transparent data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                            className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
                         >
                             Favorites
                         </TabsTrigger>
@@ -204,13 +204,13 @@ export function AccountPage() {
                             >
                                 { loading && <LoadingOverlay className="md:my-24 my-12" /> }
                                 { !studySets || studySets.length === 0 && 
-                                    <p className="text-md dark:text-gray-300 text-gray-700 text-center my-8">
+                                    <p className="text-md dark:text-gray-300 text-gray-700 text-center md:my-24 my-12">
                                         No study sets. Create one from the 'Generate' tab!
                                     </p>
                                 }
                                 { studySets?.map((studySet) => (
                                     <Card
-                                        className="bg-indigo-400 border-1 border-indigo-700 dark:border-indigo-200 cursor-pointer"
+                                        className="dark:bg-indigo-400 bg-indigo-300 border-1 border-indigo-700 dark:border-indigo-200 cursor-pointer"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
                                         <CardHeader>
@@ -242,7 +242,6 @@ export function AccountPage() {
                             dark:border-indigo-200 border-indigo-900
                             dark:bg-indigo-900 bg-indigo-200"
                         >
-                            { loading && <LoadingOverlay /> }
                             <CardHeader>
                                 <CardTitle>
                                     My Favorites
@@ -251,9 +250,12 @@ export function AccountPage() {
                                     Collection of my favorited study sets
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent
+                                className="relative"
+                            >
+                                { loading && <LoadingOverlay className="md:my-24 my-12" /> }   
                                 { !favorites || favorites.length === 0 && 
-                                    <p className="text-md dark:text-gray-300 text-gray-700 text-center my-8">
+                                    <p className="text-md dark:text-gray-300 text-gray-700 text-center md:my-24 my-12">
                                         No favorites. Find some study sets from the 'Explore' tab!
                                     </p>
                                 }

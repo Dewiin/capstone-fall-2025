@@ -137,18 +137,35 @@ export function GeneratePage() {
                     setUploadType(val);
                 }}
             >
-                <TabsList>
-                    <TabsTrigger value="text" >Text Input</TabsTrigger>
-                    <TabsTrigger value="pdf">PDF Upload</TabsTrigger>
+                <TabsList
+                    className="dark:bg-indigo-900 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900 mb-4"
+                >
+                    <TabsTrigger 
+                        value="text"
+                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                    >
+                        Text Input
+                    </TabsTrigger>
+                    <TabsTrigger 
+                        value="pdf"
+                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"    
+                    >
+                        PDF Upload
+                    </TabsTrigger>
                 </TabsList>
                 <TabsContent value="text">
-                    <Card className="relative">
+                    <Card 
+                        className="relative border-1
+                            dark:border-indigo-200 border-indigo-900
+                            dark:bg-indigo-900 bg-indigo-200
+                            dark:text-indigo-100 text-indigo-900"
+                    >
                         { loading && <LoadingOverlay /> }
                         <CardHeader>
                             <CardTitle>
                                 Text Input
                             </CardTitle>
-                            <CardDescription>
+                            <CardDescription className="dark:text-indigo-100 text-gray-600">
                                 Create a Study Set With Raw Text
                             </CardDescription>
                         </CardHeader>
@@ -165,7 +182,14 @@ export function GeneratePage() {
                                             <FormItem>
                                                 <FormLabel> Study Set Name </FormLabel>
                                                 <FormControl>
-                                                    <Input id="studySetName" type="text" required {...field} />
+                                                    <Input
+                                                        className="dark:border-indigo-400 border-indigo-900 bg-[rgba(255,255,255,0.3)]" 
+                                                        id="studySetName" 
+                                                        type="text" 
+                                                        placeholder="My Study Set..."
+                                                        required 
+                                                        {...field} 
+                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -179,7 +203,7 @@ export function GeneratePage() {
                                                 <FormLabel> Text </FormLabel>
                                                 <FormControl>
                                                     <Textarea
-                                                        className="resize-none"
+                                                        className="resize-none dark:border-indigo-400 border-indigo-900 bg-[rgba(255,255,255,0.3)]"
                                                         rows={20}
                                                         required
                                                         {...field}
@@ -196,7 +220,12 @@ export function GeneratePage() {
                     </Card>
                 </TabsContent>
                 <TabsContent value="pdf">
-                    <Card className="relative h-full">
+                    <Card 
+                        className="relative border-1
+                            dark:border-indigo-200 border-indigo-900
+                            dark:bg-indigo-900 bg-indigo-200
+                            dark:text-indigo-100 text-indigo-900"
+                    >
                         { loading && <LoadingOverlay /> }
                         <CardHeader>
                             <CardTitle>
@@ -219,7 +248,13 @@ export function GeneratePage() {
                                             <FormItem>
                                                 <FormLabel> Study Set Name </FormLabel>
                                                 <FormControl>
-                                                    <Input id="studySetName" type="text" required {...field} />
+                                                    <Input
+                                                        className="dark:border-indigo-400 border-indigo-900 bg-[rgba(255,255,255,0.3)]"  
+                                                        id="studySetName" 
+                                                        type="text" 
+                                                        placeholder="My Study Set..."
+                                                        required {...field} 
+                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -240,9 +275,11 @@ export function GeneratePage() {
                                                         onDrop={(files) => handleDrop(files, field.onChange)}
                                                         onError={console.error}
                                                         src={file}
-                                                        className="h-100"
+                                                        className="h-100 dark:border-indigo-400 border-indigo-900 bg-[rgba(255,255,255,0.3)]"
                                                     >
-                                                        <DropzoneEmptyState />
+                                                        <DropzoneEmptyState 
+                                                            className="bg-transparent"
+                                                        />
                                                         <DropzoneContent 
                                                             className="w-full"
                                                         />

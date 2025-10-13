@@ -336,9 +336,9 @@ export function StudySetPage() {
                     {/* ------------------------------------------------------- QUIZ ------------------------------------------------------- */}
                     <TabsContent 
                         value="quiz"
-                        className="flex flex-col justify-center items-center gap-2 relative"
+                        className="flex flex-col justify-center items-center gap-2"
                     >
-                        { loading && <LoadingOverlay /> }
+                        { loading && <LoadingOverlay fixed /> }
                         { submitted && !loading && 
                             <Card className="md:items-start bg-transparent items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
                                 <CardContent className="flex flex-wrap md:gap-12 gap-2 justify-center items-center">
