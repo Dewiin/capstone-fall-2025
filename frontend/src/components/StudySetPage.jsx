@@ -1,6 +1,6 @@
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Footer } from "@/components/Footer";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
@@ -428,56 +428,60 @@ export function StudySetPage() {
                                         key={question.id}
                                     >
                                         <Card
-                                            className="flex aspect-video p-12 justify-between relative
+                                            className="aspect-video md:p-12 py-12 relative
                                                 dark:bg-indigo-900 bg-indigo-200
                                                 border-1 dark:border-indigo-200 border-indigo-900"
                                         >
                                             <p className="absolute top-5 right-5 text-gray-500">
                                                 {index+1} of {quiz.questions.length}
                                             </p>
+                                            <CardHeader>
+                                                <CardTitle className="md:text-base text-sm">
+                                                    {question.question}
+                                                </CardTitle>
+                                            </CardHeader>
                                             <CardContent>
-                                                {question.question}
+                                                <div className="grid sm:grid-cols-2 grid-cols-1 h-1/1.5 gap-6">
+                                                    {Object.entries(question.choices).map(([key, value]) => (
+                                                        <Card 
+                                                            key={key}
+                                                            className={
+                                                                `md:text-sm text-xs cursor-pointer
+                                                                dark:bg-[rgba(255,255,255,0.15)]
+                                                                bg-[rgba(255,255,255,0.5)] 
+                                                                ${key == selected[question.id] &&
+                                                                (submitted ?
+                                                                (
+                                                                    correct[question.id] ? "dark:bg-green-900 bg-green-200 border-green-400" : "dark:bg-red-900 bg-red-200 border-red-400"
+                                                                ) : (
+                                                                    "border-indigo-700 dark:border-indigo-50"
+                                                                ))} 
+                                                                ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "dark:border-green-300 border-green-700 border-dashed"}
+                                                                border-2`
+                                                            }
+                                                            onClick={() => {
+                                                                if(submitted) return;
+                                                                setSelected((prev) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        [question.id]: key,
+                                                                    }
+                                                                })
+                                                                setCorrect((prev) => {
+                                                                    return {
+                                                                        ...prev,
+                                                                        [question.id]: key == question.correctAnswer
+                                                                    }
+                                                                })
+                                                            }}
+                                                        >
+                                                            <CardContent>
+                                                                <b>{key.toUpperCase()}.</b> &nbsp;{value}
+                                                            </CardContent>
+                                                        </Card>
+                                                    ))}
+                                                </div>
                                             </CardContent>
-                                            <div className="grid sm:grid-cols-2 grid-cols-1 h-1/1.5 gap-6 p-6">
-                                                {Object.entries(question.choices).map(([key, value]) => (
-                                                    <Card 
-                                                        key={key}
-                                                        className={
-                                                            `md:text-sm text-xs cursor-pointer
-                                                            dark:bg-[rgba(255,255,255,0.15)]
-                                                            bg-[rgba(255,255,255,0.5)]
-                                                            ${key == selected[question.id] &&
-                                                            (submitted ?
-                                                            (
-                                                                correct[question.id] ? "dark:bg-green-900 bg-green-200 border-green-400" : "dark:bg-red-900 bg-red-200 border-red-400"
-                                                            ) : (
-                                                                "border-indigo-700 dark:border-indigo-50"
-                                                            ))} 
-                                                            ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "dark:border-green-300 border-green-700 border-dashed"}
-                                                            border-2`
-                                                        }
-                                                        onClick={() => {
-                                                            if(submitted) return;
-                                                            setSelected((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    [question.id]: key,
-                                                                }
-                                                            })
-                                                            setCorrect((prev) => {
-                                                                return {
-                                                                    ...prev,
-                                                                    [question.id]: key == question.correctAnswer
-                                                                }
-                                                            })
-                                                        }}
-                                                    >
-                                                        <CardContent>
-                                                            <b>{key.toUpperCase()}.</b> &nbsp;{value}
-                                                        </CardContent>
-                                                    </Card>
-                                                ))}
-                                            </div>
                                         </Card>
                                     </CarouselItem>
                                 ))}
@@ -556,7 +560,7 @@ export function StudySetPage() {
 
                         <Card>
                             <CardHeader>
-                                
+
                             </CardHeader>
                         </Card>
                     </TabsContent>
