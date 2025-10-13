@@ -220,8 +220,12 @@ export const Navbar01 = React.forwardRef((
                       <NavigationMenuItem key={index} className="w-full">
                         <button
                           onClick={() => {
-                            // navigate(`/${link.href}`);
-                            // document.getElementById(`${link.href.slice(1)}`)?.scrollIntoView({ behavior: 'smooth' })
+                            if(link.href.charAt(0) === "/") {
+                              navigate(link.href);
+                            } else {
+                              navigate(`/${link.href}`);
+                              // document.getElementById(`${link.href.slice(1)}`)?.scrollIntoView({ behavior: 'smooth' })
+                            }
                           }}
                           className={cn(
                             "flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer no-underline",
@@ -256,8 +260,14 @@ export const Navbar01 = React.forwardRef((
                     <NavigationMenuItem key={index}>
                       <button
                         onClick={() =>{
-                          // navigate(`/${link.href}`);
-                          // document.getElementById(`${link.href.slice(1)}`)?.scrollIntoView({ behavior: 'smooth' })
+                          if(link.href.charAt(0) === "/") {
+                            navigate(link.href);
+                          } else {
+                            navigate(`/${link.href}`);
+                            setTimeout(() => {
+                              document.getElementById(link.href.slice(1))?.scrollIntoView({ behavior: "smooth" });
+                            }, 1);
+                          }
                         }}
                         className={cn(
                           "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer no-underline",
