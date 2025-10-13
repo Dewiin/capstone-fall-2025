@@ -94,6 +94,49 @@ export function LandingPage() {
           <FaBrain className="text-8xl text-indigo-500 dark:text-indigo-400" />
         </div>
       </section>
+
+      {/* Divider */}
+      <Separator className="max-w-1/2" /> 
+
+            {/* Meet the Team Section */}
+      <section className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12">
+        <h2 className="text-4xl font-bold mb-6">Meet the Team</h2>
+        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed mb-10">
+          Meet the team of five undergraduate students at Hunter College working together on Brainstorm: 
+          an AI-powered study app designed to help students learn smarter and stay organized.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+          <div className="flex flex-col items-center text-center max-w-xs">
+            <h3 className="text-xl font-semibold dark:text-gray-100">Fatima</h3>
+            <p className="text-gray-600 dark:text-gray-300">Frontend Developer</p>
+          </div>
+
+          <div className="flex flex-col items-center text-center max-w-xs">
+            <h3 className="text-xl font-semibold dark:text-gray-100">Alex</h3>
+            <p className="text-gray-600 dark:text-gray-300">Frontend Developer</p>
+          </div>
+
+          <div className="flex flex-col items-center text-center max-w-xs">
+            <h3 className="text-xl font-semibold dark:text-gray-100">Christopher</h3>
+            <p className="text-gray-600 dark:text-gray-300">Frontend Developer</p>
+          </div>
+
+          <div className="flex flex-col items-center text-center max-w-xs">
+            <h3 className="text-xl font-semibold dark:text-gray-100">Moshe</h3>
+            <p className="text-gray-600 dark:text-gray-300">Backend Developer</p>
+          </div>
+
+          <div className="flex flex-col items-center text-center max-w-xs">
+            <h3 className="text-xl font-semibold dark:text-gray-100">Devin</h3>
+            <p className="text-gray-600 dark:text-gray-300">Backend Developer</p>
+          </div>
+        </div>
+
+        <p className="mt-10 text-md text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+          Together, we built Brainstorm to empower students with smarter, AI-driven study tools to make learning easier for everyone.
+        </p>
+      </section> 
       
       {/* Footer */}
       <Footer />
