@@ -138,7 +138,7 @@ export function GeneratePage() {
                 }}
             >
                 <TabsList
-                    className="dark:bg-indigo-900 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900 mb-4"
+                    className="dark:bg-indigo-950 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900 mb-4"
                 >
                     <TabsTrigger 
                         value="text"
@@ -157,7 +157,7 @@ export function GeneratePage() {
                     <Card 
                         className="relative border-1
                             dark:border-indigo-200 border-indigo-900
-                            dark:bg-indigo-900 bg-indigo-200
+                            dark:bg-indigo-950 bg-indigo-200
                             dark:text-indigo-100 text-indigo-900"
                     >
                         { loading && <LoadingOverlay /> }
@@ -223,7 +223,7 @@ export function GeneratePage() {
                     <Card 
                         className="relative border-1
                             dark:border-indigo-200 border-indigo-900
-                            dark:bg-indigo-900 bg-indigo-200
+                            dark:bg-indigo-950 bg-indigo-200
                             dark:text-indigo-100 text-indigo-900"
                     >
                         { loading && <LoadingOverlay /> }

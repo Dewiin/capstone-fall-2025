@@ -91,7 +91,7 @@ export function LoginForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card 
-        className="relative border-1 dark:bg-indigo-900 bg-indigo-200 dark:border-indigo-200 border-indigo-900"
+        className="relative border-1 dark:bg-indigo-950 bg-indigo-200 dark:border-indigo-200 border-indigo-900"
       >
         { loading && <LoadingOverlay /> }
         <CardHeader>
