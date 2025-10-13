@@ -365,9 +365,9 @@ export function StudySetPage() {
                     {/* ------------------------------------------------------- QUIZ ------------------------------------------------------- */}
                     <TabsContent 
                         value="quiz"
-                        className="flex flex-col justify-center items-center gap-2"
+                        className="flex flex-col justify-center items-center gap-2 relative"
                     >
-                        { loading && <LoadingOverlay fixed /> }
+                        { loading && <LoadingOverlay /> }
                         { submitted && !loading && 
                             <Card className="md:items-start bg-transparent shadow-none items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
                                 <CardContent className="flex flex-wrap md:gap-12 gap-2 justify-center items-center">
@@ -579,10 +579,10 @@ export function StudySetPage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent
-                                className="flex h-25 justify-evenly"
+                                className="flex md:flex-row flex-col md:gap-0 gap-8 md:h-20 md:justify-evenly"
                             >
                                 <div 
-                                    className="flex-1 grid grid-cols-2 px-6"
+                                    className="flex-1 grid md:grid-cols-2 grid-cols-1 px-6"
                                 >
                                     <span>
                                         <p 
@@ -610,9 +610,10 @@ export function StudySetPage() {
                                     </span>
                                 </div>
 
-                                <Separator orientation="vertical" className="border-3 rounded-lg" />
+                                <Separator orientation="vertical" className="md:block hidden border-3 rounded-lg" />
+
                                 <div
-                                    className="flex-1 grid grid-cols-2 px-6"
+                                    className="flex-1 grid md:grid-cols-2 grid-cols-1 px-6"
                                 >
                                     <span>
                                         <p 

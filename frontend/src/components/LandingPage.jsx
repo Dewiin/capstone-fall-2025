@@ -108,28 +108,28 @@ export function LandingPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
           <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-xl font-semibold dark:text-gray-100">Fatima</h3>
-            <p className="text-gray-600 dark:text-gray-300">Frontend Developer</p>
+            <h3 className="text-2xl font-semibold dark:text-gray-100">Fatima</h3>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">Frontend Developer</p>
           </div>
 
           <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-xl font-semibold dark:text-gray-100">Alex</h3>
-            <p className="text-gray-600 dark:text-gray-300">Frontend Developer</p>
+            <h3 className="text-2xl font-semibold dark:text-gray-100">Alex</h3>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">Frontend Developer</p>
           </div>
 
           <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-xl font-semibold dark:text-gray-100">Christopher</h3>
-            <p className="text-gray-600 dark:text-gray-300">Frontend Developer</p>
+            <h3 className="text-2xl font-semibold dark:text-gray-100">Christopher</h3>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">Frontend Developer</p>
           </div>
 
           <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-xl font-semibold dark:text-gray-100">Moshe</h3>
-            <p className="text-gray-600 dark:text-gray-300">Backend Developer</p>
+            <h3 className="text-2xl font-semibold dark:text-gray-100">Moshe</h3>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">Backend Developer</p>
           </div>
 
           <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-xl font-semibold dark:text-gray-100">Devin</h3>
-            <p className="text-gray-600 dark:text-gray-300">Backend Developer</p>
+            <h3 className="text-2xl font-semibold dark:text-gray-100">Devin</h3>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">Backend Developer</p>
           </div>
         </div>
 
