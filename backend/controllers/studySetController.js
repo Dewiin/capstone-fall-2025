@@ -29,31 +29,6 @@ async function studySetGet(req, res) {
             }
         });
 
-        // // get study set's deck
-        // const deck = await prisma.deck.findUnique({
-        //     where: {
-        //         studySetId: parseInt(studySetId),
-        //     },
-        //     include: {
-        //         cards: true,
-        //     }
-        // });
-
-        // // get study set's quiz
-        // const quiz = await prisma.quiz.findUnique({
-        //     where: {
-        //         studySetId: parseInt(studySetId),
-        //     },
-        //     include: {
-        //         questions: true,
-        //         attempts: {
-        //             where: {
-        //                 userId: user.id,
-        //             }
-        //         }
-        //     }
-        // })
-
         const allQuizAttempts = await prisma.quizAttempt.findMany({
             where: {
                 quizId: studySet.quiz.id
@@ -63,12 +38,14 @@ async function studySetGet(req, res) {
         if (studySet) {
             // global quiz progress stats
             const globalAttempts = allQuizAttempts.length;
+            console.log(globalAttempts);
             
             let globalCumulativeScore = 0;
             allQuizAttempts.forEach((attempt) => {
                 globalCumulativeScore += attempt.score;
             });
-            const globalAverageScore = (globalCumulativeScore / globalAttempts).toFixed(2);
+            let globalAverageScore = (globalCumulativeScore / globalAttempts).toFixed(2);
+            globalAverageScore = (globalAverageScore === "NaN") ? 0 : globalAverageScore;
 
             // user quiz progress stats
             const userAttempts = studySet.quiz.attempts.length;
@@ -78,7 +55,8 @@ async function studySetGet(req, res) {
                 userCumulativeScore += attempt.score;
             });
 
-            const userAverageScore = (userCumulativeScore / userAttempts).toFixed(2);
+            let userAverageScore = (userCumulativeScore / userAttempts).toFixed(2);
+            userAverageScore = (userAverageScore === "NaN") ? 0 : userAverageScore;
 
             return res.json({
                 status: 1,

@@ -100,8 +100,6 @@ export function StudySetPage() {
 
                 const result = await response.json();
                 if(result.status == 1) {
-                    console.log(result);
-
                     const allAttempts = result.studySet.quiz.attempts.map((attempt, index) => ({
                         attempt: index + 1,
                         score: attempt.score,
@@ -593,7 +591,7 @@ export function StudySetPage() {
                                         <p
                                             className="text-4xl font-semibold"
                                         >
-                                            {globalAttempts ? globalAttempts : "..."}
+                                            {globalAttempts != null ? globalAttempts : "..."}
                                         </p>
                                     </span>
                                     <span>
@@ -605,12 +603,12 @@ export function StudySetPage() {
                                         <p
                                             className="text-4xl font-semibold"
                                         >
-                                            {globalAverageScore ? globalAverageScore : "..."}
+                                            {globalAverageScore != null ? globalAverageScore : "..."}
                                         </p>
                                     </span>
                                 </div>
 
-                                <Separator orientation="vertical" className="md:block hidden border-3 rounded-lg" />
+                                <Separator orientation="vertical" className="dark:border-indigo-300 border-indigo-800 md:block hidden border-2 rounded-lg" />
 
                                 <div
                                     className="flex-1 grid md:grid-cols-2 grid-cols-1 px-6"
@@ -624,7 +622,7 @@ export function StudySetPage() {
                                         <p 
                                             className="text-4xl font-semibold"
                                         >
-                                            {quiz?.attempts?.length > 0 ? quiz.attempts.length : "..."}
+                                            {quiz?.attempts ? quiz.attempts.length : "..."}
                                         </p>
                                     </span>
                                     <span>
@@ -636,7 +634,7 @@ export function StudySetPage() {
                                         <p
                                             className="text-4xl font-semibold"
                                         >   
-                                            {userAverageScore ? userAverageScore : "..."}
+                                            {userAverageScore != null ? userAverageScore : "..."}
                                         </p>
                                     </span>
                                 </div>
