@@ -9,40 +9,83 @@ async function studySetGet(req, res) {
         const studySet = await prisma.studySet.findUnique({
             where: {
                 id: parseInt(studySetId),
-            }
-        })
-
-        // get study set's deck
-        const deck = await prisma.deck.findUnique({
-            where: {
-                studySetId: parseInt(studySetId),
             },
             include: {
-                cards: true,
-            }
-        });
-
-        // get study set's quiz
-        const quiz = await prisma.quiz.findUnique({
-            where: {
-                studySetId: parseInt(studySetId),
-            },
-            include: {
-                questions: true,
-                attempts: {
-                    where: {
-                        userId: user.id,
+                deck: {
+                    include: {
+                        cards: true,
+                    }
+                },
+                quiz: {
+                    include: {
+                        questions: true,
+                        attempts: {
+                            where: {
+                                userId: user.id,
+                            }
+                        }
                     }
                 }
             }
-        })
+        });
 
-        if (deck || quiz) {
+        // // get study set's deck
+        // const deck = await prisma.deck.findUnique({
+        //     where: {
+        //         studySetId: parseInt(studySetId),
+        //     },
+        //     include: {
+        //         cards: true,
+        //     }
+        // });
+
+        // // get study set's quiz
+        // const quiz = await prisma.quiz.findUnique({
+        //     where: {
+        //         studySetId: parseInt(studySetId),
+        //     },
+        //     include: {
+        //         questions: true,
+        //         attempts: {
+        //             where: {
+        //                 userId: user.id,
+        //             }
+        //         }
+        //     }
+        // })
+
+        const allQuizAttempts = await prisma.quizAttempt.findMany({
+            where: {
+                quizId: studySet.quiz.id
+            }
+        });
+
+        if (studySet) {
+            // global quiz progress stats
+            const globalAttempts = allQuizAttempts.length;
+            
+            let globalCumulativeScore = 0;
+            allQuizAttempts.forEach((attempt) => {
+                globalCumulativeScore += attempt.score;
+            });
+            const globalAverageScore = (globalCumulativeScore / globalAttempts).toFixed(2);
+
+            // user quiz progress stats
+            const userAttempts = studySet.quiz.attempts.length;
+
+            let userCumulativeScore = 0;
+            studySet.quiz.attempts.forEach((attempt) => {
+                userCumulativeScore += attempt.score;
+            });
+
+            const userAverageScore = (userCumulativeScore / userAttempts).toFixed(2);
+
             return res.json({
                 status: 1,
                 studySet,
-                deck,
-                quiz,
+                globalAttempts,
+                globalAverageScore,
+                userAverageScore
             });
         }
         return res.json({
