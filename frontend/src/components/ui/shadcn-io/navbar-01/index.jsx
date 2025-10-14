@@ -25,7 +25,7 @@ import { Moon, Sun } from 'lucide-react';
 import { GiBrainstorm } from "react-icons/gi";
 import { LoadingOverlay } from '@/components/LoadingOverlay';
 import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 // Simple logo component for the navbar
 const Logo = (props) => {
@@ -113,15 +113,25 @@ export const Navbar01 = React.forwardRef((
   const [darkMode, setDarkMode]= useState(true);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
-  const { user, logout } = useAuth();
+  const { fetchUser, user, logout } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const onSignInClick = () => navigate(signInHref);
   const onCtaClick = () => navigate(ctaHref);
 
   useEffect(() => {
-      document.documentElement.classList.toggle("dark", darkMode);
+    document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]); 
+
+  useEffect(() => {
+    if(searchParams.get("login") === "success") {
+      fetchUser();
+
+      searchParams.delete("login");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const checkWidth = () => {

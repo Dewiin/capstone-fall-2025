@@ -9,39 +9,39 @@ export default function AuthProvider({ children }) {
     const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
-        async function fetchUser() {
-            setLoading(true);
-            try {
-                const response = await fetch(`${API_URL_DOMAIN}/api`, {
-                    method: "GET",
-                    credentials: "include"
-                });
-                if (!response.ok) {
-                    setUser(null);
-                    return;
-                }
-
-                const result = await response.json();
-                if(result.loggedIn) {
-                    setUser({
-                        id: result.id,
-                        username: result.username,
-                        displayName: result.displayName
-                    })
-                }
-                else {
-                    setUser(null);
-                }
-            } catch (err) {
-                console.error("Error fetching user in AuthProvider:", err);
-                setUser(null);
-            } finally {
-                setLoading(false);
-            }
-        }
-
         fetchUser();
     }, []);
+
+    async function fetchUser() {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api`, {
+                method: "GET",
+                credentials: "include"
+            });
+            if (!response.ok) {
+                setUser(null);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.loggedIn) {
+                setUser({
+                    id: result.id,
+                    username: result.username,
+                    displayName: result.displayName
+                })
+            }
+            else {
+                setUser(null);
+            }
+        } catch (err) {
+            console.error("Error fetching user in AuthProvider:", err);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     async function signup(data) {
         try {
@@ -133,6 +133,7 @@ export default function AuthProvider({ children }) {
     }
     
     const value = {
+        fetchUser,
         user,
         signup,
         login,
