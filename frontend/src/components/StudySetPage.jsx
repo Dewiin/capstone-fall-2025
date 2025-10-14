@@ -184,6 +184,9 @@ export function StudySetPage() {
             const result = await response.json();
             if(result.status == 1) {
                 setQuiz(result.quiz);
+                setGlobalAttempts(result.globalAttempts);
+                setGlobalAverageScore(result.globalAverageScore);
+                setUserAverageScore(result.userAverageScore);
 
                 const allAttempts = result.quiz.attempts.map((attempt, index) => ({
                     attempt: index + 1,
@@ -586,7 +589,7 @@ export function StudySetPage() {
                                         <p 
                                             className="text-sm dark:text-indigo-300 text-indigo-900"
                                         >
-                                            total attempts recorded
+                                            global attempts recorded
                                         </p>
                                         <p
                                             className="text-4xl font-semibold"
@@ -598,7 +601,7 @@ export function StudySetPage() {
                                         <p 
                                             className="text-sm dark:text-indigo-300 text-indigo-900"
                                         >
-                                            total average score
+                                            global average score
                                         </p>
                                         <p
                                             className="text-4xl font-semibold"
