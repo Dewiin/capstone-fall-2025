@@ -580,62 +580,62 @@ export function StudySetPage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent
-                                className="flex md:flex-row flex-col md:gap-0 gap-8 md:h-20 md:justify-evenly"
+                                className="flex md:flex-row flex-col md:gap-0 gap-2 md:h-15 md:justify-evenly"
                             >
                                 <div 
-                                    className="flex-1 grid md:grid-cols-2 grid-cols-1 px-6"
+                                    className="flex-1 grid md:grid-cols-2 grid-cols-1 md:px-6"
                                 >
                                     <span>
                                         <p 
-                                            className="text-sm dark:text-indigo-300 text-indigo-900"
+                                            className="md:text-sm text-xs/2 dark:text-indigo-300 text-indigo-900"
                                         >
                                             global attempts recorded
                                         </p>
                                         <p
-                                            className="text-4xl font-semibold"
+                                            className="md:text-3xl text-xl font-semibold"
                                         >
                                             {globalAttempts != null ? globalAttempts : "..."}
                                         </p>
                                     </span>
                                     <span>
                                         <p 
-                                            className="text-sm dark:text-indigo-300 text-indigo-900"
+                                            className="md:text-sm text-xs/2 dark:text-indigo-300 text-indigo-900"
                                         >
                                             global average score
                                         </p>
                                         <p
-                                            className="text-4xl font-semibold"
+                                            className="md:text-3xl text-xl font-semibold"
                                         >
                                             {globalAverageScore != null ? globalAverageScore : "..."}
                                         </p>
                                     </span>
                                 </div>
 
-                                <Separator orientation="vertical" className="dark:border-indigo-300 border-indigo-800 md:block hidden border-2 rounded-lg" />
+                                <Separator orientation="vertical" className="dark:border-indigo-300 border-indigo-800 border-2 md:block hidden rounded-lg" />
 
                                 <div
-                                    className="flex-1 grid md:grid-cols-2 grid-cols-1 px-6"
+                                    className="flex-1 grid md:grid-cols-2 grid-cols-1 md:px-6"
                                 >
                                     <span>
                                         <p 
-                                            className="text-sm dark:text-indigo-300 text-indigo-900"
+                                            className="md:text-sm text-xs/2 dark:text-indigo-300 text-indigo-900"
                                         >
                                             your attempts recorded
                                         </p>
                                         <p 
-                                            className="text-4xl font-semibold"
+                                            className="md:text-3xl text-xl font-semibold"
                                         >
                                             {quiz?.attempts ? quiz.attempts.length : "..."}
                                         </p>
                                     </span>
                                     <span>
                                         <p 
-                                            className="text-sm dark:text-indigo-300 text-indigo-900"
+                                            className="md:text-sm text-xs/2 dark:text-indigo-300 text-indigo-900"
                                         >
                                             your average score
                                         </p>
                                         <p
-                                            className="text-4xl font-semibold"
+                                            className="md:text-3xl text-xl font-semibold"
                                         >   
                                             {userAverageScore != null ? userAverageScore : "..."}
                                         </p>
