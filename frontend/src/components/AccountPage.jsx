@@ -49,37 +49,37 @@ export function AccountPage() {
     }, [user, navigate]);
 
     useEffect(() => {
-        async function getAccount() {
-            setLoading(true);
-            try {
-                const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}`, {
-                    method: "GET",
-                    credentials: "include",
-                });
-                if(!response.ok) {
-                    console.error(`Error getting a response for study set: `, response.status);
-                    return;
-                }
-
-                const result = await response.json();
-
-                if(result.status == 1) {
-                    setStudySets(result.userStudySets);
-                    setFlashcardCount(result.flashcardCount);
-                    setAttemptCount(result.attemptCount);
-                    setCreatedAt(result.createdAt);
-                    setFavorites(result.userFavorites);
-                }
-            } catch (err) {
-                console.error(`Error getting account info: `, err);
-            }
-            finally {
-                setLoading(false);
-            }
-        }
-
         getAccount();
     }, []);
+
+    async function getAccount() {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}`, {
+                method: "GET",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                console.error(`Error getting a response for study set: `, response.status);
+                return;
+            }
+
+            const result = await response.json();
+
+            if(result.status == 1) {
+                setStudySets(result.userStudySets);
+                setFlashcardCount(result.flashcardCount);
+                setAttemptCount(result.attemptCount);
+                setCreatedAt(result.createdAt);
+                setFavorites(result.userFavorites);
+            }
+        } catch (err) {
+            console.error(`Error getting account info: `, err);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
 
     async function handleDelete(studySetId) {
         setLoading(true);
@@ -96,6 +96,7 @@ export function AccountPage() {
             const result = await response.json();
             if(result.status == 1) {
                 setStudySets(prev => prev.filter(s => s.id !== studySetId));
+                getAccount();
             }
             else {
                 console.error("Could not find study set to delete");
@@ -200,7 +201,7 @@ export function AccountPage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent
-                                className="flex flex-col gap-2 relative"
+                                className={`${!studySets || studySets.length === 0 ? "flex justify-center" : "grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1" } gap-2 relative`}
                             >
                                 { loading && <LoadingOverlay className="md:my-24 my-12" /> }
                                 { !studySets || studySets.length === 0 && 
@@ -213,22 +214,37 @@ export function AccountPage() {
                                         className="dark:bg-indigo-400 bg-indigo-100 border-1 border-indigo-700 dark:border-indigo-200 cursor-pointer"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
-                                        <CardHeader>
+                                        <CardHeader className="gap-1">
                                             <CardTitle className="font-bold dark:text-indigo-100 text-indigo-950">
                                                 {studySet.name}
                                             </CardTitle>
                                             <CardDescription
-                                                className="text-indigo-900"
+                                                className="text-indigo-900 flex flex-col gap-1"
                                             >
-                                                {studySet.public ? "Public " : "Private "}
-                                                • {studySet.deck.cards.length} flashcards 
-                                                • {studySet.quiz.attempts.length} quiz attempts
+                                                <p>
+                                                    {studySet.deck.cards.length} flashcards 
+                                                    • {studySet.quiz.attempts.length} quiz attempts
+                                                </p>
+                                                <p className="w-fit px-2 rounded-xl text-xs
+                                                    dark:bg-indigo-200 bg-indigo-900
+                                                    dark:text-indigo-900 text-indigo-200"
+                                                >
+                                                    {studySet.public ? "Public " : "Private "}
+                                                </p>
                                             </CardDescription>
                                         </CardHeader>
-                                        <CardContent>
-                                            <p className="flex items-center gap-2 text-sm font-semibold dark:text-indigo-100 text-indigo-950">
+                                        <CardContent className="grid grid-cols-2 items-center">
+                                            <MdDeleteOutline 
+                                                className="justify-start z-9999" 
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    handleDelete(studySet.id);
+                                                }}    
+                                            />
+                                            <p className="flex justify-end items-center gap-1 text-sm font-semibold dark:text-indigo-100 text-indigo-950">
+                                                {studySet.favoritedBy.length}
                                                 <FaHeart /> 
-                                                {studySet.favoritedBy.length} favorites
                                             </p>
                                         </CardContent>
                                     </Card>
