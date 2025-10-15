@@ -9,6 +9,7 @@ import { indexRouter } from "./routes/indexRouter.js";
 import { generateRouter } from "./routes/generateRouter.js";
 import { accountRouter } from "./routes/accountRouter.js";
 import { studySetRouter } from "./routes/studySetRouter.js";
+import { exploreRouter } from "./routes/exploreRouter.js";
 
 // config
 import { sessionConfig } from "./config/sessionConfig.js";
@@ -45,6 +46,7 @@ app.use("/api", indexRouter);
 app.use("/api/account", accountRouter);
 app.use("/api/generate", generateRouter);
 app.use("/api/study-set", studySetRouter);
+app.use("/api/explore", exploreRouter);
 app.use((req, res) => {
 	res.status(404).json({ error: "Not Found" });
 });
