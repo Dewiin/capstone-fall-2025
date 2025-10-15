@@ -314,9 +314,9 @@ export function StudySetPage() {
                                                     }
                                                 })}
                                             >
-                                                <CardContent className="flex overflow-scroll">
+                                                <CardContent className="flex overflow-scroll no-scrollbar">
                                                     { flipped[card.id] ? (
-                                                        <div className="flex flex-col h-full overflow-scroll gap-2">
+                                                        <div className="flex flex-col h-full gap-2">
                                                             <span className="md:text-sm text-xs text-gray-500">
                                                                 {card.question}
                                                             </span>
@@ -353,7 +353,7 @@ export function StudySetPage() {
                                 >
                                     <CardContent className="flex justify-between h-full">
                                         {/* Question */}
-                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll text-sm md:mx-auto mx-4">
+                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll no-scrollbar text-sm md:mx-auto mx-4">
                                             <p className="whitespace-pre-wrap">{card.question}</p>
                                         </div>
 
@@ -361,7 +361,7 @@ export function StudySetPage() {
                                         <Separator orientation="vertical" className="border-1 border-indigo-300" />
 
                                         {/* Answer */}
-                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll text-sm md:mx-auto mx-4">
+                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll no-scrollbar text-sm md:mx-auto mx-4">
                                             <p className="whitespace-pre-wrap">{card.answer}</p>
                                         </div>
                                     </CardContent>
