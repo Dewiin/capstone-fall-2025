@@ -3,6 +3,7 @@ import { LandingPage } from './components/LandingPage';
 import { AccountPage } from './components/AccountPage';
 import { GeneratePage } from './components/GeneratePage';
 import { StudySetPage } from './components/StudySetPage';
+import { ExplorePage } from './components/ExplorePage';
 import { PageNotFound } from './components/PageNotFound';
 
 // Components
@@ -27,6 +28,7 @@ function App() {
           <Route path="/study-set/:studySetId?" element={ <StudySetPage /> } />
           <Route path="/form/:method" element={ <Form /> } />
           <Route path="/generate" element={ <GeneratePage /> } />
+          <Route path="/explore" element={ <ExplorePage /> } />
           <Route path="/*" element={ <PageNotFound /> } />
         </Routes>
       </BrowserRouter>

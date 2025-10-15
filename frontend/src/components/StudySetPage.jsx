@@ -43,7 +43,7 @@ import {
 // react
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "./contexts/Contexts";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
@@ -54,6 +54,7 @@ export function StudySetPage() {
     const { studySetId } = useParams();
     const smoothScroll = useRef(null);
     const navigate = useNavigate();
+    const [ searchParams, setSearchParams ] = useSearchParams();
 
     // notes
     const [ quiz, setQuiz ] = useState({questions: []});
@@ -230,9 +231,15 @@ export function StudySetPage() {
                         <BreadcrumbItem>
                             <BreadcrumbLink
                                 className="select-none"
-                                onClick={() => navigate(`/account/${user.id}`)}
+                                onClick={() => {
+                                    if(searchParams.get("explore")) {
+                                        navigate(`/explore`);
+                                    } else {
+                                        navigate(`/account/${user.id}`);
+                                    }
+                                }}
                             >
-                                {user?.displayName}
+                                {searchParams.get("explore") ? "Explore" : user?.displayName}
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />

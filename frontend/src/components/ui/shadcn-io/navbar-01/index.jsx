@@ -234,7 +234,9 @@ export const Navbar01 = React.forwardRef((
                               navigate(link.href);
                             } else {
                               navigate(`/${link.href}`);
-                              // document.getElementById(`${link.href.slice(1)}`)?.scrollIntoView({ behavior: 'smooth' })
+                              setTimeout(() => {
+                                document.getElementById(link.href.slice(1))?.scrollIntoView({ behavior: "smooth" });
+                              }, 50);
                             }
                           }}
                           className={cn(
@@ -276,7 +278,7 @@ export const Navbar01 = React.forwardRef((
                             navigate(`/${link.href}`);
                             setTimeout(() => {
                               document.getElementById(link.href.slice(1))?.scrollIntoView({ behavior: "smooth" });
-                            }, 1);
+                            }, 50);
                           }
                         }}
                         className={cn(

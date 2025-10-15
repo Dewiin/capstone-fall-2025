@@ -13,6 +13,22 @@ const deckConfig = {
             status: {
                 type: Type.INTEGER,
             },
+            categories: {
+                type: Type.ARRAY,
+                items: {
+                    type:Type.STRING,
+                    enum: [ 
+                        "SCIENCE", 
+                        "MATH",
+                        "HISTORY",
+                        "LANGUAGE",
+                        "TECHNOLOGY",
+                        "ART",
+                        "BUSINESS",
+                        "OTHER"
+                    ]
+                },
+            },
             flashCards: {
                 type: Type.ARRAY,
                 items: {
@@ -29,7 +45,7 @@ const deckConfig = {
                 }
             }
         },
-        propertyOrdering: ["status", "flashCards"],
+        propertyOrdering: ["status", "categories", "flashCards"],
     }
 }
 
@@ -82,8 +98,8 @@ const quizConfig = {
 async function textInputDeck(text) {
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: `You are an AI model designed to generate study flash cards from a text input. If the text
-        has no meaning, or if no material can be generated from the text, set the 'status' to the integer 0. 
+        contents: `You are an AI model designed to generate study flash cards from a text input. Add a list of relevant categories 
+        in the output. If the text has no meaning, or if no material can be generated from the text, set the 'status' to the integer 0. 
         Otherwise, set the 'status' to the integer 1. Here is the text:
         ${text}
         `,
@@ -97,10 +113,10 @@ async function textInputDeck(text) {
 async function generateQuiz(deck) {
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: `You are an AI model designed to generate a quiz from an object. The object represents a deck of flash cards. Return one quiz with quizQuestions and quizOptions (a, b, c, d).
-        The answer to the quizQuestion should be a character (a, b, c, d). Try to generate as many questions as the amount of flash cards in the deck object.
-        Each question should have options that are reasonably different. Do not reuse other flash card answers as quizOptions. 
-        If the object has a status of 0, set the of your response 'status' to the integer 0. Otherwise, set the 'status' to the integer 1. Here is the object:
+        contents: `You are an AI model designed to generate a quiz from an object. The object represents a deck of flash cards. Return one quiz with quizQuestions 
+        and quizOptions (a, b, c, d). The answer to the quizQuestion should be a character (a, b, c, d). Each question should have options that are reasonably similar 
+        and related to the question. Do not reuse other flash card answers as quizOptions. If the object has a status of 0, set the of your response 'status' 
+        to the integer 0. Otherwise, set the 'status' to the integer 1. Here is the object:
         ${deck}
         `,
         config: quizConfig,
@@ -136,9 +152,9 @@ async function pdfInputDeck(pdfData) {
 
     // Add the file to the contents.
     const content = [
-        `You are an AI model designed to generate study flash cards from a pdf input. If the information in 
-        the pdf has no meaning, or if no material can be generated from the pdf, set the 'status' to the integer 0. 
-        Otherwise, set the 'status' to the integer 1.`,
+        `You are an AI model designed to generate study flash cards from a pdf input. Add a list of relevant categories 
+        in the output. If the information in the pdf has no meaning, or if no material can be generated from the pdf, 
+        set the 'status' to the integer 0. Otherwise, set the 'status' to the integer 1.`,
     ];
 
     if (file.uri && file.mimeType) {
