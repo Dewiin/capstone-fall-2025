@@ -91,7 +91,7 @@ export function ExplorePage() {
         >
           Categories
         </p>
-        <div className="grid sm:grid-cols-4 grid-cols-2 grid-rows-2 gap-2">
+        <div className="grid sm:grid-cols-4 grid-cols-2 grid-rows-2 gap-2 items-center">
           { allCategories.current.map((category) => (
             <Card
               className="p-4 py-2 flex-row items-center gap-2 w-xs/2 rounded-sm cursor-pointer
@@ -100,7 +100,7 @@ export function ExplorePage() {
             >
               <FaBook size={28} />
               <CardHeader className="p-0 w-20 gap-0">
-                <CardTitle className="text-sm">
+                <CardTitle className="text-xs">
                   {category.charAt(0) + category.slice(1).toLocaleLowerCase()}
                 </CardTitle>
                 <CardDescription className="text-xs/2">
@@ -117,7 +117,7 @@ export function ExplorePage() {
         <p className="font-extrabold">
           Popular study sets
         </p>
-        <div className="relative grid grid-cols-2 gap-2">
+        <div className="relative grid grid-cols-2 gap-3">
           { loading && <LoadingOverlay className="my-24" /> }
           { studySets?.map((studySet) => (
             <Card
@@ -127,7 +127,7 @@ export function ExplorePage() {
               onClick={() => navigate(`/study-set/${studySet.id}?explore=true`)}
             >
               <CardHeader className="gap-1">
-                <CardTitle className="font-bold dark:text-indigo-100 text-indigo-950">
+                <CardTitle className="font-bold dark:text-indigo-100 text-indigo-950 text-nowrap truncate">
                   {studySet.name}
                 </CardTitle>
                 <CardDescription
@@ -145,17 +145,19 @@ export function ExplorePage() {
                   </p>
                 </CardDescription>
               </CardHeader>
-              <CardContent className="grid grid-cols-2">
-                <p className="flex gap-1 items-center justify-start text-sm font-semibold">
+              <CardContent className="grid md:grid-cols-2 grid-cols-1 md:gap-0 gap-2">
+                <div className="flex gap-1 items-center justify-start text-sm font-semibold">
                   <Avatar className="size-6 rounded-2xl">
                     <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
                     <AvatarFallback>Icon</AvatarFallback>
                   </Avatar>
-                  { studySet.user.displayName }
-                </p>
-                <p className="flex items-center gap-1 text-sm font-semibold dark:text-indigo-100 text-indigo-950 justify-end">
-                  {studySet["_count"].favoritedBy}
+                  <p className="truncate">
+                    { studySet.user.displayName }
+                  </p>
+                </div>
+                <p className="flex items-center gap-1 text-sm font-semibold dark:text-indigo-100 text-indigo-950 md:justify-end md:pl-0 pl-1">
                   <FaHeart /> 
+                  {studySet["_count"].favoritedBy}
                 </p>
               </CardContent>
           </Card>
