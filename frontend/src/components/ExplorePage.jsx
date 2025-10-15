@@ -138,8 +138,9 @@ export function ExplorePage() {
                     • {studySet.quiz.attempts.length} quiz attempts
                   </p>
                   <p className="w-fit px-2 rounded-xl text-xs
-                  dark:bg-indigo-300 bg-indigo-900
-                  dark:text-indigo-900 text-indigo-200">
+                    dark:bg-indigo-300 bg-indigo-900
+                    dark:text-indigo-900 text-indigo-200"
+                  >
                     {studySet.public ? "Public " : "Private "}
                   </p>
                 </CardDescription>

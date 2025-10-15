@@ -163,11 +163,23 @@ async function studySetUpdate(req, res) {
 async function studySetDelete(req, res) {
     try {
     const { studySetId } = req.params;
-
-    const studySet = await prisma.studySet.delete({
+    
+    let studySet = await prisma.studySet.findUnique({
         where: {
             id: parseInt(studySetId),
         }
+    });
+
+    if(studySet.userId != req.user.id) {
+        return res.json({
+            status: 0,
+        })
+    }
+
+    studySet = await prisma.studySet.delete({
+        where: {
+            id: parseInt(studySetId),
+        },
     });
 
     if(studySet) {
