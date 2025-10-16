@@ -21,6 +21,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import blackLogo from "@/assets/brainstorm_logo_black.png";
+import whiteLogo from "@/assets/brainstorm_logo_white.png";
 import { Moon, Sun } from 'lucide-react';
 import { GiBrainstorm } from "react-icons/gi";
 import { LoadingOverlay } from '@/components/LoadingOverlay';
@@ -30,30 +32,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 // Simple logo component for the navbar
 const Logo = (props) => {
   return (
-    <svg
-      width='1em'
-      height='1em'
-      viewBox='0 0 324 323'
-      fill='currentColor'
-      xmlns='http://www.w3.org/2000/svg'
-      {...props}>
-      <rect
-        x='88.1023'
-        y='144.792'
-        width='151.802'
-        height='36.5788'
-        rx='18.2894'
-        transform='rotate(-38.5799 88.1023 144.792)'
-        fill='currentColor' />
-      <rect
-        x='85.3459'
-        y='244.537'
-        width='151.802'
-        height='36.5788'
-        rx='18.2894'
-        transform='rotate(-38.5799 85.3459 244.537)'
-        fill='currentColor' />
-    </svg>
+    <img src={props.logo} width={20} />
   );
 };
 
@@ -224,10 +203,10 @@ export const Navbar01 = React.forwardRef((
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent align="start" className="w-48 p-2">
-                <NavigationMenu className="max-w-none">
+                <NavigationMenu className="max-w-none justify-start">
                   <NavigationMenuList className="flex-col items-start gap-1">
                     {navigationLinks.map((link, index) => (
-                      <NavigationMenuItem key={index} className="w-full">
+                      <NavigationMenuItem key={index} className="w-full ">
                         <button
                           onClick={() => {
                             if(link.href.charAt(0) === "/") {
@@ -260,7 +239,7 @@ export const Navbar01 = React.forwardRef((
                 onClick={() => navigate(logoHref)}
                 className="flex items-center space-x-3 text-primary hover:text-primary/90 transition-colors cursor-pointer">
                 <div className="text-2xl">
-                  <GiBrainstorm className='text-2xl' />
+                  <Logo logo={darkMode ? whiteLogo : blackLogo} />
                 </div>
                 <span className="hidden font-bold text-xl sm:inline-block">Brainstorm</span>
               </button>
