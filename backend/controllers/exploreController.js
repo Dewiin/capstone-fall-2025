@@ -117,7 +117,44 @@ async function filterCategory(req, res) {
 
 async function resultGet(req, res) {
   try {
-    console.log(req.query);
+    const { search_query } = req.query;
+
+    const studySets = await prisma.studySet.findMany({
+      where: {
+        public: true,
+        name: {
+          contains: search_query,
+          mode: "insensitive",
+        }
+      },
+      include: {
+        _count: {
+          select: {
+            favoritedBy: true,
+          }
+        },
+        deck: {
+          include: {
+            cards: true,
+          }
+        },
+        quiz: {
+          include: {
+            attempts: true,
+          }
+        },
+        user: true,
+      }, 
+      orderBy: {
+        favoritedBy: {
+          _count: "desc",
+        }
+      },
+    });
+
+    return res.json({
+      studySets,
+    });
   } catch (err) {
     console.error(`Error retrieving results from database: `, err);
   }

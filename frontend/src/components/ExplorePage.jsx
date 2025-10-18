@@ -50,40 +50,43 @@ export function ExplorePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function getCategories() {
-      setLoading(true);
-      try {
-        const response = await fetch(`${API_URL_DOMAIN}/api/explore`, {
-          method: "GET", 
-          credentials: "include",
-        });
-        if(!response.ok) {
-          console.error(`Error getting a response for categories: `, response.status);
-          return;
-        }
-
-        const result = await response.json();
-        if(result.status === 1) {
-          setStudySets(result.studySets);
-          setCategories(result.categoryCounts);
-        }
-        else {
-          console.error(`Error finding study sets`)
-        }
-      } catch (err) {
-        console.error(`Error fetching categories: `, err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     getCategories();
   }, []);
+  
+  async function getCategories() {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL_DOMAIN}/api/explore`, {
+        method: "GET", 
+        credentials: "include",
+      });
+      if(!response.ok) {
+        console.error(`Error getting a response for categories: `, response.status);
+        return;
+      }
+
+      const result = await response.json();
+      if(result.status === 1) {
+        setStudySets(result.studySets);
+        setCategories(result.categoryCounts);
+      }
+      else {
+        console.error(`Error finding study sets`)
+      }
+    } catch (err) {
+      console.error(`Error fetching categories: `, err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleFilterCategory(categoryName) {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL_DOMAIN}/api/explore/category?filter=${categoryName}`);
+      const response = await fetch(`${API_URL_DOMAIN}/api/explore/category?filter=${categoryName}`, {
+        method: "GET", 
+        credentials: "include"
+      });
       if(!response.ok) {
         console.error(`Error getting a response for category filter: `, response.status);
       }
@@ -93,6 +96,27 @@ export function ExplorePage() {
       setContentTitle(categoryName.charAt(0) + categoryName.slice(1).toLocaleLowerCase());
     } catch (err) {
       console.error(`Error finding study sets from filter: `, err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSearch(searchQuery) {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL_DOMAIN}/api/explore/result?search_query=${searchQuery}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if(!response.ok) {
+        console.error(`Error getting a response for search query: `, response.status);
+        return;
+      }
+
+      const result = await response.json();
+      setStudySets(result.studySets);
+    } catch (err) {
+      console.error(`Error handling search query: `, err);
     } finally {
       setLoading(false);
     }
@@ -112,6 +136,15 @@ export function ExplorePage() {
           placeholder="Search for a study set..." 
           className="
           dark:bg-slate-900 bg-indigo-100 border-none"
+          onChange={(e) => {
+            if(e.target.value.trim().length > 0) {
+              handleSearch(e.target.value);
+              setContentTitle(e.target.value.trim());
+            } else {
+              getCategories();
+              setContentTitle("Popular Study Sets");
+            }
+          }}
         />
       </div>
 
