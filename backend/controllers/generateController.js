@@ -8,7 +8,8 @@ async function generateTextPost(req, res) {
         const { studySetName } = req.body;
        
         const deckResult = await gemini.textInputDeck(text);
-        const category = deckResult.category;
+        const categories = deckResult.categories;
+        console.log(categories);
         const deckObject = JSON.stringify(deckResult);
         const quizResult = await gemini.generateQuiz(deckObject);
 
@@ -18,7 +19,7 @@ async function generateTextPost(req, res) {
                 data: {
                     name: studySetName,
                     userId: user.id,
-                    category,
+                    category: categories,
                 }
             });
 
