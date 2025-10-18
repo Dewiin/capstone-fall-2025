@@ -31,54 +31,53 @@ import { FaPaintbrush } from "react-icons/fa6";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
-export function ExplorePage() {
+export function ResultsPage() {
   const allCategories = useRef([
-    {name: "SCIENCE", icon: <MdScience size={24} className="dark:text-indigo-200 text-slate-900" />},
-    {name: "MATH", icon: <PiMathOperationsBold size={24} className="dark:text-indigo-200 text-slate-900" />},
-    {name: "HISTORY", icon: <FaBook size={24} className="dark:text-indigo-200 text-slate-900" />},
-    {name: "LANGUAGE", icon: <IoLanguageSharp size={24} className="dark:text-indigo-200 text-slate-900" />},
-    {name: "TECHNOLOGY", icon: <MdComputer size={24} className="dark:text-indigo-200 text-slate-900" />},
-    {name: "ART", icon: <FaPaintbrush size={24} className="dark:text-indigo-200 text-slate-900" />},
-    {name: "BUSINESS", icon: <IoBusinessSharp size={24} className="dark:text-indigo-200 text-slate-900" />},
-    {name: "OTHER", icon: <MdMiscellaneousServices size={24} className="dark:text-indigo-200 text-slate-900" />},
+    {name: "SCIENCE", icon: <MdScience size={26} />},
+    {name: "MATH", icon: <PiMathOperationsBold size={26} />},
+    {name: "HISTORY", icon: <FaBook size={26} />},
+    {name: "LANGUAGE", icon: <IoLanguageSharp size={26} />},
+    {name: "TECHNOLOGY", icon: <MdComputer size={26} />},
+    {name: "ART", icon: <FaPaintbrush size={26} />},
+    {name: "BUSINESS", icon: <IoBusinessSharp size={26} />},
+    {name: "OTHER", icon: <MdMiscellaneousServices size={26} />},
   ]);
   const [ categories, setCategories ] = useState([]);
   const [ studySets, setStudySets ] = useState(null);
   const [ loading, setLoading ] = useState(false);
-  const [ ContentTitle, setContentTitle ] = useState("Popular Study Sets")
   const { pageNumber } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    async function getCategories() {
-      setLoading(true);
-      try {
-        const response = await fetch(`${API_URL_DOMAIN}/api/explore`, {
-          method: "GET", 
-          credentials: "include",
-        });
-        if(!response.ok) {
-          console.error(`Error getting a response for categories: `, response.status);
-          return;
-        }
+//   useEffect(() => {
+//     async function getCategories() {
+//       setLoading(true);
+//       try {
+//         const response = await fetch(`${API_URL_DOMAIN}/api/explore`, {
+//           method: "GET", 
+//           credentials: "include",
+//         });
+//         if(!response.ok) {
+//           console.error(`Error getting a response for categories: `, response.status);
+//           return;
+//         }
 
-        const result = await response.json();
-        if(result.status === 1) {
-          setStudySets(result.studySets);
-          setCategories(result.categoryCounts);
-        }
-        else {
-          console.error(`Error finding study sets`)
-        }
-      } catch (err) {
-        console.error(`Error fetching categories: `, err);
-      } finally {
-        setLoading(false);
-      }
-    }
+//         const result = await response.json();
+//         if(result.status === 1) {
+//           setStudySets(result.studySets);
+//           setCategories(result.categoryCounts);
+//         }
+//         else {
+//           console.error(`Error finding study sets`)
+//         }
+//       } catch (err) {
+//         console.error(`Error fetching categories: `, err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
 
-    getCategories();
-  }, []);
+//     getCategories();
+//   }, []);
 
   async function handleFilterCategory(categoryName) {
     setLoading(true);
@@ -90,7 +89,6 @@ export function ExplorePage() {
 
       const result = await response.json();
       setStudySets(result.studySets);
-      setContentTitle(categoryName.charAt(0) + categoryName.slice(1).toLocaleLowerCase());
     } catch (err) {
       console.error(`Error finding study sets from filter: `, err);
     } finally {
@@ -110,8 +108,8 @@ export function ExplorePage() {
         <Input 
           type="text" 
           placeholder="Search for a study set..." 
-          className="
-          dark:bg-slate-900 bg-indigo-100 border-none"
+          className="dark:bg-slate-900 bg-indigo-200
+          border-1 dark:border-indigo-100 border-indigo-900"
         />
       </div>
 
@@ -133,8 +131,9 @@ export function ExplorePage() {
             { allCategories.current.map((category) => (
               <CarouselItem className="md:basis-1/4 sm:basis-1/3 ">
                 <Card
-                  className="px-3 py-1.25 flex-row items-center gap-4 w-xs/2 rounded-sm cursor-pointer select-none
-                  dark:bg-slate-900 bg-indigo-100 border-none"
+                  className="p-4 py-2 flex-row items-center gap-4 w-xs/2 rounded-sm cursor-pointer select-none
+                  dark:bg-slate-900 bg-blue-200
+                  border-1 dark:border-indigo-200 border-indigo-900"
                   onClick={() => handleFilterCategory(category.name)}
                 >
                   {category.icon}
@@ -143,7 +142,7 @@ export function ExplorePage() {
                       {category.name.charAt(0) + category.name.slice(1).toLocaleLowerCase()}
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      {categories[category.name] ? categories[category.name] : "0"} {categories[category.name] === 1 ? "study set" : "study sets"}
+                      {categories[category.name] ? categories[category.name] : "0"} study sets
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -158,27 +157,24 @@ export function ExplorePage() {
       {/* Content */}
       <div className="flex-1 flex flex-col gap-2">
         <p className="font-extrabold">
-          { ContentTitle }
+          Results
         </p>
         <div className="relative grid md:grid-cols-2 grid-cols-1 gap-3">
           { loading && <LoadingOverlay className="my-24" /> }
-          {!loading && studySets?.length === 0 && 
-            <p className="text-center w-full absolute mt-24">
-              No study sets found 
-            </p>
-          }
-          {!loading && studySets?.map((studySet) => (
+          { studySets?.map((studySet) => (
             <Card
-              className="cursor-pointer border-none
-              dark:bg-slate-900 bg-indigo-100"
+              key={studySet.id}
+              className="cursor-pointer
+              dark:bg-slate-900 bg-indigo-200 
+              border-1 border-indigo-700 dark:border-indigo-200"
               onClick={() => navigate(`/study-set/${studySet.id}?explore=true`)}
             >
               <CardHeader className="gap-1">
-                <CardTitle className="font-bold dark:text-indigo-100 text-slate-950 text-nowrap">
+                <CardTitle className="font-bold dark:text-indigo-100 text-indigo-950 text-nowrap">
                   {studySet.name}
                 </CardTitle>
                 <CardDescription
-                  className="dark:text-indigo-300 text-slate-900 flex flex-col gap-1"
+                  className="dark:text-indigo-300 text-indigo-900 flex flex-col gap-1"
                 >
                   <p>
                     {studySet.deck.cards.length} flashcards 
@@ -203,7 +199,7 @@ export function ExplorePage() {
                   </p>
                 </div>
                 <p className="flex items-center gap-1 text-sm font-semibold dark:text-indigo-100 text-indigo-950 md:justify-end md:pl-0 pl-1">
-                  <FaHeart className="text-slate-950 dark:text-indigo-200" /> 
+                  <FaHeart /> 
                   {studySet["_count"].favoritedBy}
                 </p>
               </CardContent>

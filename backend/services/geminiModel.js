@@ -15,6 +15,7 @@ const deckConfig = {
             },
             categories: {
                 type: Type.ARRAY,
+                description: "Array of categories relevant to the study set",
                 items: {
                     type:Type.STRING,
                     enum: [ 

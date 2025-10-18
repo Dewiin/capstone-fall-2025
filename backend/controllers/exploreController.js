@@ -2,20 +2,34 @@ import { prisma } from "../config/prismaClient.js";
 
 async function exploreGet(req, res) {
   try {
-    const categoryCounts = await prisma.studySet.groupBy({
-      by: ['category'],
-      _count: {
-        category: true,
-      },
-      where: {
-        public: true,
-      }
-    });
+    const categories = [
+      "SCIENCE", 
+      "MATH", 
+      "HISTORY", 
+      "LANGUAGE", 
+      "TECHNOLOGY", 
+      "ART", 
+      "BUSINESS", 
+      "OTHER"
+    ];
+
+    const categoryCounts = {};
+
+    for (const category of categories) {
+      categoryCounts[category] = await prisma.studySet.count({
+        where: {
+          public: true,
+          category: {
+            has: category,
+          }
+        }
+      });
+    }
 
     const studySets = await prisma.studySet.findMany({
-      // where: {
-      //   public: true,
-      // },
+      where: {
+        public: true,
+      },
       include: {
         _count: {
           select: {
@@ -57,9 +71,53 @@ async function exploreGet(req, res) {
   }
 }
 
+async function filterCategory(req, res) {
+  try {
+    const { filter } = req.query;
+
+    const studySets = await prisma.studySet.findMany({
+      where: {
+        public: true,
+        category: {
+          has: filter,
+        }
+      },
+      include: {
+        _count: {
+          select: {
+            favoritedBy: true,
+          }
+        },
+        deck: {
+          include: {
+            cards: true,
+          }
+        },
+        quiz: {
+          include: {
+            attempts: true,
+          }
+        },
+        user: true,
+      }, 
+      orderBy: {
+        favoritedBy: {
+          _count: "desc",
+        }
+      },
+    });
+
+    return res.json({
+      studySets,
+    });
+  } catch (err) {
+    console.error(`Error retrieving results for category: `, err);
+  }
+}
+
 async function resultGet(req, res) {
   try {
-
+    console.log(req.query);
   } catch (err) {
     console.error(`Error retrieving results from database: `, err);
   }
@@ -67,5 +125,6 @@ async function resultGet(req, res) {
 
 export const exploreController = {
   exploreGet,
+  filterCategory,
   resultGet
 }

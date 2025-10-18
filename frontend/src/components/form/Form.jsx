@@ -8,12 +8,18 @@ export function Form() {
 
     return (
         <>
-            <div className="flex min-h-[90vh] w-full items-center justify-center p-6 md:p-10">
+            <div className="flex h-[70vh] w-full mt-24 justify-center p-6 md:p-10">
                 <div className="w-full max-w-sm">
                     { (method === "login") ? (
-                        <LoginForm />
+                        <div className="flex flex-col gap-2">
+                            <p className="font-bold text-xl text-center">Brainstorm</p>
+                            <LoginForm />
+                        </div>
                     ) : method === "signup" ? (
-                        <SignupForm />
+                        <div className="flex flex-col gap-2">
+                            <p className="font-bold text-xl text-center">Brainstorm</p>
+                            <SignupForm />
+                        </div>
                     ) : null }
                 </div>
             </div>

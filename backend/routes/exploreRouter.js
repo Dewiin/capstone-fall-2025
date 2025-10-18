@@ -3,4 +3,5 @@ import { exploreController } from "../controllers/exploreController.js";
 export const exploreRouter = Router();
 
 exploreRouter.get("/", exploreController.exploreGet);
+exploreRouter.get("/category", exploreController.filterCategory);
 exploreRouter.get("/result", exploreController.resultGet);
