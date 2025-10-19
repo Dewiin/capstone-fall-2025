@@ -110,6 +110,10 @@ export const Navbar01 = React.forwardRef((
   }, [darkMode]); 
 
   useEffect(() => {
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
     if(searchParams.get("login") === "success") {
       fetchUser();
 
