@@ -11,12 +11,12 @@ export function Form() {
             <div className="flex h-[70vh] w-full mt-24 justify-center p-6 md:p-10">
                 <div className="w-full max-w-sm">
                     { (method === "login") ? (
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-6">
                             <p className="font-bold text-xl text-center">Brainstorm</p>
                             <LoginForm />
                         </div>
                     ) : method === "signup" ? (
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-6">
                             <p className="font-bold text-xl text-center">Brainstorm</p>
                             <SignupForm />
                         </div>

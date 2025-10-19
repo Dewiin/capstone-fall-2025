@@ -24,15 +24,18 @@ import {
 import blackLogo from "@/assets/brainstorm_logo_black.png";
 import whiteLogo from "@/assets/brainstorm_logo_white.png";
 import { Moon, Sun } from 'lucide-react';
-import { GiBrainstorm } from "react-icons/gi";
 import { LoadingOverlay } from '@/components/LoadingOverlay';
-import { cn } from '@/lib/utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 // Simple logo component for the navbar
-const Logo = (props) => {
+const Logo = ({className, logo}) => {
   return (
-    <img src={props.logo} width={20} />
+    <img
+      className={cn(className)} 
+      src={logo} 
+      width={20} 
+    />
   );
 };
 
@@ -89,7 +92,7 @@ export const Navbar01 = React.forwardRef((
   ref
 ) => {
   const [isMobile, setIsMobile] = useState(false);
-  const [darkMode, setDarkMode]= useState(true);
+  const [darkMode, setDarkMode]= useState(localStorage.theme === "dark" ? true : false);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
   const { fetchUser, user, logout } = useAuth();
@@ -100,7 +103,10 @@ export const Navbar01 = React.forwardRef((
   const onCtaClick = () => navigate(ctaHref);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
+    document.documentElement.classList.toggle("dark",  
+      localStorage.theme === "dark" 
+      || (!("theme" in localStorage) 
+      && window.matchMedia("(prefers-color-scheme: dark)").matches),);
   }, [darkMode]); 
 
   useEffect(() => {
@@ -281,6 +287,7 @@ export const Navbar01 = React.forwardRef((
                 className="font-medium h-9 w-9 hover:bg-accent hover:text-accent-foreground"
                 variant="ghost"
                 onClick={() => {
+                  localStorage.theme = !darkMode ? "dark" : "light";
                   setDarkMode(!darkMode);
                 }}>
                 { darkMode ? (
