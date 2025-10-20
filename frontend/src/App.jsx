@@ -5,7 +5,6 @@ import { GeneratePage } from './components/GeneratePage';
 import { StudySetPage } from './components/StudySetPage';
 import { ExplorePage } from './components/ExplorePage';
 import { PageNotFound } from './components/PageNotFound';
-import { ResultsPage } from './components/ResultsPage';
 
 // Components
 import { Form } from '@/components/form/Form';
@@ -30,7 +29,6 @@ function App() {
           <Route path="/form/:method" element={ <Form /> } />
           <Route path="/generate" element={ <GeneratePage /> } />
           <Route path="/explore" element={ <ExplorePage /> } />
-          <Route path="/explore/result" element={ <ResultsPage /> } />
           <Route path="/*" element={ <PageNotFound /> } />
         </Routes>
       </BrowserRouter>

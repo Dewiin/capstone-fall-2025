@@ -262,7 +262,7 @@ export function StudySetPage() {
                     }}
                 >
                     <TabsList 
-                        className="m-auto dark:bg-indigo-950 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900"
+                        className="m-auto dark:bg-slate-950 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900"
                     >
                         <TabsTrigger 
                             value="deck"
@@ -304,7 +304,7 @@ export function StudySetPage() {
                                         <CarouselItem key={card.id}>
                                             <Card 
                                                 className="aspect-video justify-center items-center md:p-20 p-8 overflow-hidden
-                                                    dark:bg-indigo-950 bg-indigo-200
+                                                    dark:bg-slate-950 bg-indigo-200
                                                     border-1 dark:border-indigo-200 border-indigo-900
                                                     dark:text-indigo-50 text-indigo-950"
                                                 onClick={() => setFlipped((prev) => {
@@ -347,7 +347,7 @@ export function StudySetPage() {
                                 <Card 
                                     key={card.id}
                                     className="md:w-3xl w-full h-40
-                                        dark:bg-indigo-950 bg-indigo-200 
+                                        dark:bg-slate-900 bg-indigo-100 
                                         border-1 dark:border-indigo-200 border-indigo-900
                                         dark:text-indigo-50 text-indigo-950"
                                 >
@@ -443,7 +443,7 @@ export function StudySetPage() {
                                     >
                                         <Card
                                             className="aspect-video md:p-12 py-12 relative
-                                                dark:bg-indigo-950 bg-indigo-200
+                                                dark:bg-slate-950 bg-indigo-200
                                                 border-1 dark:border-indigo-200 border-indigo-900"
                                         >
                                             <p className="absolute top-5 right-5 text-gray-500">
@@ -462,7 +462,7 @@ export function StudySetPage() {
                                                             className={
                                                                 `md:text-sm text-xs cursor-pointer
                                                                 dark:bg-[rgba(255,255,255,0.1)]
-                                                                bg-[rgba(255,255,255,0.5)] 
+                                                                bg-[rgba(255,255,255,0.3)] 
                                                                 ${key == selected[question.id] &&
                                                                 (submitted ?
                                                                 (
@@ -470,7 +470,7 @@ export function StudySetPage() {
                                                                 ) : (
                                                                     "border-indigo-700 dark:border-indigo-50"
                                                                 ))} 
-                                                                ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "dark:border-green-300 border-green-700 border-dashed"}
+                                                                ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "dark:border-green-500 border-green-700 border-dashed"}
                                                                 border-2`
                                                             }
                                                             onClick={() => {
@@ -520,7 +520,7 @@ export function StudySetPage() {
                         
                         <Card 
                             className="md:w-4xl mx-auto md:h-96 h-50
-                                dark:bg-indigo-950 bg-indigo-200
+                                dark:bg-slate-950 bg-indigo-300
                                 border-2 dark:border-indigo-200 border-indigo-900"
                         >
                             <CardContent className="w-full h-full">
@@ -574,7 +574,7 @@ export function StudySetPage() {
 
                         <Card 
                             className="md:w-4xl mx-auto my-16
-                            dark:bg-indigo-900 bg-indigo-300
+                            dark:bg-slate-900 bg-indigo-200
                             border-2 dark:border-indigo-200 border-indigo-800
                             "
                         >

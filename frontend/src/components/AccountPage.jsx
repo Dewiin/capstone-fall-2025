@@ -112,9 +112,9 @@ export function AccountPage() {
         <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 md:gap-16 gap-8 min-h-screen">
             {/* First Section */}
             <section className='flex md:flex-row flex-col gap-8 p-4 rounded-lg md:h-30 select-none
-                bg-indigo-200 dark:bg-indigo-950 
-                border-1 border-indigo-900
-                dark:border-indigo-300'>
+                bg-indigo-200 dark:bg-slate-950 
+                border-1 border-indigo-900 dark:border-indigo-300'
+            >
                 {/* Avatar/Name */}
                 <div className="flex gap-4 items-center pr-8 md:max-w-1/4 text-indigo-900 dark:text-indigo-200">
                     <Avatar className="size-20 rounded-2xl">
@@ -171,7 +171,7 @@ export function AccountPage() {
                     className="flex-1"
                 >
                     <TabsList
-                        className="dark:bg-indigo-950 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900 mb-4"
+                        className="dark:bg-slate-950 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900 mb-4"
                     >
                         <TabsTrigger 
                             value="studySets" 
@@ -190,7 +190,7 @@ export function AccountPage() {
                         <Card
                             className="w-full h-full border-1 
                                 dark:border-indigo-200 border-indigo-900
-                                dark:bg-indigo-950 bg-indigo-200"
+                                dark:bg-slate-950 bg-indigo-200"
                         >
                             <CardHeader>
                                 <CardTitle>
@@ -209,28 +209,38 @@ export function AccountPage() {
                                         No study sets. Create one from the 'Generate' tab!
                                     </p>
                                 }
-                                { studySets?.map((studySet) => (
+                                { !loading && studySets?.map((studySet) => (
                                     <Card
-                                        className="dark:bg-indigo-400 bg-indigo-100 border-1 border-indigo-700 dark:border-indigo-200 cursor-pointer"
+                                        className="dark:bg-slate-900 bg-indigo-100 
+                                        border-1 border-indigo-700 dark:border-indigo-200 cursor-pointer"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
                                         <CardHeader className="gap-1">
-                                            <CardTitle className="font-bold dark:text-indigo-100 text-indigo-950">
+                                            <CardTitle className="font-bold">
                                                 {studySet.name}
                                             </CardTitle>
                                             <CardDescription
-                                                className="text-indigo-900 flex flex-col gap-1"
+                                                className="dark:text-indigo-300 text-slate-900 flex flex-col gap-1"
                                             >
                                                 <p>
                                                     {studySet.deck.cards.length} flashcards 
                                                     • {studySet.quiz.attempts.length} quiz attempts
                                                 </p>
-                                                <p className="w-fit px-2 rounded-xl text-xs
-                                                    dark:bg-indigo-200 bg-indigo-900
-                                                    dark:text-indigo-900 text-indigo-200"
-                                                >
-                                                    {studySet.public ? "Public " : "Private "}
-                                                </p>
+                                                <div className="flex gap-2">
+                                                    <p className={`w-fit px-2 rounded-xl text-xs
+                                                        ${studySet.public ? "dark:bg-indigo-300 bg-indigo-300" : "dark:bg-slate-950 bg-indigo-900" }
+                                                        ${studySet.public ? "dark:text-indigo-900 text-indigo-950" : "dark:text-indigo-200 text-indigo-200" }`}
+                                                    >
+                                                        {studySet.public ? "Public " : "Private "}
+                                                    </p>
+                                                    <p className={`w-fit px-2 rounded-xl text-xs
+                                                        ${studySet.difficulty === "BEGINNER" && "dark:bg-green-900 bg-green-300 dark:text-white text-black" }
+                                                        ${studySet.difficulty === "INTERMEDIATE" && "dark:bg-yellow-700 bg-yellow-500 dark:text-white text-black" }}
+                                                        ${studySet.difficulty === "ADVANCED" && "dark:bg-red-900 bg-red-300 dark:text-white text-black"}`}
+                                                    >
+                                                        {studySet.difficulty.charAt(0) + studySet.difficulty.slice(1).toLowerCase()}
+                                                    </p>
+                                                </div>
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent className="grid grid-cols-2 items-center">
@@ -256,7 +266,7 @@ export function AccountPage() {
                         <Card
                             className="w-full h-full relative border-1 
                             dark:border-indigo-200 border-indigo-900
-                            dark:bg-indigo-950 bg-indigo-200"
+                            dark:bg-slate-950 bg-indigo-200"
                         >
                             <CardHeader>
                                 <CardTitle>
