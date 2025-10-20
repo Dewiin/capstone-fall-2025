@@ -6,20 +6,23 @@ async function generateTextPost(req, res) {
         const text = req.body.textInput;
         const user = req.user
         const { studySetName } = req.body;
+        const { difficulty } = req.body;
+        const { visibility } = req.body;
        
         const deckResult = await gemini.textInputDeck(text);
-        const categories = deckResult.categories;
-        console.log(categories);
-        const deckObject = JSON.stringify(deckResult);
-        const quizResult = await gemini.generateQuiz(deckObject);
+        const quizResult = await gemini.generateQuiz(JSON.stringify(deckResult), difficulty);
 
         if(deckResult.status == 1 && quizResult.status == 1) {
+            const categories = deckResult.categories;
+
             // create study set
             const studySet = await prisma.studySet.create({
                 data: {
                     name: studySetName,
                     userId: user.id,
                     category: categories,
+                    difficulty: difficulty.toUpperCase(),
+                    public: (visibility === "public"),
                 }
             });
 
@@ -79,17 +82,23 @@ async function generateFilePost(req, res) {
         const pdfData = req.file;
         const user = req.user
         const { studySetName } = req.body;
+        const { difficulty } = req.body;
+        const { visibility } = req.body;
 
         const deckResult = await gemini.pdfInputDeck(pdfData);
-        const deckObject = JSON.stringify(deckResult);
-        const quizResult = await gemini.generateQuiz(deckObject);
+        const quizResult = await gemini.generateQuiz(JSON.stringify(deckResult), difficulty);
 
         if(deckResult.status == 1 && quizResult.status == 1) {
+            const categories = deckResult.categories;
+
             // create study set
             const studySet = await prisma.studySet.create({
                 data: {
                     name: studySetName,
                     userId: user.id,
+                    category: categories,
+                    difficulty: difficulty.toUpperCase(),
+                    public: (visibility === "public"),
                 }
             });
 

@@ -41,7 +41,7 @@ model User {
   @@map("users")
 }
 
-// ---------- Category Model ----------
+// ---------- ENUMS ----------
 enum Category {
   SCIENCE
   MATH
@@ -53,12 +53,19 @@ enum Category {
   OTHER
 }
 
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
 // ---------- Study Set Model ----------
 model StudySet {
-  id        Int         @id @default(autoincrement())
-  name      String
-  public    Boolean     @default(true)
-  category  Category[]  @default([OTHER])
+  id         Int        @id @default(autoincrement())
+  name       String
+  public     Boolean    @default(true)
+  difficulty Difficulty @default(BEGINNER)
+  category   Category[] @default([OTHER])
 
   // Relations
   user        User   @relation(fields: [userId], references: [id])
