@@ -135,12 +135,18 @@ export function ExplorePage() {
           type="text" 
           placeholder="Search for a study set..." 
           className="
-          dark:bg-slate-900 bg-indigo-100 border-none"
+          dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none"
           onChange={(e) => {
             if(e.target.value.trim().length > 0) {
               handleSearch(e.target.value);
               setContentTitle(e.target.value.trim());
             } else {
+              getCategories();
+              setContentTitle("Popular Study Sets");
+            }
+          }}
+          onClick={(e) => {
+            if(e.target.value.trim().length === 0) {
               getCategories();
               setContentTitle("Popular Study Sets");
             }
@@ -167,7 +173,7 @@ export function ExplorePage() {
               <CarouselItem className="md:basis-1/4 sm:basis-1/3 ">
                 <Card
                   className="px-3 py-1.25 flex-row items-center gap-4 w-xs/2 rounded-sm cursor-pointer select-none
-                  dark:bg-slate-900 bg-indigo-100 border-none"
+                  dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none"
                   onClick={() => handleFilterCategory(category.name)}
                 >
                   {category.icon}
@@ -203,7 +209,7 @@ export function ExplorePage() {
           {!loading && studySets?.map((studySet) => (
             <Card
               className="cursor-pointer border-none
-              dark:bg-slate-900 bg-indigo-100"
+              dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]"
               onClick={() => navigate(`/study-set/${studySet.id}?explore=true`)}
             >
               <CardHeader className="gap-1">
