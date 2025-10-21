@@ -18,11 +18,7 @@ async function accountGet(req, res) {
                         },
                         quiz: {
                             include: {
-                                attempts: {
-                                    where: {
-                                        userId,
-                                    }
-                                }
+                                attempts: true,
                             }
                         },
                         favoritedBy: true,
@@ -63,10 +59,47 @@ async function accountGet(req, res) {
         console.error(`Error getting account page: `, err);
         return res.json({
             status: 0,
-        })
+        });
+    }
+}
+
+async function favoritePost(req, res) {
+    try {
+        const user = req.user;
+        const { userId, studySetId } = req.params;
+        console.log(studySetId);
+
+        if(user.id !== userId) {
+            return res.json({
+                status: 0,
+            });
+        }
+
+        await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                favorites: {
+                    connect: {
+                        id: parseInt(studySetId),
+                    }
+                }
+            }
+        });
+
+        return res.json({
+            status: 1,
+        });
+    } catch (err) {
+        console.error(`Error adding favorite for user: `, err);
+        return res.json({
+            status: 0,
+        });
     }
 }
 
 export const accountController = {
     accountGet,
+    favoritePost
 }

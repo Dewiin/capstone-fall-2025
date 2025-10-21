@@ -95,14 +95,38 @@ export function AccountPage() {
 
             const result = await response.json();
             if(result.status == 1) {
-                setStudySets(prev => prev.filter(s => s.id !== studySetId));
                 getAccount();
             }
             else {
-                console.error("Could not find study set to delete");
+                console.error("Error finding study set to delete");
             }
         } catch (err) {
             console.error(`Error deleting study set: `, err);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleFavorite(studySetId) {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}/favorite/${studySetId}`, {
+                method: "POST",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                console.error(`Error getting a response for favoriting: `, response.status);
+            }
+
+            const result = await response.json();
+            if(result.status == 1) {
+                getAccount();
+            }
+            else {
+                console.error("Error favoriting study set.");
+            }
+        } catch (err) {
+            console.error(`Error favoriting study set: `, err);
         } finally {
             setLoading(false);
         }
@@ -243,16 +267,24 @@ export function AccountPage() {
                                                 </div>
                                             </CardDescription>
                                         </CardHeader>
-                                        <CardContent className="grid grid-cols-2 items-center">
+                                        <CardContent className="flex justify-between items-center">
                                             <MdDeleteOutline 
-                                                className="justify-start z-9999" 
+                                                className="justify-start p-2 box-content rounded-lg
+                                                hover:dark:bg-red-800 hover:bg-red-300 duration-150" 
                                                 onClick={(e) => {
-                                                    e.preventDefault();
                                                     e.stopPropagation();
                                                     handleDelete(studySet.id);
                                                 }}    
                                             />
-                                            <p className="flex justify-end items-center gap-1 text-sm font-semibold dark:text-indigo-100 text-indigo-950">
+                                            <p 
+                                            className="flex justify-end items-center gap-1 text-sm font-semibold p-2 rounded-lg 
+                                            hover:dark:bg-rose-500 hover:bg-rose-300 duration-150
+                                            dark:text-indigo-100 text-indigo-950"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleFavorite(studySet.id);
+                                            }}
+                                            >
                                                 {studySet.favoritedBy.length}
                                                 <FaHeart /> 
                                             </p>
