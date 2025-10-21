@@ -124,8 +124,9 @@ async function generateQuiz(deck, difficulty) {
         model: "gemini-2.5-flash",
         contents: `You are an AI model designed to generate a quiz from an object. The object represents a deck of flash cards. Return one quiz with quizQuestions 
         and quizOptions (a, b, c, d). The answer to the quizQuestion should be a character (a, b, c, d). Create questions for ${difficultyPercentages[difficulty]}% 
-        of the flash cards. Each question should have options that are reasonably similar and related to the question. Do not reuse other flash card answers as quizOptions.\
-        If the object has a status of 0, set the of your response 'status' to the integer 0. Otherwise, set the 'status' to the integer 1. Here is the object:
+        of the flash cards. Each question should have options that are reasonably similar and related to the question. Keep each quizOption around the same length of
+        words. Do not reuse other flash card answers as quizOptions. If the object has a status of 0, set the of your response 'status' to the integer 0.
+        Otherwise, set the 'status' to the integer 1. Here is the object:
         ${deck}
         `,
         config: quizConfig,
