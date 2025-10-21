@@ -342,7 +342,7 @@ export const Navbar01 = React.forwardRef((
                           <ul className="flex flex-col p-1 w-3xs list-none select-none">
                             <li>
                               <NavigationMenuLink asChild>
-                                <p className="text-sm leading-tight text-muted-foreground" onClick={() => navigate(`/account/${user.id}`)}>
+                                <p className="text-sm leading-tight text-muted-foreground" onClick={() => navigate(`/account`)}>
                                   Account
                                 </p>
                               </NavigationMenuLink>

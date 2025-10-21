@@ -236,7 +236,7 @@ export function StudySetPage() {
                                     if(searchParams.get("explore")) {
                                         navigate(`/explore`);
                                     } else {
-                                        navigate(`/account/${user.id}`);
+                                        navigate(`/account`);
                                     }
                                 }}
                             >

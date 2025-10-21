@@ -21,7 +21,6 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { MdDeleteOutline } from "react-icons/md";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { CountingNumber } from "./ui/shadcn-io/counting-number";
@@ -29,7 +28,7 @@ import { CountingNumber } from "./ui/shadcn-io/counting-number";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
-export function AccountPage() {
+export function ProfilePage() {
     const { user } = useAuth();
 
     // backend
@@ -51,10 +50,10 @@ export function AccountPage() {
     }, [user, navigate]);
 
     useEffect(() => {
-        getAccount();
+        getProfile();
     }, []);
 
-    async function getAccount() {
+    async function getProfile() {
         setLoading(true);
         try {
             const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}`, {
@@ -83,32 +82,6 @@ export function AccountPage() {
         }
     }
 
-    async function handleDelete(studySetId) {
-        setLoading(true);
-        try {
-            const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
-                method: "DELETE",
-                credentials: "include",
-            });
-            if(!response.ok) {
-                console.error(`Error getting response for deleting study set: `, response.status);
-                return;
-            }
-
-            const result = await response.json();
-            if(result.status == 1) {
-                getAccount();
-            }
-            else {
-                console.error("Error finding study set to delete");
-            }
-        } catch (err) {
-            console.error(`Error deleting study set: `, err);
-        } finally {
-            setLoading(false);
-        }
-    }
-
     async function handleFavorite(studySet) {
         setLoading(true);
         try {
@@ -125,38 +98,13 @@ export function AccountPage() {
 
             const result = await response.json();
             if(result.status == 1) {
-                getAccount();
+                getProfile();
             }
             else {
                 console.error("Error favoriting study set.");
             }
         } catch (err) {
             console.error(`Error favoriting study set: `, err);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    async function handleUnfavorite(studySet) {
-        setLoading(true);
-        try {
-            const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}/favorite/${studySet.id}?favorited=true`, {
-                method: "POST",
-                credentials: "include",
-            });
-            if(!response.ok) {
-                console.error(`Error getting a response for favoriting: `, response.status);
-            }
-
-            const result = await response.json();
-            if(result.status == 1) {
-                getAccount();
-            }
-            else {
-                console.error("Error favoriting study set.");
-            }
-        } catch (err) {
-            console.error(`Error unfavoriting study set: `, err);
         } finally {
             setLoading(false);
         }
@@ -301,17 +249,9 @@ export function AccountPage() {
                                                 </div>
                                             </CardDescription>
                                         </CardHeader>
-                                        <CardContent className="flex justify-between items-center">
-                                            <MdDeleteOutline 
-                                                className="justify-start p-2 box-content rounded-lg
-                                                hover:dark:bg-red-800 hover:bg-red-300 duration-150" 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleDelete(studySet.id);
-                                                }}    
-                                            />
+                                        <CardContent>
                                             <p 
-                                            className="flex justify-end items-center gap-1 text-sm font-semibold p-2 rounded-lg 
+                                            className="flex justify-start w-fit items-center gap-1 text-sm font-semibold p-2 rounded-lg 
                                             hover:dark:bg-slate-700 hover:bg-blue-300 duration-150
                                             dark:text-indigo-100 text-indigo-950"
                                             onClick={(e) => {

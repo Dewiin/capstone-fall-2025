@@ -275,8 +275,14 @@ export function ExplorePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex justify-between">
-                <div className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
-                hover:dark:bg-slate-700 hover:bg-indigo-300 duration-150">
+                <div 
+                  className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
+                  hover:dark:bg-slate-700 hover:bg-indigo-300 duration-150"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/profile/${studySet.userId}`);
+                  }}
+                >
                   <Avatar className="size-6 rounded-2xl">
                     <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
                     <AvatarFallback>Icon</AvatarFallback>

@@ -1,6 +1,7 @@
 // Page
 import { LandingPage } from './components/LandingPage';
 import { AccountPage } from './components/AccountPage';
+import { ProfilePage } from './components/ProfilePage';
 import { GeneratePage } from './components/GeneratePage';
 import { StudySetPage } from './components/StudySetPage';
 import { ExplorePage } from './components/ExplorePage';
@@ -24,7 +25,8 @@ function App() {
         </div>
         <Routes>
           <Route path="/" element={ <LandingPage /> } />
-          <Route path="/account/:userId?" element={ <AccountPage /> } />
+          <Route path="/account" element={ <AccountPage /> } />
+          <Route path="/profile/:userId?" element={ <ProfilePage /> } />
           <Route path="/study-set/:studySetId?" element={ <StudySetPage /> } />
           <Route path="/form/:method" element={ <Form /> } />
           <Route path="/generate" element={ <GeneratePage /> } />
