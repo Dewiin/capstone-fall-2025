@@ -31,11 +31,6 @@ async function exploreGet(req, res) {
         public: true,
       },
       include: {
-        _count: {
-          select: {
-            favoritedBy: true,
-          }
-        },
         deck: {
           include: {
             cards: true,
@@ -47,6 +42,7 @@ async function exploreGet(req, res) {
           }
         },
         user: true,
+        favoritedBy: true,
       },
       orderBy: {
         favoritedBy: {
@@ -83,11 +79,6 @@ async function filterCategory(req, res) {
         }
       },
       include: {
-        _count: {
-          select: {
-            favoritedBy: true,
-          }
-        },
         deck: {
           include: {
             cards: true,
@@ -99,6 +90,7 @@ async function filterCategory(req, res) {
           }
         },
         user: true,
+        favoritedBy: true,
       }, 
       orderBy: {
         favoritedBy: {
@@ -128,11 +120,6 @@ async function resultGet(req, res) {
         }
       },
       include: {
-        _count: {
-          select: {
-            favoritedBy: true,
-          }
-        },
         deck: {
           include: {
             cards: true,
@@ -144,6 +131,7 @@ async function resultGet(req, res) {
           }
         },
         user: true,
+        favoritedBy: true,
       }, 
       orderBy: {
         favoritedBy: {

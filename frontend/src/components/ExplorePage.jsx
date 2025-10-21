@@ -20,18 +20,20 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { FaBook, FaHeart } from "react-icons/fa";
+import { FaBook, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdScience, MdComputer, MdMiscellaneousServices } from "react-icons/md";
 import { PiMathOperationsBold } from "react-icons/pi";
 import { IoLanguageSharp, IoBusinessSharp } from "react-icons/io5";
 import { FaPaintbrush } from "react-icons/fa6";
-
+import { useAuth } from "@/components/contexts/Contexts";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function ExplorePage() {
+  const { user } = useAuth();
+
   const allCategories = useRef([
     {name: "SCIENCE", icon: <MdScience size={24} className="dark:text-indigo-200 text-slate-900" />},
     {name: "MATH", icon: <PiMathOperationsBold size={24} className="dark:text-indigo-200 text-slate-900" />},
@@ -117,6 +119,34 @@ export function ExplorePage() {
       setStudySets(result.studySets);
     } catch (err) {
       console.error(`Error handling search query: `, err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleFavorite(studySet) {
+    setLoading(true);
+    try {
+      const alreadyFavorited = studySet.favoritedBy.some((userInfo) => userInfo.id === user.id);
+      const query = alreadyFavorited ? "favorited=true" : "favorited=false"
+
+      const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}/favorite/${studySet.id}?${query}`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if(!response.ok) {
+        console.error(`Error getting a response for favoriting: `, response.status);
+      }
+
+      const result = await response.json();
+      if(result.status == 1) {
+        getCategories();
+      }
+      else {
+        console.error("Error favoriting study set.");
+      }
+    } catch (err) {
+      console.error(`Error favoriting study set: `, err);
     } finally {
       setLoading(false);
     }
@@ -255,16 +285,21 @@ export function ExplorePage() {
                     { studySet.user.displayName }
                   </p>
                 </div>
-                <p className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
-                dark:text-indigo-100 text-indigo-950
-                hover:dark:bg-rose-500 hover:bg-rose-300 duration-150">
-                  <FaHeart 
-                    className="text-slate-950 dark:text-indigo-200"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  /> 
-                  {studySet["_count"].favoritedBy}
+                <p 
+                  className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
+                  dark:text-indigo-100 text-indigo-950
+                  hover:dark:bg-slate-700 hover:bg-indigo-300 duration-150"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFavorite(studySet);
+                  }}
+                >
+                  { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
+                    <FaHeart className="dark:text-rose-700 text-rose-400" /> 
+                  ) : (
+                    <FaRegHeart />
+                  )}
+                  {studySet.favoritedBy.length}
                 </p>
               </CardContent>
           </Card>

@@ -269,7 +269,7 @@ export function AccountPage() {
                                     <Card
                                         className="border-none cursor-pointer
                                         dark:bg-slate-900 bg-indigo-100 
-                                        hover:dark:bg-slate-800 hover:bg-indigo-300 duration-150"
+                                        hover:dark:bg-slate-800 hover:bg-blue-200 duration-150"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
                                         <CardHeader className="gap-1">
@@ -311,7 +311,7 @@ export function AccountPage() {
                                             />
                                             <p 
                                             className="flex justify-end items-center gap-1 text-sm font-semibold p-2 rounded-lg 
-                                            hover:dark:bg-rose-500 hover:bg-rose-300 duration-150
+                                            hover:dark:bg-slate-700 hover:bg-blue-300 duration-150
                                             dark:text-indigo-100 text-indigo-950"
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -319,7 +319,7 @@ export function AccountPage() {
                                             }}
                                             >
                                                 { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
-                                                    <FaHeart /> 
+                                                    <FaHeart className="dark:text-rose-700 text-rose-400" /> 
                                                 ) : (
                                                     <FaRegHeart />
                                                 )}
@@ -359,7 +359,7 @@ export function AccountPage() {
                                     key={studySet.id}
                                     className="cursor-pointer border-none
                                     dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]
-                                    hover:dark:bg-slate-800 hover:bg-indigo-300 duration-150"
+                                    hover:dark:bg-slate-800 hover:bg-blue-200 duration-150"
                                     onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
                                     <CardHeader className="gap-1">
@@ -393,7 +393,7 @@ export function AccountPage() {
                                     <CardContent className="flex justify-between">
                                         <div 
                                             className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
-                                            hover:dark:bg-slate-700 hover:bg-indigo-400 duration-150"
+                                            hover:dark:bg-slate-700 hover:bg-blue-300 duration-150"
                                         >
                                             <Avatar className="size-6 rounded-2xl">
                                                 <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
@@ -412,7 +412,8 @@ export function AccountPage() {
                                                 handleUnfavorite(studySet);
                                             }}
                                         >
-                                        <FaHeart className="text-slate-950 dark:text-indigo-200" /> 
+                                        <FaHeart 
+                                            className="dark:text-rose-700 text-rose-400" /> 
                                             {studySet["_count"].favoritedBy}
                                         </p>
                                     </CardContent>
