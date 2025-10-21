@@ -135,7 +135,8 @@ export function ExplorePage() {
           type="text" 
           placeholder="Search for a study set..." 
           className="
-          dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none"
+          dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
+          hover:dark:bg-slate-800 hover:bg-indigo-200 transition duration-50"
           onChange={(e) => {
             if(e.target.value.trim().length > 0) {
               handleSearch(e.target.value);
@@ -173,7 +174,8 @@ export function ExplorePage() {
               <CarouselItem className="md:basis-1/4 sm:basis-1/3 ">
                 <Card
                   className="px-3 py-1.25 flex-row items-center gap-4 w-xs/2 rounded-sm cursor-pointer select-none
-                  dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none"
+                  dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
+                  hover:dark:bg-slate-800 hover:bg-indigo-200 duration-150"
                   onClick={() => handleFilterCategory(category.name)}
                 >
                   {category.icon}
@@ -210,7 +212,8 @@ export function ExplorePage() {
             <Card
               key={studySet.id}
               className="cursor-pointer border-none
-              dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]"
+              dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]
+              hover:dark:bg-slate-800 hover:bg-indigo-200 duration-150"
               onClick={() => navigate(`/study-set/${studySet.id}?explore=true`)}
             >
               <CardHeader className="gap-1">
@@ -243,7 +246,7 @@ export function ExplorePage() {
               </CardHeader>
               <CardContent className="flex justify-between">
                 <div className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
-                hover:dark:bg-slate-800 hover:bg-indigo-300 duration-150">
+                hover:dark:bg-slate-700 hover:bg-indigo-300 duration-150">
                   <Avatar className="size-6 rounded-2xl">
                     <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
                     <AvatarFallback>Icon</AvatarFallback>
@@ -255,7 +258,12 @@ export function ExplorePage() {
                 <p className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
                 dark:text-indigo-100 text-indigo-950
                 hover:dark:bg-rose-500 hover:bg-rose-300 duration-150">
-                  <FaHeart className="text-slate-950 dark:text-indigo-200" /> 
+                  <FaHeart 
+                    className="text-slate-950 dark:text-indigo-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  /> 
                   {studySet["_count"].favoritedBy}
                 </p>
               </CardContent>

@@ -44,6 +44,7 @@ import {
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "./contexts/Contexts";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { CountingNumber } from "./ui/shadcn-io/counting-number";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
@@ -598,11 +599,10 @@ export function StudySetPage() {
                                         >
                                             global attempts recorded
                                         </p>
-                                        <p
+                                        <CountingNumber
+                                            number={ globalAttempts != null ? globalAttempts : 0 }
                                             className="md:text-3xl text-xl font-semibold"
-                                        >
-                                            {globalAttempts != null ? globalAttempts : "..."}
-                                        </p>
+                                        />
                                     </span>
                                     <span>
                                         <p 
@@ -610,11 +610,10 @@ export function StudySetPage() {
                                         >
                                             global average score
                                         </p>
-                                        <p
+                                        <CountingNumber
+                                            number={ globalAverageScore != null ? globalAverageScore : 0 }
                                             className="md:text-3xl text-xl font-semibold"
-                                        >
-                                            {globalAverageScore != null ? globalAverageScore : "..."}
-                                        </p>
+                                        />
                                     </span>
                                 </div>
 
@@ -629,11 +628,10 @@ export function StudySetPage() {
                                         >
                                             your attempts recorded
                                         </p>
-                                        <p 
+                                        <CountingNumber 
+                                            number={ quiz?.attempts ? quiz.attempts.length : 0 }
                                             className="md:text-3xl text-xl font-semibold"
-                                        >
-                                            {quiz?.attempts ? quiz.attempts.length : "..."}
-                                        </p>
+                                        />
                                     </span>
                                     <span>
                                         <p 
@@ -641,11 +639,10 @@ export function StudySetPage() {
                                         >
                                             your average score
                                         </p>
-                                        <p
+                                        <CountingNumber
+                                            number={ userAverageScore != null ? userAverageScore : 0 }
                                             className="md:text-3xl text-xl font-semibold"
-                                        >   
-                                            {userAverageScore != null ? userAverageScore : "..."}
-                                        </p>
+                                        />
                                     </span>
                                 </div>
                             </CardContent>

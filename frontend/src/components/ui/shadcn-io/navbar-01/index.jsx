@@ -288,7 +288,7 @@ export const Navbar01 = React.forwardRef((
           {/* Right side */}
             <div className="flex items-center gap-3">
               <Button
-                className="font-medium h-9 w-9 hover:bg-accent hover:text-accent-foreground"
+                className="font-medium h-9 w-9 hover:bg-accent hover:text-accent-foreground duration-100"
                 variant="ghost"
                 onClick={() => {
                   localStorage.theme = !darkMode ? "dark" : "light";
@@ -325,7 +325,7 @@ export const Navbar01 = React.forwardRef((
                     <NavigationMenuList>
                       <NavigationMenuItem >
                         <NavigationMenuTrigger 
-                          className="flex gap-x-2 p-2"
+                          className="flex gap-x-2 p-2 transition duration-100"
                           onPointerMove={(e) => e.preventDefault()}
                           onPointerLeave={(e) => e.preventDefault()}
                         >

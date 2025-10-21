@@ -86,7 +86,7 @@ async function favoritePost(req, res) {
     try {
         const user = req.user;
         const { userId, studySetId } = req.params;
-        console.log(studySetId);
+        const { favorited } = req.query;
 
         if(user.id !== userId) {
             return res.json({
@@ -94,18 +94,33 @@ async function favoritePost(req, res) {
             });
         }
 
-        await prisma.user.update({
-            where: {
-                id: user.id,
-            },
-            data: {
-                favorites: {
-                    connect: {
-                        id: parseInt(studySetId),
+        if (favorited === "true") {
+            await prisma.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    favorites: {
+                        disconnect: {
+                            id: parseInt(studySetId),
+                        }
                     }
                 }
-            }
-        });
+            });
+        } else {
+            await prisma.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    favorites: {
+                        connect: {
+                            id: parseInt(studySetId),
+                        }
+                    }
+                }
+            });
+        }
 
         return res.json({
             status: 1,

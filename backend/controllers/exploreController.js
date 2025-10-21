@@ -53,7 +53,7 @@ async function exploreGet(req, res) {
           _count: "desc",
         }
       },
-      take: 4,
+      // take: 6,
     });
 
     if(studySets) {
