@@ -208,6 +208,7 @@ export function ExplorePage() {
           }
           {!loading && studySets?.map((studySet) => (
             <Card
+              key={studySet.id}
               className="cursor-pointer border-none
               dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]"
               onClick={() => navigate(`/study-set/${studySet.id}?explore=true`)}

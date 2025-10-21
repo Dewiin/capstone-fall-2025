@@ -22,7 +22,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import { MdDeleteOutline } from "react-icons/md";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 
 
@@ -235,8 +235,7 @@ export function AccountPage() {
                                 }
                                 { !loading && studySets?.map((studySet) => (
                                     <Card
-                                        className="dark:bg-slate-900 bg-indigo-100 
-                                        border-1 border-indigo-700 dark:border-indigo-200 cursor-pointer"
+                                        className="dark:bg-slate-900 bg-indigo-100 border-none cursor-pointer"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
                                         <CardHeader className="gap-1">
@@ -285,8 +284,8 @@ export function AccountPage() {
                                                 handleFavorite(studySet.id);
                                             }}
                                             >
-                                                {studySet.favoritedBy.length}
                                                 <FaHeart /> 
+                                                {studySet.favoritedBy.length}
                                             </p>
                                         </CardContent>
                                     </Card>
@@ -309,7 +308,7 @@ export function AccountPage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent
-                                className="relative"
+                                className={`${!studySets || studySets.length === 0 ? "flex justify-center" : "grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1" } gap-2 relative`}
                             >
                                 { loading && <LoadingOverlay className="md:my-24 my-12" /> }   
                                 { !favorites || favorites.length === 0 && 
@@ -317,7 +316,61 @@ export function AccountPage() {
                                         No favorites. Find some study sets from the 'Explore' tab!
                                     </p>
                                 }
-                                {  }
+                                { !loading && favorites?.map((studySet) => (
+                                    <Card
+                                    key={studySet.id}
+                                    className="cursor-pointer border-none
+                                    dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]"
+                                    onClick={() => navigate(`/study-set/${studySet.id}?explore=true`)}
+                                    >
+                                    <CardHeader className="gap-1">
+                                        <CardTitle className="font-bold dark:text-indigo-100 text-slate-950 text-nowrap">
+                                        {studySet.name}
+                                        </CardTitle>
+                                        <CardDescription
+                                        className="dark:text-indigo-300 text-slate-900 flex flex-col gap-1"
+                                        >
+                                        <p>
+                                            {studySet.deck.cards.length} flashcards 
+                                            • {studySet.quiz.attempts.length} quiz attempts
+                                        </p>
+                                        <div className="flex gap-2">
+                                            <p className={`w-fit px-2 rounded-xl text-xs
+                                            ${studySet.public ? "dark:bg-indigo-300 bg-indigo-300" : "dark:bg-slate-950 bg-indigo-900" }
+                                            ${studySet.public ? "dark:text-indigo-900 text-indigo-950" : "dark:text-indigo-200 text-indigo-200" }`}
+                                            >
+                                            {studySet.public ? "Public " : "Private "}
+                                            </p>
+                                            <p className={`w-fit px-2 rounded-xl text-xs
+                                            ${studySet.difficulty === "BEGINNER" && "dark:bg-green-900 bg-green-300 dark:text-white text-black" }
+                                            ${studySet.difficulty === "INTERMEDIATE" && "dark:bg-yellow-700 bg-yellow-500 dark:text-white text-black" }}
+                                            ${studySet.difficulty === "ADVANCED" && "dark:bg-red-900 bg-red-300 dark:text-white text-black"}`}
+                                            >
+                                            {studySet.difficulty.charAt(0) + studySet.difficulty.slice(1).toLowerCase()}
+                                            </p>
+                                        </div>
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="flex justify-between">
+                                        <div className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
+                                        hover:dark:bg-slate-800 hover:bg-indigo-300 duration-150">
+                                        <Avatar className="size-6 rounded-2xl">
+                                            <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                            <AvatarFallback>Icon</AvatarFallback>
+                                        </Avatar>
+                                        <p className="truncate">
+                                            { studySet.user.displayName }
+                                        </p>
+                                        </div>
+                                        <p className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
+                                        dark:text-indigo-100 text-indigo-950
+                                        hover:dark:bg-rose-500 hover:bg-rose-300 duration-150">
+                                        <FaHeart className="text-slate-950 dark:text-indigo-200" /> 
+                                        {studySet["_count"].favoritedBy}
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                                )) }
                             </CardContent>
                         </Card>
                     </TabsContent>
