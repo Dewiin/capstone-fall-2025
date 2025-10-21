@@ -146,6 +146,7 @@ export function GeneratePage() {
 
     return (
         <div className="flex flex-col h-full w-full gap-16 items-center mt-24">
+            { loading && <LoadingOverlay className="fixed" /> }
             <Tabs 
                 defaultValue={uploadType} 
                 className="md:w-4xl w-sm"
@@ -286,7 +287,6 @@ export function GeneratePage() {
                                 dark:bg-slate-950 bg-indigo-200
                                 dark:text-indigo-100 text-indigo-900"
                         >
-                            { loading && <LoadingOverlay /> }
                             <CardHeader>
                                 <CardTitle>
                                     Text Input
@@ -464,7 +464,6 @@ export function GeneratePage() {
                                 dark:bg-slate-950 bg-indigo-200
                                 dark:text-indigo-100 text-indigo-900"
                         >
-                            { loading && <LoadingOverlay /> }
                             <CardHeader>
                                 <CardTitle>
                                     PDF Upload

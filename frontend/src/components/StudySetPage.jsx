@@ -226,7 +226,7 @@ export function StudySetPage() {
                 className="md:p-24 p-8 h-full min-w-sm"
                 ref={smoothScroll}
             >
-                <Breadcrumb className="p-6">
+                <Breadcrumb className="py-6 md:px-12">
                     <BreadcrumbList className="text-muted-foreground">
                         <BreadcrumbItem>
                             <BreadcrumbLink
@@ -262,7 +262,7 @@ export function StudySetPage() {
                     }}
                 >
                     <TabsList 
-                        className="m-auto dark:bg-slate-950 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900"
+                        className="md:mx-12 dark:bg-slate-950 bg-indigo-200 border-1 dark:border-indigo-200 border-indigo-900"
                     >
                         <TabsTrigger 
                             value="deck"
@@ -471,7 +471,7 @@ export function StudySetPage() {
                                                                     "border-indigo-700 dark:border-indigo-50"
                                                                 ))} 
                                                                 ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "dark:border-green-500 border-green-700 border-dashed"}
-                                                                border-2`
+                                                                border-1 hover:dark:bg-slate-900 hover:bg-indigo-300 duration-150`
                                                             }
                                                             onClick={() => {
                                                                 if(submitted) return;
@@ -573,7 +573,7 @@ export function StudySetPage() {
                         </Card>
 
                         <Card 
-                            className="md:w-4xl mx-auto my-16
+                            className="md:w-4xl mx-auto md:my-12 my-4
                             dark:bg-slate-900 bg-indigo-200
                             border-2 dark:border-indigo-200 border-indigo-800
                             "

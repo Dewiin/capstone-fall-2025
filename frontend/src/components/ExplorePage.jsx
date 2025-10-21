@@ -223,16 +223,26 @@ export function ExplorePage() {
                     {studySet.deck.cards.length} flashcards 
                     • {studySet.quiz.attempts.length} quiz attempts
                   </p>
-                  <p className="w-fit px-2 rounded-xl text-xs
-                    dark:bg-indigo-300 bg-indigo-900
-                    dark:text-indigo-900 text-indigo-200"
-                  >
-                    {studySet.public ? "Public " : "Private "}
-                  </p>
+                  <div className="flex gap-2">
+                    <p className={`w-fit px-2 rounded-xl text-xs
+                      ${studySet.public ? "dark:bg-indigo-300 bg-indigo-300" : "dark:bg-slate-950 bg-indigo-900" }
+                      ${studySet.public ? "dark:text-indigo-900 text-indigo-950" : "dark:text-indigo-200 text-indigo-200" }`}
+                    >
+                      {studySet.public ? "Public " : "Private "}
+                    </p>
+                    <p className={`w-fit px-2 rounded-xl text-xs
+                      ${studySet.difficulty === "BEGINNER" && "dark:bg-green-900 bg-green-300 dark:text-white text-black" }
+                      ${studySet.difficulty === "INTERMEDIATE" && "dark:bg-yellow-700 bg-yellow-500 dark:text-white text-black" }}
+                      ${studySet.difficulty === "ADVANCED" && "dark:bg-red-900 bg-red-300 dark:text-white text-black"}`}
+                    >
+                      {studySet.difficulty.charAt(0) + studySet.difficulty.slice(1).toLowerCase()}
+                    </p>
+                  </div>
                 </CardDescription>
               </CardHeader>
-              <CardContent className="grid md:grid-cols-2 grid-cols-1 md:gap-0 gap-2">
-                <div className="flex gap-1 items-center justify-start text-sm font-semibold">
+              <CardContent className="flex justify-between">
+                <div className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
+                hover:dark:bg-slate-800 hover:bg-indigo-300 duration-150">
                   <Avatar className="size-6 rounded-2xl">
                     <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
                     <AvatarFallback>Icon</AvatarFallback>
@@ -241,7 +251,9 @@ export function ExplorePage() {
                     { studySet.user.displayName }
                   </p>
                 </div>
-                <p className="flex items-center gap-1 text-sm font-semibold dark:text-indigo-100 text-indigo-950 md:justify-end md:pl-0 pl-1">
+                <p className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
+                dark:text-indigo-100 text-indigo-950
+                hover:dark:bg-rose-500 hover:bg-rose-300 duration-150">
                   <FaHeart className="text-slate-950 dark:text-indigo-200" /> 
                   {studySet["_count"].favoritedBy}
                 </p>
