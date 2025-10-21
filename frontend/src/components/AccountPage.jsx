@@ -24,6 +24,7 @@ import {
 import { MdDeleteOutline } from "react-icons/md";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
+import { CountingNumber } from "./ui/shadcn-io/counting-number";
 
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
@@ -34,8 +35,8 @@ export function AccountPage() {
     // backend
     const [ studySets, setStudySets ] = useState(null);
     const [ loading, setLoading ] = useState(false);
-    const [ flashcardCount, setFlashcardCount ] = useState("...");
-    const [ attemptCount, setAttemptCount ] = useState("...");
+    const [ flashcardCount, setFlashcardCount ] = useState(0);
+    const [ attemptCount, setAttemptCount ] = useState(0);
     const [ createdAt, setCreatedAt ] = useState(null);
     const [ favorites, setFavorites ] = useState(null);
 
@@ -107,10 +108,13 @@ export function AccountPage() {
         }
     }
 
-    async function handleFavorite(studySetId) {
+    async function handleFavorite(studySet) {
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}/favorite/${studySetId}`, {
+            const alreadyFavorited = studySet.favoritedBy.some((userInfo) => userInfo.id === user.id);
+            const query = alreadyFavorited ? "favorited=true" : "favorited=false"
+
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}/favorite/${studySet.id}?${query}`, {
                 method: "POST",
                 credentials: "include",
             });
@@ -127,6 +131,31 @@ export function AccountPage() {
             }
         } catch (err) {
             console.error(`Error favoriting study set: `, err);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleUnfavorite(studySet) {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}/favorite/${studySet.id}?favorited=true`, {
+                method: "POST",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                console.error(`Error getting a response for favoriting: `, response.status);
+            }
+
+            const result = await response.json();
+            if(result.status == 1) {
+                getAccount();
+            }
+            else {
+                console.error("Error favoriting study set.");
+            }
+        } catch (err) {
+            console.error(`Error unfavoriting study set: `, err);
         } finally {
             setLoading(false);
         }
@@ -164,25 +193,28 @@ export function AccountPage() {
                         <p className="text-sm dark:text-indigo-300 text-indigo-900">
                             study sets created
                         </p>
-                        <p className="text-4xl font-semibold">
-                            { studySets ? studySets.length : "..." }
-                        </p>
+                        <CountingNumber 
+                            number={ studySets ? studySets.length : 0 }
+                            className="text-4xl font-semibold"
+                        />
                     </span>
                     <span>
                         <p className="text-sm dark:text-indigo-300 text-indigo-900">
                             flash cards created
                         </p>
-                        <p className="text-4xl font-semibold">
-                            { flashcardCount }
-                        </p>
+                        <CountingNumber 
+                            number={ flashcardCount }
+                            className="text-4xl font-semibold"
+                        />
                     </span>
                     <span>
                         <p className="text-sm dark:text-indigo-300 text-indigo-900">
                             quiz attempts recorded
                         </p>
-                        <p className="text-4xl font-semibold">
-                            { attemptCount }
-                        </p>
+                        <CountingNumber 
+                            number={ attemptCount }
+                            className="text-4xl font-semibold"
+                        />
                     </span>
                 </div>
             </section>
@@ -235,7 +267,9 @@ export function AccountPage() {
                                 }
                                 { !loading && studySets?.map((studySet) => (
                                     <Card
-                                        className="dark:bg-slate-900 bg-indigo-100 border-none cursor-pointer"
+                                        className="border-none cursor-pointer
+                                        dark:bg-slate-900 bg-indigo-100 
+                                        hover:dark:bg-slate-800 hover:bg-indigo-300 duration-150"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
                                         <CardHeader className="gap-1">
@@ -281,10 +315,14 @@ export function AccountPage() {
                                             dark:text-indigo-100 text-indigo-950"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleFavorite(studySet.id);
+                                                handleFavorite(studySet);
                                             }}
                                             >
-                                                <FaHeart /> 
+                                                { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
+                                                    <FaHeart /> 
+                                                ) : (
+                                                    <FaRegHeart />
+                                                )}
                                                 {studySet.favoritedBy.length}
                                             </p>
                                         </CardContent>
@@ -320,8 +358,9 @@ export function AccountPage() {
                                     <Card
                                     key={studySet.id}
                                     className="cursor-pointer border-none
-                                    dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]"
-                                    onClick={() => navigate(`/study-set/${studySet.id}?explore=true`)}
+                                    dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]
+                                    hover:dark:bg-slate-800 hover:bg-indigo-300 duration-150"
+                                    onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
                                     <CardHeader className="gap-1">
                                         <CardTitle className="font-bold dark:text-indigo-100 text-slate-950 text-nowrap">
@@ -352,21 +391,29 @@ export function AccountPage() {
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="flex justify-between">
-                                        <div className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
-                                        hover:dark:bg-slate-800 hover:bg-indigo-300 duration-150">
-                                        <Avatar className="size-6 rounded-2xl">
-                                            <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
-                                            <AvatarFallback>Icon</AvatarFallback>
-                                        </Avatar>
-                                        <p className="truncate">
-                                            { studySet.user.displayName }
-                                        </p>
+                                        <div 
+                                            className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
+                                            hover:dark:bg-slate-700 hover:bg-indigo-400 duration-150"
+                                        >
+                                            <Avatar className="size-6 rounded-2xl">
+                                                <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                                <AvatarFallback>Icon</AvatarFallback>
+                                            </Avatar>
+                                            <p className="truncate">
+                                                { studySet.user.displayName }
+                                            </p>
                                         </div>
-                                        <p className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
-                                        dark:text-indigo-100 text-indigo-950
-                                        hover:dark:bg-rose-500 hover:bg-rose-300 duration-150">
+                                        <p 
+                                            className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
+                                            dark:text-indigo-100 text-indigo-950
+                                            hover:dark:bg-rose-500 hover:bg-rose-300 duration-150"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleUnfavorite(studySet);
+                                            }}
+                                        >
                                         <FaHeart className="text-slate-950 dark:text-indigo-200" /> 
-                                        {studySet["_count"].favoritedBy}
+                                            {studySet["_count"].favoritedBy}
                                         </p>
                                     </CardContent>
                                 </Card>
