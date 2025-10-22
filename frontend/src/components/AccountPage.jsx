@@ -24,6 +24,7 @@ import {
 import { MdDeleteOutline } from "react-icons/md";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { CountingNumber } from "./ui/shadcn-io/counting-number";
 
 
@@ -169,18 +170,28 @@ export function AccountPage() {
                 border-1 border-indigo-900 dark:border-indigo-300'
             >
                 {/* Avatar/Name */}
-                <div className="flex gap-4 items-center pr-8 md:max-w-1/4 text-indigo-900 dark:text-indigo-200">
+                <div className="flex gap-4 items-center md:max-w-1/4 text-indigo-900 dark:text-indigo-200">
                     <Avatar className="size-20 rounded-2xl">
                         <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
                         <AvatarFallback>Icon</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col gap-2 truncate">
-                        <p className="text-3xl font-semibold truncate">
-                            {user?.displayName}
-                        </p>
-                        <p className="text-xs">
-                            Joined {createdAt ? createdAt : "..."}
-                        </p>
+                        { loading && 
+                        <>
+                            <Skeleton className="h-4 w-[150px]" />
+                            <Skeleton className="h-4 w-[100px]" />
+                        </>
+                        }
+                        { !loading &&
+                        <>
+                            <p className="text-3xl font-semibold truncate">
+                                {user?.displayName}
+                            </p>
+                            <p className="text-xs">
+                                Joined {createdAt ? createdAt : "..."}
+                            </p>
+                        </>
+                        }
                     </div>
                 </div>
 

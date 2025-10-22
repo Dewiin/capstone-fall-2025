@@ -24,8 +24,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton"
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { CountingNumber } from "./ui/shadcn-io/counting-number";
-import { Spinner } from "./ui/shadcn-io/spinner";
+import { CountingNumber } from "@/components/ui/shadcn-io/counting-number";
 
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
