@@ -21,8 +21,9 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton"
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { CountingNumber } from "./ui/shadcn-io/counting-number";
 import { Spinner } from "./ui/shadcn-io/spinner";
 
@@ -131,13 +132,22 @@ export function ProfilePage() {
                         <AvatarFallback>Icon</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col gap-2 truncate">
-                        {!accountUser && <Spinner />}
-                        <p className="text-3xl font-semibold truncate">
-                            {accountUser?.displayName}
-                        </p>
-                        <p className="text-xs">
-                            Joined {createdAt ? createdAt : "..."}
-                        </p>
+                        { loading && 
+                        <>
+                            <Skeleton className="h-4 w-[150px]" />
+                            <Skeleton className="h-4 w-[100px]" />
+                        </>
+                        }
+                        { !loading && 
+                        <>
+                            <p className="text-3xl font-semibold truncate">
+                                {accountUser?.displayName}
+                            </p>
+                            <p className="text-xs">
+                                Joined {createdAt ? createdAt : "..."}
+                            </p>
+                        </>
+                        }
                     </div>
                 </div>
 
@@ -206,12 +216,22 @@ export function ProfilePage() {
                                 dark:bg-slate-950 bg-indigo-200"
                         >
                             <CardHeader>
-                                <CardTitle>
-                                    {accountUser?.displayName}'s Study Sets
-                                </CardTitle>
-                                <CardDescription>
-                                    Collection of <i>{accountUser?.displayName}'s</i> study sets
-                                </CardDescription>
+                                { loading && 
+                                <>
+                                    <Skeleton className="h-4 w-[150px]" />
+                                    <Skeleton className="h-4 w-[200px]" />
+                                </>
+                                }
+                                { !loading && 
+                                <>
+                                    <CardTitle>
+                                        {accountUser?.displayName}'s Study Sets
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Collection of <i>{accountUser?.displayName}'s</i> study sets
+                                    </CardDescription>
+                                </>
+                                }
                             </CardHeader>
                             <CardContent
                                 className={`${!accountUser?.studySets || accountUser?.studySets.length === 0 ? "flex justify-center" : "grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1" } gap-2 relative`}
@@ -289,12 +309,22 @@ export function ProfilePage() {
                             dark:bg-slate-950 bg-indigo-200"
                         >
                             <CardHeader>
-                                <CardTitle>
-                                    {accountUser?.displayName}'s Favorites
-                                </CardTitle>
-                                <CardDescription>
-                                    Collection of <i>{accountUser?.displayName}'s</i> favorited study sets
-                                </CardDescription>
+                                { loading &&
+                                <>
+                                    <Skeleton className="h-4 w-[150px]" />
+                                    <Skeleton className="h-4 w-[250px]" />
+                                </>
+                                }
+                                {!loading && 
+                                <>
+                                    <CardTitle>
+                                        {accountUser?.displayName}'s Favorites
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Collection of <i>{accountUser?.displayName}'s</i> favorited study sets
+                                    </CardDescription>
+                                </>
+                                }
                             </CardHeader>
                             <CardContent
                                 className={`${!accountUser?.favorites || accountUser?.favorites.length === 0 ? "flex justify-center" : "grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1" } gap-2 relative`}
