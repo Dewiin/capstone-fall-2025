@@ -44,10 +44,15 @@ export function ExplorePage() {
     {name: "BUSINESS", icon: <IoBusinessSharp size={24} className="dark:text-indigo-200 text-slate-900" />},
     {name: "OTHER", icon: <MdMiscellaneousServices size={24} className="dark:text-indigo-200 text-slate-900" />},
   ]);
+  
+  // backend
   const [ categories, setCategories ] = useState([]);
   const [ studySets, setStudySets ] = useState(null);
+
+  // frontend
   const [ loading, setLoading ] = useState(false);
-  const [ ContentTitle, setContentTitle ] = useState("Popular Study Sets")
+  const [ ContentTitle, setContentTitle ] = useState("Popular Study Sets");
+  const [ singleLoading, setSingleLoading ] = useState(null);
   const { pageNumber } = useParams();
   const navigate = useNavigate();
 
@@ -125,7 +130,7 @@ export function ExplorePage() {
   }
 
   async function handleFavorite(studySet) {
-    setLoading(true);
+    setSingleLoading(studySet.id);
     try {
       const alreadyFavorited = studySet.favoritedBy.some((userInfo) => userInfo.id === user.id);
       const query = alreadyFavorited ? "favorited=true" : "favorited=false"
@@ -148,7 +153,7 @@ export function ExplorePage() {
     } catch (err) {
       console.error(`Error favoriting study set: `, err);
     } finally {
-      setLoading(false);
+      setSingleLoading(null);
     }
   }
 
@@ -201,7 +206,10 @@ export function ExplorePage() {
         >
           <CarouselContent>
             { allCategories.current.map((category) => (
-              <CarouselItem className="md:basis-1/4 sm:basis-1/3 ">
+              <CarouselItem
+                key={category} 
+                className="md:basis-1/4 sm:basis-1/3"
+              >
                 <Card
                   className="px-3 py-1.25 flex-row items-center gap-4 w-xs/2 rounded-sm cursor-pointer select-none
                   dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
@@ -241,11 +249,12 @@ export function ExplorePage() {
           {!loading && studySets?.map((studySet) => (
             <Card
               key={studySet.id}
-              className="cursor-pointer border-none
+              className="cursor-pointer border-none relative
               dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]
               hover:dark:bg-slate-800 hover:bg-indigo-200 duration-150"
               onClick={() => navigate(`/study-set/${studySet.id}?explore=true`)}
             >
+              { singleLoading === studySet.id && <LoadingOverlay /> }
               <CardHeader className="gap-1">
                 <CardTitle className="font-bold dark:text-indigo-100 text-slate-950 text-nowrap">
                   {studySet.name}

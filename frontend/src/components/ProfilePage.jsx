@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./contexts/Contexts";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Footer } from "@/components/Footer";
 import {
@@ -32,16 +32,17 @@ export function ProfilePage() {
     const { user } = useAuth();
 
     // backend
-    const [ studySets, setStudySets ] = useState(null);
-    const [ loading, setLoading ] = useState(false);
+    const [ accountUser, setAccountUser ] = useState(null);
     const [ flashcardCount, setFlashcardCount ] = useState(0);
     const [ attemptCount, setAttemptCount ] = useState(0);
     const [ createdAt, setCreatedAt ] = useState(null);
-    const [ favorites, setFavorites ] = useState(null);
-
+    
     // frontend
+    const [ loading, setLoading ] = useState(false);
+    const [ singleLoading, setSingleLoading ] = useState(null);
     const [ accountTab, setAccountTab ] = useState("studySets");
     const navigate = useNavigate();
+    const { userId } = useParams();
 
     useEffect(() => {
         if(!user) {
@@ -50,13 +51,19 @@ export function ProfilePage() {
     }, [user, navigate]);
 
     useEffect(() => {
+        if(user?.id === userId) {
+            navigate("/account");
+        }
+    }, []);
+
+    useEffect(() => {
         getProfile();
     }, []);
 
     async function getProfile() {
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}`, {
+            const response = await fetch(`${API_URL_DOMAIN}/api/profile/${userId}`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -68,11 +75,10 @@ export function ProfilePage() {
             const result = await response.json();
 
             if(result.status == 1) {
-                setStudySets(result.userStudySets);
+                setAccountUser(result.user);
                 setFlashcardCount(result.flashcardCount);
                 setAttemptCount(result.attemptCount);
                 setCreatedAt(result.createdAt);
-                setFavorites(result.userFavorites);
             }
         } catch (err) {
             console.error(`Error getting account info: `, err);
@@ -83,7 +89,7 @@ export function ProfilePage() {
     }
 
     async function handleFavorite(studySet) {
-        setLoading(true);
+        setSingleLoading(studySet.id);
         try {
             const alreadyFavorited = studySet.favoritedBy.some((userInfo) => userInfo.id === user.id);
             const query = alreadyFavorited ? "favorited=true" : "favorited=false"
@@ -106,7 +112,7 @@ export function ProfilePage() {
         } catch (err) {
             console.error(`Error favoriting study set: `, err);
         } finally {
-            setLoading(false);
+            setSingleLoading(null);
         }
     }
 
@@ -125,7 +131,7 @@ export function ProfilePage() {
                     </Avatar>
                     <div className="flex flex-col gap-2 truncate">
                         <p className="text-3xl font-semibold truncate">
-                            {user?.displayName}
+                            {accountUser?.displayName}
                         </p>
                         <p className="text-xs">
                             Joined {createdAt ? createdAt : "..."}
@@ -143,7 +149,7 @@ export function ProfilePage() {
                             study sets created
                         </p>
                         <CountingNumber 
-                            number={ studySets ? studySets.length : 0 }
+                            number={ accountUser ? accountUser.studySets.length : 0 }
                             className="text-4xl font-semibold"
                         />
                     </span>
@@ -199,28 +205,30 @@ export function ProfilePage() {
                         >
                             <CardHeader>
                                 <CardTitle>
-                                    My Study Sets
+                                    {accountUser?.displayName}'s Study Sets
                                 </CardTitle>
                                 <CardDescription>
-                                    Collection of my study sets
+                                    Collection of <i>{accountUser?.displayName}'s</i> study sets
                                 </CardDescription>
                             </CardHeader>
                             <CardContent
-                                className={`${!studySets || studySets.length === 0 ? "flex justify-center" : "grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1" } gap-2 relative`}
+                                className={`${!accountUser?.studySets || accountUser?.studySets.length === 0 ? "flex justify-center" : "grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1" } gap-2 relative`}
                             >
                                 { loading && <LoadingOverlay className="md:my-24 my-12" /> }
-                                { !studySets || studySets.length === 0 && 
+                                { !accountUser?.studySets || accountUser?.studySets.length === 0 && 
                                     <p className="text-md dark:text-gray-300 text-gray-700 text-center md:my-24 my-12">
-                                        No study sets. Create one from the 'Generate' tab!
+                                        Study sets for <i>{accountUser?.displayName}</i> are empty right now.
                                     </p>
                                 }
-                                { !loading && studySets?.map((studySet) => (
+                                { !loading && accountUser?.studySets.map((studySet) => (
                                     <Card
-                                        className="border-none cursor-pointer
+                                        key={studySet.id}
+                                        className="border-none cursor-pointer relative
                                         dark:bg-slate-900 bg-indigo-100 
                                         hover:dark:bg-slate-800 hover:bg-blue-200 duration-150"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
+                                        { singleLoading === studySet.id && <LoadingOverlay /> }
                                         <CardHeader className="gap-1">
                                             <CardTitle className="font-bold">
                                                 {studySet.name}
@@ -280,85 +288,89 @@ export function ProfilePage() {
                         >
                             <CardHeader>
                                 <CardTitle>
-                                    My Favorites
+                                    {accountUser?.displayName}'s Favorites
                                 </CardTitle>
                                 <CardDescription>
-                                    Collection of my favorited study sets
+                                    Collection of <i>{accountUser?.displayName}'s</i> favorited study sets
                                 </CardDescription>
                             </CardHeader>
                             <CardContent
-                                className={`${!studySets || studySets.length === 0 ? "flex justify-center" : "grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1" } gap-2 relative`}
+                                className={`${!accountUser?.favorites || accountUser?.favorites.length === 0 ? "flex justify-center" : "grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1" } gap-2 relative`}
                             >
                                 { loading && <LoadingOverlay className="md:my-24 my-12" /> }   
-                                { !favorites || favorites.length === 0 && 
+                                { !accountUser?.favorites || accountUser?.favorites.length === 0 && 
                                     <p className="text-md dark:text-gray-300 text-gray-700 text-center md:my-24 my-12">
-                                        No favorites. Find some study sets from the 'Explore' tab!
+                                        Favorites for <i>{accountUser?.displayName}</i> are empty right now.
                                     </p>
                                 }
-                                { !loading && favorites?.map((studySet) => (
+                                { !loading && accountUser?.favorites.map((studySet) => (
                                     <Card
-                                    key={studySet.id}
-                                    className="cursor-pointer border-none
-                                    dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]
-                                    hover:dark:bg-slate-800 hover:bg-blue-200 duration-150"
-                                    onClick={() => navigate(`/study-set/${studySet.id}`)}
+                                        key={studySet.id}
+                                        className="cursor-pointer border-none relative
+                                        dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]
+                                        hover:dark:bg-slate-800 hover:bg-blue-200 duration-150"
+                                        onClick={() => navigate(`/study-set/${studySet.id}`)}
                                     >
-                                    <CardHeader className="gap-1">
-                                        <CardTitle className="font-bold dark:text-indigo-100 text-slate-950 text-nowrap">
-                                        {studySet.name}
-                                        </CardTitle>
-                                        <CardDescription
-                                        className="dark:text-indigo-300 text-slate-900 flex flex-col gap-1"
-                                        >
-                                        <p>
-                                            {studySet.deck.cards.length} flashcards 
-                                            • {studySet.quiz.attempts.length} quiz attempts
-                                        </p>
-                                        <div className="flex gap-2">
-                                            <p className={`w-fit px-2 rounded-xl text-xs
-                                            ${studySet.public ? "dark:bg-indigo-300 bg-indigo-300" : "dark:bg-slate-950 bg-indigo-900" }
-                                            ${studySet.public ? "dark:text-indigo-900 text-indigo-950" : "dark:text-indigo-200 text-indigo-200" }`}
+                                        { singleLoading === studySet.id && <LoadingOverlay /> }
+                                        <CardHeader className="gap-1">
+                                            <CardTitle className="font-bold dark:text-indigo-100 text-slate-950 text-nowrap">
+                                            {studySet.name}
+                                            </CardTitle>
+                                            <CardDescription
+                                            className="dark:text-indigo-300 text-slate-900 flex flex-col gap-1"
                                             >
-                                            {studySet.public ? "Public " : "Private "}
+                                            <p>
+                                                {studySet.deck.cards.length} flashcards 
+                                                • {studySet.quiz.attempts.length} quiz attempts
                                             </p>
-                                            <p className={`w-fit px-2 rounded-xl text-xs
-                                            ${studySet.difficulty === "BEGINNER" && "dark:bg-green-900 bg-green-300 dark:text-white text-black" }
-                                            ${studySet.difficulty === "INTERMEDIATE" && "dark:bg-yellow-700 bg-yellow-500 dark:text-white text-black" }}
-                                            ${studySet.difficulty === "ADVANCED" && "dark:bg-red-900 bg-red-300 dark:text-white text-black"}`}
+                                            <div className="flex gap-2">
+                                                <p className={`w-fit px-2 rounded-xl text-xs
+                                                ${studySet.public ? "dark:bg-indigo-300 bg-indigo-300" : "dark:bg-slate-950 bg-indigo-900" }
+                                                ${studySet.public ? "dark:text-indigo-900 text-indigo-950" : "dark:text-indigo-200 text-indigo-200" }`}
+                                                >
+                                                {studySet.public ? "Public " : "Private "}
+                                                </p>
+                                                <p className={`w-fit px-2 rounded-xl text-xs
+                                                ${studySet.difficulty === "BEGINNER" && "dark:bg-green-900 bg-green-300 dark:text-white text-black" }
+                                                ${studySet.difficulty === "INTERMEDIATE" && "dark:bg-yellow-700 bg-yellow-500 dark:text-white text-black" }}
+                                                ${studySet.difficulty === "ADVANCED" && "dark:bg-red-900 bg-red-300 dark:text-white text-black"}`}
+                                                >
+                                                {studySet.difficulty.charAt(0) + studySet.difficulty.slice(1).toLowerCase()}
+                                                </p>
+                                            </div>
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="flex justify-between">
+                                            <div 
+                                                className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
+                                                hover:dark:bg-slate-700 hover:bg-blue-300 duration-150"
                                             >
-                                            {studySet.difficulty.charAt(0) + studySet.difficulty.slice(1).toLowerCase()}
+                                                <Avatar className="size-6 rounded-2xl">
+                                                    <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                                    <AvatarFallback>Icon</AvatarFallback>
+                                                </Avatar>
+                                                <p className="truncate">
+                                                    { studySet.user.displayName }
+                                                </p>
+                                            </div>
+                                            <p 
+                                                className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
+                                                dark:text-indigo-100 text-indigo-950
+                                                hover:dark:bg-rose-500 hover:bg-rose-300 duration-150"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleFavorite(studySet);
+                                                }}
+                                            >
+                                                { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
+                                                    <FaHeart className="dark:text-rose-700 text-rose-400" /> 
+                                                ) : (
+                                                    <FaRegHeart />
+                                                )}
+                                                {studySet.favoritedBy.length}
                                             </p>
-                                        </div>
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="flex justify-between">
-                                        <div 
-                                            className="flex gap-1 items-center justify-start text-sm font-semibold rounded-lg p-1 pr-2 
-                                            hover:dark:bg-slate-700 hover:bg-blue-300 duration-150"
-                                        >
-                                            <Avatar className="size-6 rounded-2xl">
-                                                <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
-                                                <AvatarFallback>Icon</AvatarFallback>
-                                            </Avatar>
-                                            <p className="truncate">
-                                                { studySet.user.displayName }
-                                            </p>
-                                        </div>
-                                        <p 
-                                            className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
-                                            dark:text-indigo-100 text-indigo-950
-                                            hover:dark:bg-rose-500 hover:bg-rose-300 duration-150"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleUnfavorite(studySet);
-                                            }}
-                                        >
-                                        <FaHeart 
-                                            className="dark:text-rose-700 text-rose-400" /> 
-                                            {studySet["_count"].favoritedBy}
-                                        </p>
-                                    </CardContent>
-                                </Card>
+                                        </CardContent>
+                                    </Card>
                                 )) }
                             </CardContent>
                         </Card>

@@ -1,6 +1,6 @@
 import { prisma } from "../config/prismaClient.js"
 
-async function accountGet(req, res) {
+async function profileGet(req, res) {
     try {
         const { userId } = req.params;
 
@@ -10,6 +10,9 @@ async function accountGet(req, res) {
             },
             include: {
                 studySets: {
+                    where: {
+                        public: true,
+                    },
                     include: {
                         deck: {
                             include: {
@@ -22,16 +25,15 @@ async function accountGet(req, res) {
                             }
                         },
                         favoritedBy: true,
-                    }
+                    },
                 },
                 attempts: true,
                 favorites: {
+                    where: {
+                        public: true,
+                    },
                     include: {
-                        _count: {
-                            select: {
-                                favoritedBy: true,
-                            }
-                        },
+                        favoritedBy: true,
                         deck: {
                             include: {
                                 cards: true,
@@ -68,65 +70,13 @@ async function accountGet(req, res) {
             status: 0,
         });
     } catch (err) {
-        console.error(`Error getting account page: `, err);
+        console.error(`Error getting profile page: `, err);
         return res.json({
             status: 0,
         });
     }
 }
 
-async function favoritePost(req, res) {
-    try {
-        const user = req.user;
-        const { userId, studySetId } = req.params;
-        const { favorited } = req.query;
-
-        if(user.id !== userId) {
-            return res.json({
-                status: 0,
-            });
-        }
-
-        if (favorited === "true") {
-            await prisma.user.update({
-                where: {
-                    id: user.id,
-                },
-                data: {
-                    favorites: {
-                        disconnect: {
-                            id: parseInt(studySetId),
-                        }
-                    }
-                }
-            });
-        } else {
-            await prisma.user.update({
-                where: {
-                    id: user.id,
-                },
-                data: {
-                    favorites: {
-                        connect: {
-                            id: parseInt(studySetId),
-                        }
-                    }
-                }
-            });
-        }
-
-        return res.json({
-            status: 1,
-        });
-    } catch (err) {
-        console.error(`Error adding favorite for user: `, err);
-        return res.json({
-            status: 0,
-        });
-    }
-}
-
-export const accountController = {
-    accountGet,
-    favoritePost
+export const profileController = {
+    profileGet,
 }

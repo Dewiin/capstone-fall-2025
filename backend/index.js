@@ -10,6 +10,7 @@ import { generateRouter } from "./routes/generateRouter.js";
 import { accountRouter } from "./routes/accountRouter.js";
 import { studySetRouter } from "./routes/studySetRouter.js";
 import { exploreRouter } from "./routes/exploreRouter.js";
+import { profileRouter } from "./routes/profileRouter.js";
 
 // config
 import { sessionConfig } from "./config/sessionConfig.js";
@@ -44,6 +45,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // Routes
 app.use("/api", indexRouter);
 app.use("/api/account", accountRouter);
+app.use("/api/profile", profileRouter);
 app.use("/api/generate", generateRouter);
 app.use("/api/study-set", studySetRouter);
 app.use("/api/explore", exploreRouter);
