@@ -1,6 +1,6 @@
 {
-  "name": "Brainstorm",
-  "short_name": "Storm",
+  "name": "MyWebSite",
+  "short_name": "MySite",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
