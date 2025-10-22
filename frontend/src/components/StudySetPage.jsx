@@ -88,45 +88,45 @@ export function StudySetPage() {
     }, []);
 
     useEffect(() => {
-        async function fetchStudySet() {
-            setLoading(true);
-            try {
-                const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
-                    method: "GET",
-                    credentials: "include",
-                });
-                if(!response.ok) {
-                    console.error(`Error getting a response for study set: `, response.status);
-                    return;
-                }
-
-                const result = await response.json();
-                if(result.status == 1) {
-                    const allAttempts = result.studySet.quiz.attempts.map((attempt, index) => ({
-                        attempt: index + 1,
-                        score: attempt.score,
-                    }));
-                    setProgressData(allAttempts);
-
-                    setStudySet(result.studySet);
-                    setQuiz(result.studySet.quiz);
-                    setDeck(result.studySet.deck);
-                    setGlobalAttempts(result.globalAttempts);
-                    setGlobalAverageScore(result.globalAverageScore);
-                    setUserAverageScore(result.userAverageScore);
-                    
-                } else {
-                    console.error('Study Set not found');
-                }
-            } catch (err) {
-                console.error(`Error fetching study set: `, err);
-            } finally {
-                setLoading(false);
-            }
-        }
-
         fetchStudySet();
     }, []);
+
+    async function fetchStudySet() {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
+                method: "GET",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                console.error(`Error getting a response for study set: `, response.status);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status == 1) {
+                const allAttempts = result.studySet.quiz.attempts.map((attempt, index) => ({
+                    attempt: index + 1,
+                    score: attempt.score,
+                }));
+                setProgressData(allAttempts);
+
+                setStudySet(result.studySet);
+                setQuiz(result.studySet.quiz);
+                setDeck(result.studySet.deck);
+                setGlobalAttempts(result.globalAttempts);
+                setGlobalAverageScore(result.globalAverageScore);
+                setUserAverageScore(result.userAverageScore);
+                
+            } else {
+                console.error('Study Set not found');
+            }
+        } catch (err) {
+            console.error(`Error fetching study set: `, err);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
         if (!api) {
@@ -165,6 +165,7 @@ export function StudySetPage() {
             setCorrect({});
             setSelected({});
             setLoading(false);
+            quiz.questions = shuffle(quiz.questions);
             return;
         } 
 
@@ -185,17 +186,7 @@ export function StudySetPage() {
 
             const result = await response.json();
             if(result.status == 1) {
-                setQuiz(result.quiz);
-                setGlobalAttempts(result.globalAttempts);
-                setGlobalAverageScore(result.globalAverageScore);
-                setUserAverageScore(result.userAverageScore);
-
-                const allAttempts = result.quiz.attempts.map((attempt, index) => ({
-                    attempt: index + 1,
-                    score: attempt.score,
-                }));
-                setProgressData(allAttempts);
-
+                fetchStudySet();
                 setSubmitted(true);
             } else {
                 console.error(`Quiz not found`);
@@ -205,6 +196,24 @@ export function StudySetPage() {
         } finally {
             setLoading(false);
         }
+    }
+
+    function shuffle(array) {
+        let m = array.length, t, i;
+
+        // While there remain elements to shuffle…
+        while (m) {
+
+            // Pick a remaining element…
+            i = Math.floor(Math.random() * m--);
+
+            // And swap it with the current element.
+            t = array[m];
+            array[m] = array[i];
+            array[i] = t;
+        }
+
+        return array;
     }
 
     // Custom tooltip component
@@ -456,12 +465,12 @@ export function StudySetPage() {
                                                 </CardTitle>
                                             </CardHeader>
                                             <CardContent>
-                                                <div className="grid sm:grid-cols-2 grid-cols-1 h-1/1.5 gap-6">
+                                                <div className="grid sm:grid-cols-2 grid-cols-1 gap-6">
                                                     {Object.entries(question.choices).map(([key, value]) => (
                                                         <Card 
                                                             key={key}
                                                             className={
-                                                                `md:text-sm text-xs cursor-pointer
+                                                                `md:text-sm text-xs cursor-pointer border-1 
                                                                 dark:bg-[rgba(255,255,255,0.1)]
                                                                 bg-[rgba(255,255,255,0.3)] 
                                                                 ${key == selected[question.id] &&
@@ -472,7 +481,7 @@ export function StudySetPage() {
                                                                     "border-indigo-700 dark:border-indigo-50"
                                                                 ))} 
                                                                 ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "dark:border-green-500 border-green-700 border-dashed"}
-                                                                border-1 hover:dark:bg-slate-900 hover:bg-indigo-300 duration-150`
+                                                                ${!submitted && "hover:dark:bg-slate-900 hover:bg-indigo-300 duration-150"}`
                                                             }
                                                             onClick={() => {
                                                                 if(submitted) return;

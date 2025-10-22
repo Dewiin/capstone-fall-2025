@@ -108,48 +108,8 @@ async function studySetUpdate(req, res) {
             }
         });
 
-        quiz = await prisma.quiz.findUnique({
-            where: {
-                studySetId: parseInt(studySetId),
-            },
-            include: {
-                questions: true,
-                attempts: {
-                    where: {
-                        userId: user.id,
-                    }
-                }
-            }
-        });
-
-        const allQuizAttempts = await prisma.quizAttempt.findMany({
-            where: {
-                quizId: quiz.id,
-            },
-        });
-
-        // global quiz progress stats
-        const globalAttempts = allQuizAttempts.length;
-        const globalCumulativeScore = allQuizAttempts.reduce((acc, curr) => {
-            return acc + curr.score;
-        }, 0);
-        let globalAverageScore = (globalCumulativeScore / globalAttempts).toFixed(2);
-        globalAverageScore = (globalAverageScore === "NaN") ? 0 : globalAverageScore;
-
-        // user quiz progress stats
-        const userAttempts = quiz.attempts.length;
-        const userCumulativeScore = quiz.attempts.reduce((acc, curr) => {
-            return acc + curr.score;
-        }, 0);
-        let userAverageScore = (userCumulativeScore / userAttempts).toFixed(2);
-        userAverageScore = (userAverageScore === "NaN") ? 0 : userAverageScore;
-
         return res.json({
             status: 1,
-            quiz,
-            globalAttempts,
-            globalAverageScore,
-            userAverageScore
         });
         
     } catch (err) {
