@@ -24,6 +24,7 @@ import {
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { CountingNumber } from "./ui/shadcn-io/counting-number";
+import { Spinner } from "./ui/shadcn-io/spinner";
 
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
@@ -124,12 +125,13 @@ export function ProfilePage() {
                 border-1 border-indigo-900 dark:border-indigo-300'
             >
                 {/* Avatar/Name */}
-                <div className="flex gap-4 items-center pr-8 md:max-w-1/4 text-indigo-900 dark:text-indigo-200">
+                <div className="flex gap-4 items-center md:max-w-1/4 text-indigo-900 dark:text-indigo-200">
                     <Avatar className="size-20 rounded-2xl">
                         <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
                         <AvatarFallback>Icon</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col gap-2 truncate">
+                        {!accountUser && <Spinner />}
                         <p className="text-3xl font-semibold truncate">
                             {accountUser?.displayName}
                         </p>
@@ -217,7 +219,7 @@ export function ProfilePage() {
                                 { loading && <LoadingOverlay className="md:my-24 my-12" /> }
                                 { !accountUser?.studySets || accountUser?.studySets.length === 0 && 
                                     <p className="text-md dark:text-gray-300 text-gray-700 text-center md:my-24 my-12">
-                                        Study sets for <i>{accountUser?.displayName}</i> are empty right now.
+                                        <i>{accountUser?.displayName}</i> has no public study sets.
                                     </p>
                                 }
                                 { !loading && accountUser?.studySets.map((studySet) => (
@@ -300,7 +302,7 @@ export function ProfilePage() {
                                 { loading && <LoadingOverlay className="md:my-24 my-12" /> }   
                                 { !accountUser?.favorites || accountUser?.favorites.length === 0 && 
                                     <p className="text-md dark:text-gray-300 text-gray-700 text-center md:my-24 my-12">
-                                        Favorites for <i>{accountUser?.displayName}</i> are empty right now.
+                                        <i>{accountUser?.displayName}</i> has no public favorites.
                                     </p>
                                 }
                                 { !loading && accountUser?.favorites.map((studySet) => (

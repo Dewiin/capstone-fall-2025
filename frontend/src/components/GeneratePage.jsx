@@ -140,8 +140,9 @@ export function GeneratePage() {
     }
 
     return (
-        <div className="flex flex-col h-full w-full gap-16 items-center mt-24">
+        <div className="flex flex-col gap-8 h-full w-full items-center mt-24">
             { loading && <LoadingOverlay className="fixed" /> }
+            <p className="font-bold text-2xl text-center">Generate.</p>
             <Tabs 
                 defaultValue={uploadType} 
                 className="md:w-4xl w-sm"

@@ -159,6 +159,7 @@ export function ExplorePage() {
 
   return (
     <div className="flex flex-col gap-8 max-w-3xl min-h-screen mx-auto md:mt-24 md:p-0 p-8">
+      <p className="font-bold text-2xl text-center">Explore.</p>
       {/* Search Bar */}
       <div className="flex flex-col gap-2">
         <p 
@@ -207,7 +208,7 @@ export function ExplorePage() {
           <CarouselContent>
             { allCategories.current.map((category) => (
               <CarouselItem
-                key={category} 
+                key={category.name} 
                 className="md:basis-1/4 sm:basis-1/3"
               >
                 <Card
