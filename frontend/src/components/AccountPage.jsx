@@ -46,14 +46,14 @@ export function AccountPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!authLoading && !user) {
-            navigate("/");
+        if (!authLoading) {
+            if (!user) {
+                navigate("/unauthorized");
+            } else {
+                getAccount();
+            }
         }
-    }, []);
-
-    useEffect(() => {
-        getAccount();
-    }, []);
+    }, [authLoading]);
 
     async function getAccount() {
         setLoading(true);

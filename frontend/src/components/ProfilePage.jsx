@@ -46,20 +46,18 @@ export function ProfilePage() {
     const { userId } = useParams();
 
     useEffect(() => {
-        if(!authLoading && !user) {
-            navigate("/");
+        if(!authLoading) { 
+            if(!user) {
+                navigate("/unauthorized");
+            } else {
+                if(user?.id === userId) {
+                    navigate("/account");
+                } else {
+                    getProfile();
+                }
+            }
         }
-    }, []);
-
-    useEffect(() => {
-        if(user?.id === userId) {
-            navigate("/account");
-        }
-    }, []);
-
-    useEffect(() => {
-        getProfile();
-    }, []);
+    }, [authLoading]);
 
     async function getProfile() {
         setLoading(true);

@@ -71,9 +71,9 @@ export function GeneratePage() {
 
     useEffect(() => {
         if(!authLoading && !user) {
-            navigate("/");
+            navigate("/unauthorized");
         }
-    }, []);
+    }, [authLoading]);
 
     const form = useForm({
         resolver: zodResolver(generateSchema),

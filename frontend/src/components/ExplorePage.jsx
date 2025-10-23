@@ -58,9 +58,9 @@ export function ExplorePage() {
 
   useEffect(() => {
     if(!authLoading && !user) {
-      navigate("/");
+      navigate("/unauthorized");
     }
-  }, [])
+  }, [authLoading])
 
   useEffect(() => {
     getCategories();

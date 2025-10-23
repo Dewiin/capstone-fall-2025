@@ -82,14 +82,14 @@ export function StudySetPage() {
     const [ userAverageScore, setUserAverageScore ] = useState(null);
 
     useEffect(() => {
-        if (!authLoading && !user) {
-            navigate("/");
+        if (!authLoading) {
+            if(!user) {
+                navigate("/unauthorized");
+            } else {
+                fetchStudySet();
+            }
         }
-    }, []);
-
-    useEffect(() => {
-        fetchStudySet();
-    }, []);
+    }, [authLoading]);
 
     async function fetchStudySet() {
         setLoading(true);
@@ -105,6 +105,10 @@ export function StudySetPage() {
 
             const result = await response.json();
             if(result.status == 1) {
+                if(!studySet.public && user.id !== result.studySet.userId) {
+                    navigate("/forbidden");
+                }
+
                 const allAttempts = result.studySet.quiz.attempts.map((attempt, index) => ({
                     attempt: index + 1,
                     score: attempt.score,

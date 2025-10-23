@@ -6,6 +6,8 @@ import { GeneratePage } from './components/GeneratePage';
 import { StudySetPage } from './components/StudySetPage';
 import { ExplorePage } from './components/ExplorePage';
 import { PageNotFound } from './components/PageNotFound';
+import { UnauthorizedPage } from './components/UnauthorizedPage';
+import { ForbiddenPage } from './components/ForbiddenPage';
 
 // Components
 import { Form } from '@/components/form/Form';
@@ -31,6 +33,8 @@ function App() {
           <Route path="/form/:method" element={ <Form /> } />
           <Route path="/generate" element={ <GeneratePage /> } />
           <Route path="/explore" element={ <ExplorePage /> } />
+          <Route path="/unauthorized" element={ <UnauthorizedPage /> } />
+          <Route path="/forbidden" element={ <ForbiddenPage /> } />
           <Route path="/*" element={ <PageNotFound /> } />
         </Routes>
       </BrowserRouter>
