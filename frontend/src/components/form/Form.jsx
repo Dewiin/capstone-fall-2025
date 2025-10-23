@@ -7,8 +7,8 @@ export function Form() {
     const { method } = useParams();
 
     return (
-        <>
-            <div className="flex w-full mt-24 justify-center p-6 md:p-10">
+        <div className="flex flex-col h-screen">
+            <div className="flex flex-1 w-full mt-24 justify-center p-6 md:p-10">
                 <div className="w-full max-w-sm">
                     { (method === "login") ? (
                         <div className="flex flex-col gap-6">
@@ -26,6 +26,6 @@ export function Form() {
             
             {/* Footer */}
             <Footer />
-        </>
+        </div>
     );
 } 

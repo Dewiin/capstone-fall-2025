@@ -49,7 +49,7 @@ import { CountingNumber } from "./ui/shadcn-io/counting-number";
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function StudySetPage() {
-    const { user } = useAuth();
+    const { user, authLoading } = useAuth();
     const [ notesType, setNotesType ] = useState("deck");
     const [ loading, setLoading ] = useState(false);
     const { studySetId } = useParams();
@@ -82,7 +82,7 @@ export function StudySetPage() {
     const [ userAverageScore, setUserAverageScore ] = useState(null);
 
     useEffect(() => {
-        if (!user) {
+        if (!authLoading && !user) {
             navigate("/");
         }
     }, []);

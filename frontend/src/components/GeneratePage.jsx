@@ -60,7 +60,7 @@ const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function GeneratePage() {    
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, authLoading } = useAuth();
     const [ loading, setLoading ] = useState(false);
     const [ file, setFile ] = useState();
     
@@ -70,7 +70,7 @@ export function GeneratePage() {
     const [ visibility, setVisibility ] = useState("public");
 
     useEffect(() => {
-        if(!user) {
+        if(!authLoading && !user) {
             navigate("/");
         }
     }, []);

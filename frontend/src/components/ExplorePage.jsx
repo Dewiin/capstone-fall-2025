@@ -32,7 +32,7 @@ import { useAuth } from "@/components/contexts/Contexts";
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function ExplorePage() {
-  const { user } = useAuth();
+  const { user, authLoading } = useAuth();
 
   const allCategories = useRef([
     {name: "SCIENCE", icon: <MdScience size={24} className="dark:text-indigo-200 text-slate-900" />},
@@ -55,6 +55,12 @@ export function ExplorePage() {
   const [ singleLoading, setSingleLoading ] = useState(null);
   const { pageNumber } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(!authLoading && !user) {
+      navigate("/");
+    }
+  }, [])
 
   useEffect(() => {
     getCategories();

@@ -30,7 +30,7 @@ import { CountingNumber } from "@/components/ui/shadcn-io/counting-number";
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function ProfilePage() {
-    const { user } = useAuth();
+    const { user, authLoading } = useAuth();
 
     // backend
     const [ accountUser, setAccountUser ] = useState(null);
@@ -46,10 +46,10 @@ export function ProfilePage() {
     const { userId } = useParams();
 
     useEffect(() => {
-        if(!user) {
+        if(!authLoading && !user) {
             navigate("/");
         }
-    }, [user, navigate]);
+    }, []);
 
     useEffect(() => {
         if(user?.id === userId) {
