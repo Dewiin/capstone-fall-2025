@@ -105,7 +105,7 @@ export function StudySetPage() {
 
             const result = await response.json();
             if(result.status == 1) {
-                if(!studySet.public && user.id !== result.studySet.userId) {
+                if((!result.studySet.public) && (user.id !== result.studySet.userId)) { 
                     navigate("/forbidden");
                 }
 
