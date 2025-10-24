@@ -103,12 +103,30 @@ export function ProfilePage() {
 
             const result = await response.json();
             if(result.status == 1) {
+                {
+                    result.favorited && toast.error("Removed from favorites!", {
+                        description: (
+                        <>
+                            Successfully unfavorited <i>{studySet.name}</i>
+                        </>
+                        ),
+                    });
+                }
+                {
+                    !result.favorited && toast.success("Added to favorites!", {
+                        description: (
+                        <>
+                            Successfully favorited <i>{studySet.name}</i>
+                        </>
+                        ),
+                    });
+                }
                 getProfile();
             }
-            else {
-                console.error("Error favoriting study set.");
-            }
         } catch (err) {
+            toast.warning("Failed to get a response", {
+                description: ("Please try again later."),
+            });
             console.error(`Error favoriting study set: `, err);
         } finally {
             setSingleLoading(null);

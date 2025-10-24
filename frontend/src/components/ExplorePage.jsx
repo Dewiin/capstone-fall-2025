@@ -20,6 +20,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { toast } from "sonner";
 import { FaBook, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -129,6 +130,9 @@ export function ExplorePage() {
       const result = await response.json();
       setStudySets(result.studySets);
     } catch (err) {
+      toast.warning("Failed to get a response", {
+        description: ("Please try again later."),
+      });
       console.error(`Error handling search query: `, err);
     } finally {
       setLoading(false);
@@ -151,9 +155,30 @@ export function ExplorePage() {
 
       const result = await response.json();
       if(result.status == 1) {
+        {
+          result.favorited && toast.error("Removed from favorites!", {
+            description: (
+              <>
+                Successfully unfavorited <i>{studySet.name}</i>
+              </>
+            ),
+          });
+        }
+        {
+          !result.favorited && toast.success("Added to favorites!", {
+            description: (
+              <>
+                Successfully favorited <i>{studySet.name}</i>
+              </>
+            ),
+          });
+        }
         getCategories();
       }
       else {
+        toast.warning("Failed to get a response", {
+          description: ("Please try again later."),
+        });
         console.error("Error favoriting study set.");
       }
     } catch (err) {

@@ -25,6 +25,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 import { CountingNumber } from "./ui/shadcn-io/counting-number";
 
 
@@ -83,10 +84,10 @@ export function AccountPage() {
         }
     }
 
-    async function handleDelete(studySetId) {
-        setSingleLoading(studySetId);
+    async function handleDelete(studySet) {
+        setSingleLoading(studySet.id);
         try {
-            const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySetId}`, {
+            const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySet.id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
@@ -97,12 +98,22 @@ export function AccountPage() {
 
             const result = await response.json();
             if(result.status == 1) {
+                toast.error("Removed study set!", {
+                    description: (
+                    <>
+                        Successfully deleted <i>{studySet.name}</i>
+                    </>
+                    ),
+                });
                 getAccount();
             }
             else {
                 console.error("Error finding study set to delete");
             }
         } catch (err) {
+            toast.warning("Failed to get a response", {
+                description: ("Please try again later."),
+            });
             console.error(`Error deleting study set: `, err);
         } finally {
             setSingleLoading(null);
@@ -125,12 +136,30 @@ export function AccountPage() {
 
             const result = await response.json();
             if(result.status == 1) {
+                {
+                    result.favorited && toast.error("Removed from favorites!", {
+                        description: (
+                        <>
+                            Successfully unfavorited <i>{studySet.name}</i>
+                        </>
+                        ),
+                    });
+                }
+                {
+                    !result.favorited && toast.success("Added to favorites!", {
+                        description: (
+                        <>
+                            Successfully favorited <i>{studySet.name}</i>
+                        </>
+                        ),
+                    });
+                }
                 getAccount();
             }
-            else {
-                console.error("Error favoriting study set.");
-            }
         } catch (err) {
+            toast.warning("Failed to get a response", {
+                description: ("Please try again later."),
+            });
             console.error(`Error favoriting study set: `, err);
         } finally {
             setSingleLoading(null);
@@ -150,12 +179,19 @@ export function AccountPage() {
 
             const result = await response.json();
             if(result.status == 1) {
+                toast.error("Removed from favorites!", {
+                    description: (
+                    <>
+                        Successfully unfavorited <i>{studySet.name}</i>
+                    </>
+                    ),
+                });
                 getAccount();
             }
-            else {
-                console.error("Error favoriting study set.");
-            }
         } catch (err) {
+            toast.warning("Failed to get a response", {
+                description: ("Please try again later."),
+            });
             console.error(`Error unfavoriting study set: `, err);
         } finally {
             setSingleLoading(null);
@@ -319,7 +355,7 @@ export function AccountPage() {
                                                 hover:dark:bg-red-800 hover:bg-red-300 duration-150" 
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleDelete(studySet.id);
+                                                    handleDelete(studySet);
                                                 }}    
                                             />
                                             <p 

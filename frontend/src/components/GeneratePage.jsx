@@ -28,6 +28,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -128,11 +129,20 @@ export function GeneratePage() {
 
             if(result.status == 1) {
                 navigate(`/study-set/${result.studySetId}`);
+                toast.success("Study set created successfully!", {
+                    description: "View your new study set in your account page."
+                });
             } else {
-                console.error(`Error submitting data for generation: `, err);
+                toast.warning("Failed to create the study set", {
+                    description: "Try again and add more details to the input.",
+                });
+                console.error(`Error submitting data for generation.`);
             }
 
         } catch (err) {
+            toast.warning("Please try again later.", {
+                description: "There was an error getting a response from the server."
+            });
             console.error(`Error submitting data for generation: `, err);
         } finally {
             setLoading(false);
