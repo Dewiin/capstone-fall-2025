@@ -114,10 +114,21 @@ async function resultGet(req, res) {
     const studySets = await prisma.studySet.findMany({
       where: {
         public: true,
-        name: {
-          contains: search_query,
-          mode: "insensitive",
-        }
+        OR: [
+          {
+            name: {
+              contains: search_query,
+              mode: "insensitive",
+            },
+          },
+          {
+            user: {
+              displayName: {
+                contains: search_query,
+              }
+            }
+          }
+        ]
       },
       include: {
         deck: {
