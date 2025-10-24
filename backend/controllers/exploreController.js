@@ -125,6 +125,7 @@ async function resultGet(req, res) {
             user: {
               displayName: {
                 contains: search_query,
+                mode: "insensitive",
               }
             }
           }
