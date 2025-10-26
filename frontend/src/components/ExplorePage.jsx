@@ -67,8 +67,8 @@ export function ExplorePage() {
     getCategories();
   }, []);
   
-  async function getCategories(load=true) {
-    load && setLoading(true);
+  async function getCategories() {
+    setLoading(true);
     try {
       const response = await fetch(`${API_URL_DOMAIN}/api/explore`, {
         method: "GET", 
@@ -90,7 +90,7 @@ export function ExplorePage() {
     } catch (err) {
       console.error(`Error fetching categories: `, err);
     } finally {
-      load && setLoading(false);
+      setLoading(false);
     }
   }
 
@@ -159,11 +159,11 @@ export function ExplorePage() {
           prev.map(s =>
             s.id === studySet.id
               ? {
-                  ...s,
-                  favoritedBy: !result.favorited
-                    ? [...s.favoritedBy, { id: user.id }]
-                    : s.favoritedBy.filter(u => u.id !== user.id),
-                }
+                ...s,
+                favoritedBy: !result.favorited
+                  ? [...s.favoritedBy, { id: user.id }]
+                  : s.favoritedBy.filter(u => u.id !== user.id),
+              }
               : s
           )
         );

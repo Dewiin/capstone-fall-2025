@@ -136,6 +136,22 @@ export function AccountPage() {
 
             const result = await response.json();
             if(result.status == 1) {
+                setAccountUser((prev) => ({
+                    ...prev,
+                    studySets: prev.studySets.map((s) => (
+                        s.id === studySet.id 
+                        ? {
+                            ...s,
+                            favoritedBy: !result.favorited
+                            ? [...s.favoritedBy, {id: user.id}]
+                            : s.favoritedBy.filter(u => u.id !== user.id)
+                        }
+                        : s
+                    )),
+                    favorites: !result.favorited 
+                    ? [...prev.favorites, {id: studySet.id}]
+                    : prev.favorites.filter(u => u.id !== user.id)
+                }));
                 {
                     result.favorited && toast.error("Removed from favorites!", {
                         description: (
@@ -154,7 +170,6 @@ export function AccountPage() {
                         ),
                     });
                 }
-                getAccount();
             }
         } catch (err) {
             toast.warning("Failed to get a response", {
@@ -179,6 +194,12 @@ export function AccountPage() {
 
             const result = await response.json();
             if(result.status == 1) {
+                // getAccount();
+                setAccountUser((prev) => ({
+                    ...prev,
+                    favorites: prev.favorites.filter((f) => f.id !== studySet.id),
+                }));
+                    
                 toast.error("Removed from favorites!", {
                     description: (
                     <>
@@ -186,7 +207,6 @@ export function AccountPage() {
                     </>
                     ),
                 });
-                getAccount();
             }
         } catch (err) {
             toast.warning("Failed to get a response", {
