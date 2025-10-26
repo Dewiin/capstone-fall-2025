@@ -67,8 +67,8 @@ export function ExplorePage() {
     getCategories();
   }, []);
   
-  async function getCategories() {
-    setLoading(true);
+  async function getCategories(load=true) {
+    load && setLoading(true);
     try {
       const response = await fetch(`${API_URL_DOMAIN}/api/explore`, {
         method: "GET", 
@@ -90,7 +90,7 @@ export function ExplorePage() {
     } catch (err) {
       console.error(`Error fetching categories: `, err);
     } finally {
-      setLoading(false);
+      load && setLoading(false);
     }
   }
 
@@ -155,6 +155,18 @@ export function ExplorePage() {
 
       const result = await response.json();
       if(result.status == 1) {
+        setStudySets(prev =>
+          prev.map(s =>
+            s.id === studySet.id
+              ? {
+                  ...s,
+                  favoritedBy: !result.favorited
+                    ? [...s.favoritedBy, { id: user.id }]
+                    : s.favoritedBy.filter(u => u.id !== user.id),
+                }
+              : s
+          )
+        );
         {
           result.favorited && toast.error("Removed from favorites!", {
             description: (
@@ -173,7 +185,6 @@ export function ExplorePage() {
             ),
           });
         }
-        getCategories();
       }
       else {
         toast.warning("Failed to get a response", {
