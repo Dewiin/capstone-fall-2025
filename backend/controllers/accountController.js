@@ -27,11 +27,6 @@ async function accountGet(req, res) {
                 attempts: true,
                 favorites: {
                     include: {
-                        _count: {
-                            select: {
-                                favoritedBy: true,
-                            }
-                        },
                         deck: {
                             include: {
                                 cards: true,

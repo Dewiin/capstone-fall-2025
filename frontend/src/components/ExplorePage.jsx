@@ -161,7 +161,7 @@ export function ExplorePage() {
               ? {
                 ...s,
                 favoritedBy: !result.favorited
-                  ? [...s.favoritedBy, { id: user.id }]
+                  ? [...s.favoritedBy, user]
                   : s.favoritedBy.filter(u => u.id !== user.id),
               }
               : s

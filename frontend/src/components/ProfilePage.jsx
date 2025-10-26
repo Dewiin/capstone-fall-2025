@@ -25,7 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton"
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { CountingNumber } from "@/components/ui/shadcn-io/counting-number";
-
+import { toast } from "sonner";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
@@ -103,6 +103,28 @@ export function ProfilePage() {
 
             const result = await response.json();
             if(result.status == 1) {
+                setAccountUser((prev) => ({
+                    ...prev,
+                    studySets: prev.studySets.map((s) => (
+                        s.id === studySet.id 
+                        ? {
+                            ...s,
+                            favoritedBy: !result.favorited 
+                            ? [...s.favoritedBy, user] 
+                            : s.favoritedBy.filter(u => u.id !== user.id)
+                        }
+                        : s
+                    )),
+                    favorites: prev.favorites.map((f) => (
+                        f.id === studySet.id? {
+                            ...f,
+                            favoritedBy: !result.favorited
+                            ? [...f.favoritedBy, user]
+                            : f.favoritedBy.filter(u => u.id !== user.id)
+                        }
+                        : f
+                    ))
+                }))
                 {
                     result.favorited && toast.error("Removed from favorites!", {
                         description: (
@@ -121,7 +143,6 @@ export function ProfilePage() {
                         ),
                     });
                 }
-                getProfile();
             }
         } catch (err) {
             toast.warning("Failed to get a response", {
@@ -195,6 +216,15 @@ export function ProfilePage() {
                         </p>
                         <CountingNumber 
                             number={ attemptCount }
+                            className="text-4xl font-semibold"
+                        />
+                    </span>
+                    <span>
+                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
+                            favorites added
+                        </p>
+                        <CountingNumber 
+                            number={ accountUser ? accountUser.favorites.length : 0 }
                             className="text-4xl font-semibold"
                         />
                     </span>
