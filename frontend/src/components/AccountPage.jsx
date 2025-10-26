@@ -149,8 +149,11 @@ export function AccountPage() {
                         : s
                     )),
                     favorites: !result.favorited 
-                    ? [...prev.favorites, {id: studySet.id}]
-                    : prev.favorites.filter(u => u.id !== user.id)
+                    ? [...prev.favorites, {
+                        ...studySet,
+                        user: accountUser,
+                    }]
+                    : prev.favorites.filter(f => f.id !== studySet.id)
                 }));
                 {
                     result.favorited && toast.error("Removed from favorites!", {
@@ -488,7 +491,7 @@ export function AccountPage() {
                                             >
                                             <FaHeart 
                                                 className="dark:text-rose-700 text-rose-400" /> 
-                                                {studySet["_count"].favoritedBy}
+                                                {studySet.favoritedBy.length}
                                             </p>
                                         </CardContent>
                                     </Card>
