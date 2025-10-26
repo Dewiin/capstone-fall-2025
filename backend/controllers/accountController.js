@@ -43,6 +43,7 @@ async function accountGet(req, res) {
                             }
                         },
                         user: true,
+                        favoritedBy: true,
                     }
                 },
             }
