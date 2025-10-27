@@ -160,7 +160,7 @@ export function ExplorePage() {
             s.id === studySet.id
               ? {
                 ...s,
-                favoritedBy: !result.favorited
+                favoritedBy: !alreadyFavorited
                   ? [...s.favoritedBy, user]
                   : s.favoritedBy.filter(u => u.id !== user.id),
               }
@@ -168,7 +168,7 @@ export function ExplorePage() {
           )
         );
         {
-          result.favorited && toast.error("Removed from favorites!", {
+          alreadyFavorited && toast.error("Removed from favorites!", {
             description: (
               <>
                 Successfully unfavorited <i>{studySet.name}</i>
@@ -177,7 +177,7 @@ export function ExplorePage() {
           });
         }
         {
-          !result.favorited && toast.success("Added to favorites!", {
+          !alreadyFavorited && toast.success("Added to favorites!", {
             description: (
               <>
                 Successfully favorited <i>{studySet.name}</i>
