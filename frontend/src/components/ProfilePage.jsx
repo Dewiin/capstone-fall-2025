@@ -109,16 +109,17 @@ export function ProfilePage() {
                         s.id === studySet.id 
                         ? {
                             ...s,
-                            favoritedBy: !result.favorited 
+                            favoritedBy: !alreadyFavorited 
                             ? [...s.favoritedBy, user] 
                             : s.favoritedBy.filter(u => u.id !== user.id)
                         }
                         : s
                     )),
                     favorites: prev.favorites.map((f) => (
-                        f.id === studySet.id? {
+                        f.id === studySet.id
+                        ? {
                             ...f,
-                            favoritedBy: !result.favorited
+                            favoritedBy: !alreadyFavorited
                             ? [...f.favoritedBy, user]
                             : f.favoritedBy.filter(u => u.id !== user.id)
                         }
@@ -191,7 +192,7 @@ export function ProfilePage() {
                 <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl border-indigo-300" />
 
                 {/* Personal Stats */}
-                <div className=" flex-1 grid md:grid-cols-3 grid-cols-1 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
+                <div className=" flex-1 grid md:grid-cols-4 grid-cols-1 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
                     <span>
                         <p className="text-sm dark:text-indigo-300 text-indigo-900">
                             study sets created
