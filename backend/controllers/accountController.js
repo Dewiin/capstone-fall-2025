@@ -113,7 +113,6 @@ async function favoritePost(req, res) {
 
         return res.json({
             status: 1,
-            favorited: favorited === "true",
         });
     } catch (err) {
         console.error(`Error adding favorite for user: `, err);

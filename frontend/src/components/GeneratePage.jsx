@@ -297,7 +297,7 @@ export function GeneratePage() {
                                 <CardTitle>
                                     Text Input
                                 </CardTitle>
-                                <CardDescription className="dark:text-indigo-100 text-gray-600">
+                                <CardDescription>
                                     Create a Study Set With Raw Text
                                 </CardDescription>
                             </CardHeader>

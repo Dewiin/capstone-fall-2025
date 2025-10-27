@@ -98,6 +98,12 @@ export function AccountPage() {
 
             const result = await response.json();
             if(result.status == 1) {
+                // getAccount();
+                setAccountUser((prev) => ({
+                    ...prev,
+                    studySets: prev.studySets.filter((s) => s.id !== studySet.id),
+                    favorites: prev.favorites.filter((f) => f.id !== studySet.id)
+                }));
                 toast.error("Removed study set!", {
                     description: (
                     <>
@@ -105,7 +111,6 @@ export function AccountPage() {
                     </>
                     ),
                 });
-                getAccount();
             }
             else {
                 console.error("Error finding study set to delete");
@@ -142,21 +147,25 @@ export function AccountPage() {
                         s.id === studySet.id 
                         ? {
                             ...s,
-                            favoritedBy: !result.favorited
-                            ? [...s.favoritedBy, user]
+                            favoritedBy: !alreadyFavorited
+                            ? [...s.favoritedBy, accountUser]
                             : s.favoritedBy.filter(u => u.id !== user.id)
                         }
                         : s
                     )),
-                    favorites: !result.favorited 
+                    favorites: !alreadyFavorited
                     ? [...prev.favorites, {
                         ...studySet,
                         user: accountUser,
+                        favoritedBy: [
+                            ...studySet.favoritedBy,
+                            accountUser,
+                        ]
                     }]
                     : prev.favorites.filter(f => f.id !== studySet.id)
                 }));
                 {
-                    result.favorited && toast.error("Removed from favorites!", {
+                    alreadyFavorited && toast.error("Removed from favorites!", {
                         description: (
                         <>
                             Successfully unfavorited <i>{studySet.name}</i>
@@ -165,7 +174,7 @@ export function AccountPage() {
                     });
                 }
                 {
-                    !result.favorited && toast.success("Added to favorites!", {
+                    !alreadyFavorited && toast.success("Added to favorites!", {
                         description: (
                         <>
                             Successfully favorited <i>{studySet.name}</i>
@@ -197,9 +206,16 @@ export function AccountPage() {
 
             const result = await response.json();
             if(result.status == 1) {
-                // getAccount();
                 setAccountUser((prev) => ({
                     ...prev,
+                    studySets: prev.studySets.map((s) => (
+                        s.id === studySet.id 
+                        ? {
+                            ...s,
+                            favoritedBy: s.favoritedBy.filter((u) => u.id !== user.id),
+                        }
+                        : s
+                    )),
                     favorites: prev.favorites.filter((f) => f.id !== studySet.id),
                 }));
                     
