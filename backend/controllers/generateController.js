@@ -74,6 +74,9 @@ async function generateTextPost(req, res) {
         });
     } catch (err) {
         console.error(`Error posting text data for generating: `, err);
+        return res.json({
+            status: 0,
+        });
     }
 }
 
@@ -150,6 +153,9 @@ async function generateFilePost(req, res) {
         });
     } catch (err) {
         console.error(`Error posting file data for generating: `, err);
+        return res.json({
+            status: 0,
+        });
     }
 }
 
