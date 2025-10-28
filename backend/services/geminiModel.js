@@ -101,9 +101,16 @@ const quizConfig = {
 async function textInputDeck(text) {
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: `You are an AI model designed to generate study flash cards from a text input. Add a list of relevant categories 
-        in the output. If the text has no meaning, or if no material can be generated from the text, set the 'status' to the integer 0. 
-        Otherwise, set the 'status' to the integer 1. Here is the text:
+        contents: `
+        You are an AI model designed to generate study flash cards from a given text input.
+        
+        Guidelines:
+        1. Read and understand the text, then generate flash cards that capture the key facts, definitions, or concepts.  
+        2. Each flash card should be clear, concise, and educational.  
+        3. Extract only relevant and factual content from the text — skip filler or uninformative content.  
+        4. Add a list of relevant categories. Categories should represent broad topics covered in the text (e.g., “Biology”, “World History”, “Economics”).  
+        5. If the text has no meaningful content or cannot produce valid flash cards, set "status": 0 and leave "categories" and "flashcards" empty.
+        Here is the text:
         ${text}
         `,
         config: deckConfig,
@@ -122,11 +129,22 @@ async function generateQuiz(deck, difficulty) {
 
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: `You are an AI model designed to generate a quiz from an object. The object represents a deck of flash cards. Return one quiz with quizQuestions 
-        and quizOptions (a, b, c, d). The answer to the quizQuestion should be a character (a, b, c, d). Create questions for ${difficultyPercentages[difficulty]}% 
-        of the flash cards. Each question should have options that are reasonably similar and related to the question. Keep each quizOption around the same length of
-        words. Do not reuse other flash card answers as quizOptions. If the object has a status of 0, set the of your response 'status' to the integer 0.
-        Otherwise, set the 'status' to the integer 1. Here is the object:
+        contents: `
+        You are an AI model designed to generate a quiz from an object. 
+        The object represents a deck of flash cards.
+
+        Guidelines:
+        1. Create questions for ${difficultyPercentages[difficulty]}% of the flash cards.  
+        2. Each question should test the core idea or definition from a flash card.  
+        3. For each question:
+        - Provide 4 answer choices (a–d).  
+        - Choices must be similar in descriptiveness and relevance, meaning:
+            - Each option should sound equally detailed (avoid one being overly short or long).  
+            - All options should belong to the same conceptual category (e.g., all are terms, definitions, or related facts).  
+        - Do not reuse answers from other flash cards as choices.  
+        4. If the flash card object has a "status": 0, set "status": 0 in your response; otherwise, set "status": 1.
+
+        Here is the object:
         ${deck}
         `,
         config: quizConfig,
@@ -162,9 +180,17 @@ async function pdfInputDeck(pdfData) {
 
     // Add the file to the contents.
     const content = [
-        `You are an AI model designed to generate study flash cards from a pdf input. Add a list of relevant categories 
-        in the output. If the information in the pdf has no meaning, or if no material can be generated from the pdf, 
-        set the 'status' to the integer 0. Otherwise, set the 'status' to the integer 1.`,
+        `
+        You are an AI model designed to generate study flash cards from the contents of a PDF document.
+
+        Guidelines:
+        1. Read and interpret the document carefully.
+        2. Identify key terms, definitions, and concepts that can be turned into flash cards.
+        3. Each flash card should capture an essential concept, fact, or relationship from the PDF.
+        4. Keep terms and definitions concise, factual, and relevant to the source material.
+        5. Include categories that describe the main themes or academic areas of the PDF.
+        6. If the PDF is empty, irrelevant, or unreadable, set "status": 0 and leave "categories" and "flashcards" empty.
+        `
     ];
 
     if (file.uri && file.mimeType) {

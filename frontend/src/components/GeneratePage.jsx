@@ -295,7 +295,7 @@ export function GeneratePage() {
                             className="flex-1 border-1
                                 dark:border-indigo-200 border-indigo-900
                                 dark:bg-slate-950 bg-indigo-200
-                                dark:text-indigo-100 text-indigo-900"
+                                dark:text-indigo-100"
                         >
                             <CardHeader>
                                 <CardTitle>
@@ -319,7 +319,7 @@ export function GeneratePage() {
                                                     <FormLabel> Study Set Name </FormLabel>
                                                     <FormControl>
                                                         <Input
-                                                            className="dark:border-indigo-300 border-indigo-900 bg-[rgba(255,255,255,0.3)]" 
+                                                            className="dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.3)]" 
                                                             id="studySetName" 
                                                             type="text" 
                                                             placeholder="My Study Set..."
@@ -339,7 +339,7 @@ export function GeneratePage() {
                                                     <FormLabel> Text </FormLabel>
                                                     <FormControl>
                                                         <Textarea
-                                                            className="resize-none dark:border-indigo-300 border-indigo-900 bg-[rgba(255,255,255,0.3)]"
+                                                            className="resize-none dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.3)]"
                                                             placeholder="Here goes my notes..."
                                                             rows={20}
                                                             required
@@ -472,7 +472,7 @@ export function GeneratePage() {
                             className="flex-1 border-1
                                 dark:border-indigo-200 border-indigo-900
                                 dark:bg-slate-950 bg-indigo-200
-                                dark:text-indigo-100 text-indigo-900"
+                                dark:text-indigo-100"
                         >
                             <CardHeader>
                                 <CardTitle>
@@ -496,7 +496,7 @@ export function GeneratePage() {
                                                     <FormLabel> Study Set Name </FormLabel>
                                                     <FormControl>
                                                         <Input
-                                                            className="dark:border-indigo-300 border-indigo-900 bg-[rgba(255,255,255,0.3)]"  
+                                                            className="dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.3)]"  
                                                             id="studySetName" 
                                                             type="text" 
                                                             placeholder="My Study Set..."
@@ -522,7 +522,7 @@ export function GeneratePage() {
                                                             onDrop={(files) => handleDrop(files, field.onChange)}
                                                             onError={console.error}
                                                             src={file}
-                                                            className="h-100 dark:border-indigo-300 border-indigo-900 bg-[rgba(255,255,255,0.3)]"
+                                                            className="h-100 dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.3)]"
                                                         >
                                                             <DropzoneEmptyState 
                                                                 className="bg-transparent"
