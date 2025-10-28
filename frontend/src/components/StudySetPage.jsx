@@ -59,6 +59,7 @@ export function StudySetPage() {
 
     // notes
     const [ quiz, setQuiz ] = useState({questions: []});
+    const [ shuffledQuizQuestions, setShuffledQuizQuestions ] = useState([]);
     const [ deck, setDeck ] = useState({cards: []});
     const [ studySet, setStudySet ] = useState({});
 
@@ -109,14 +110,17 @@ export function StudySetPage() {
                     navigate("/forbidden");
                 }
 
-                const allAttempts = result.studySet.quiz.attempts.map((attempt, index) => ({
+                const userAttempts = result.studySet.quiz.attempts.map((attempt, index) => ({
                     attempt: index + 1,
                     score: attempt.score,
                 }));
-                setProgressData(allAttempts);
+                setProgressData(userAttempts);
 
                 setStudySet(result.studySet);
                 setQuiz(result.studySet.quiz);
+                if(shuffledQuizQuestions.length === 0) {
+                    setShuffledQuizQuestions(shuffle(result.studySet.quiz.questions));
+                }
                 setDeck(result.studySet.deck);
                 setGlobalAttempts(result.globalAttempts);
                 setGlobalAverageScore(result.globalAverageScore);
@@ -168,8 +172,8 @@ export function StudySetPage() {
             setScore(0);
             setCorrect({});
             setSelected({});
+            setShuffledQuizQuestions((prev) => shuffle(prev));
             setLoading(false);
-            quiz.questions = shuffle(quiz.questions);
             return;
         } 
 
@@ -451,7 +455,7 @@ export function StudySetPage() {
                             className="w-full max-w-2xl"
                         >
                             <CarouselContent>
-                                {quiz.questions.map((question, index) => (
+                                {shuffledQuizQuestions.map((question, index) => (
                                     <CarouselItem 
                                         key={question.id}
                                     >

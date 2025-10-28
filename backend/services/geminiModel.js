@@ -87,6 +87,12 @@ const quizConfig = {
                         },
                         answer: {
                             type: Type.STRING,
+                            enum: [ 
+                                "a", 
+                                "b",
+                                "c",
+                                "d",
+                            ]
                         },
                     },
                     propertyOrdering: ["quizQuestion", "quizOptions", "answer"],
@@ -137,7 +143,7 @@ async function generateQuiz(deck, difficulty) {
         1. Create questions for ${difficultyPercentages[difficulty]}% of the flash cards.  
         2. Each question should test the core idea or definition from a flash card.  
         3. For each question:
-        - Provide 4 answer choices (a–d).  
+        - Provide 4 answer choices (a,b,c,d).  
         - Choices must be similar in descriptiveness and relevance, meaning:
             - Each option should sound equally detailed (avoid one being overly short or long).  
             - All options should belong to the same conceptual category (e.g., all are terms, definitions, or related facts).  
