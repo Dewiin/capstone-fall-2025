@@ -82,19 +82,14 @@ export function GeneratePage() {
     });
 
     function handleDrop(files, onChange) {
-        setLoading(true);
-
         if (files && files.length == 1) {
             setFile(files);
         }
         
         onChange(files);
-        setLoading(false);
     }
 
     async function onSubmit(data) {
-        setLoading(true);
-        
         try {
             let body;
             let headers = {};
@@ -128,9 +123,12 @@ export function GeneratePage() {
             const result = await response.json();
 
             if(result.status == 1) {
-                navigate(`/study-set/${result.studySetId}`);
                 toast.success("Study set created successfully!", {
-                    description: "View your new study set in your account page."
+                    description: "Your new study set is in your account page.",
+                    action: {
+                        label: "View",
+                        onClick: () => navigate(`/study-set/${result.studySetId}`)
+                    }
                 });
             } else {
                 toast.warning("Failed to create the study set", {
@@ -144,9 +142,15 @@ export function GeneratePage() {
                 description: "There was an error getting a response from the server."
             });
             console.error(`Error submitting data for generation: `, err);
-        } finally {
-            setLoading(false);
         }
+    }
+
+    async function handleSubmit(data) {
+        const promise = onSubmit(data);
+
+        toast.promise(promise, {
+            loading: "Generating your study set...",
+        })
     }
 
     return (
@@ -304,7 +308,7 @@ export function GeneratePage() {
                             <CardContent>
                                 <Form {...form}>
                                     <form 
-                                        onSubmit={form.handleSubmit(onSubmit)} 
+                                        onSubmit={form.handleSubmit(handleSubmit)} 
                                         className="flex flex-col gap-6"
                                     >
                                         <FormField 
@@ -481,7 +485,7 @@ export function GeneratePage() {
                             <CardContent>
                                 <Form {...form}>
                                     <form 
-                                        onSubmit={form.handleSubmit(onSubmit)}
+                                        onSubmit={form.handleSubmit(handleSubmit)}
                                         className="flex flex-col gap-6"
                                     >
                                         <FormField 
