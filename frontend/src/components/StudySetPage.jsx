@@ -119,7 +119,14 @@ export function StudySetPage() {
                 setStudySet(result.studySet);
                 setQuiz(result.studySet.quiz);
                 if(shuffledQuizQuestions.length === 0) {
-                    setShuffledQuizQuestions(shuffle(result.studySet.quiz.questions));
+                    setShuffledQuizQuestions((prev) => {
+                        const shuffledQuestions = shuffleQuestions(result.studySet.quiz.questions);
+
+                        return shuffledQuestions.map((question) => ({
+                            ...question,
+                            choices: shuffleAnswers(question.choices),
+                        }));
+                    });
                 }
                 setDeck(result.studySet.deck);
                 setGlobalAttempts(result.globalAttempts);
@@ -172,7 +179,14 @@ export function StudySetPage() {
             setScore(0);
             setCorrect({});
             setSelected({});
-            setShuffledQuizQuestions((prev) => shuffle(prev));
+            setShuffledQuizQuestions((prev) => {
+                const shuffledQuestions = shuffleQuestions(prev);
+
+                return shuffledQuestions.map((question) => ({
+                    ...question,
+                    choices: shuffleAnswers(question.choices),
+                }));
+            });
             setLoading(false);
             return;
         } 
@@ -206,7 +220,7 @@ export function StudySetPage() {
         }
     }
 
-    function shuffle(array) {
+    function shuffleQuestions(array) {
         let m = array.length, t, i;
 
         // While there remain elements to shuffle…
@@ -222,6 +236,12 @@ export function StudySetPage() {
         }
 
         return array;
+    }
+
+    function shuffleAnswers(object) {
+        const shuffledValuesArray = shuffleQuestions(Object.entries(object));
+
+        return Object.fromEntries(shuffledValuesArray);
     }
 
     // Custom tooltip component
