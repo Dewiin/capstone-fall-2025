@@ -59,6 +59,7 @@ export function StudySetPage() {
 
     // notes
     const [ quiz, setQuiz ] = useState({questions: []});
+    const [ shuffledQuizQuestions, setShuffledQuizQuestions ] = useState([]);
     const [ deck, setDeck ] = useState({cards: []});
     const [ studySet, setStudySet ] = useState({});
 
@@ -109,14 +110,24 @@ export function StudySetPage() {
                     navigate("/forbidden");
                 }
 
-                const allAttempts = result.studySet.quiz.attempts.map((attempt, index) => ({
+                const userAttempts = result.studySet.quiz.attempts.map((attempt, index) => ({
                     attempt: index + 1,
                     score: attempt.score,
                 }));
-                setProgressData(allAttempts);
+                setProgressData(userAttempts);
 
                 setStudySet(result.studySet);
                 setQuiz(result.studySet.quiz);
+                if(shuffledQuizQuestions.length === 0) {
+                    setShuffledQuizQuestions((prev) => {
+                        const shuffledQuestions = shuffleQuestions(result.studySet.quiz.questions);
+
+                        return shuffledQuestions.map((question) => ({
+                            ...question,
+                            choices: shuffleAnswers(question.choices),
+                        }));
+                    });
+                }
                 setDeck(result.studySet.deck);
                 setGlobalAttempts(result.globalAttempts);
                 setGlobalAverageScore(result.globalAverageScore);
@@ -168,8 +179,15 @@ export function StudySetPage() {
             setScore(0);
             setCorrect({});
             setSelected({});
+            setShuffledQuizQuestions((prev) => {
+                const shuffledQuestions = shuffleQuestions(prev);
+
+                return shuffledQuestions.map((question) => ({
+                    ...question,
+                    choices: shuffleAnswers(question.choices),
+                }));
+            });
             setLoading(false);
-            quiz.questions = shuffle(quiz.questions);
             return;
         } 
 
@@ -202,7 +220,7 @@ export function StudySetPage() {
         }
     }
 
-    function shuffle(array) {
+    function shuffleQuestions(array) {
         let m = array.length, t, i;
 
         // While there remain elements to shuffle…
@@ -218,6 +236,12 @@ export function StudySetPage() {
         }
 
         return array;
+    }
+
+    function shuffleAnswers(object) {
+        const shuffledValuesArray = shuffleQuestions(Object.entries(object));
+
+        return Object.fromEntries(shuffledValuesArray);
     }
 
     // Custom tooltip component
@@ -451,7 +475,7 @@ export function StudySetPage() {
                             className="w-full max-w-2xl"
                         >
                             <CarouselContent>
-                                {quiz.questions.map((question, index) => (
+                                {shuffledQuizQuestions.map((question, index) => (
                                     <CarouselItem 
                                         key={question.id}
                                     >
@@ -504,7 +528,7 @@ export function StudySetPage() {
                                                             }}
                                                         >
                                                             <CardContent>
-                                                                <b>{key.toUpperCase()}.</b> &nbsp;{value}
+                                                                {value}
                                                             </CardContent>
                                                         </Card>
                                                     ))}
