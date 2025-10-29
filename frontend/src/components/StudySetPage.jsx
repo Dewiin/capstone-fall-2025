@@ -528,7 +528,7 @@ export function StudySetPage() {
                                                             }}
                                                         >
                                                             <CardContent>
-                                                                <b>{key.toUpperCase()}.</b> &nbsp;{value}
+                                                                {value}
                                                             </CardContent>
                                                         </Card>
                                                     ))}
