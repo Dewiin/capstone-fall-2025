@@ -22,6 +22,9 @@ async function accountGet(req, res) {
                             }
                         },
                         favoritedBy: true,
+                    },
+                    orderBy: {
+                        createdAt: "desc",
                     }
                 },
                 attempts: true,
@@ -39,7 +42,7 @@ async function accountGet(req, res) {
                         },
                         user: true,
                         favoritedBy: true,
-                    }
+                    },
                 },
             }
         })

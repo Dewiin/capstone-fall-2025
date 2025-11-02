@@ -20,20 +20,7 @@
       </li>
     </ul>
   </li>
-  <li>
-    <a href="#folder-structure">Folder Structure</a>
-  </li>
-  <li>
-    <a href="#getting-started">Getting Started</a>
-    <ul>
-      <li><a href="#prerequisites">Prerequisites</a></li>
-      <li><a href="#cloning-the-repository">Cloning the Repository</a></li>
-      <li><a href="#creating-database">Creating Database</a></li>
-      <li><a href="#seeding">Seeding</a></li>
-      <li><a href="#usage">Usage</a></li>
-    </ul>
-  </li>
-  <li><a href="#demo">Demo</a></li>
+  <li><a href="#preview">Preview</a></li>
   <li><a href="#contributing">Contributing</a></li>
   <li><a href="#license">License</a></li>
 </ol>

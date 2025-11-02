@@ -64,6 +64,7 @@ model StudySet {
   id         Int        @id @default(autoincrement())
   name       String
   public     Boolean    @default(true)
+  createdAt  DateTime   @default(now())
   difficulty Difficulty @default(BEGINNER)
   category   Category[] @default([OTHER])
 
