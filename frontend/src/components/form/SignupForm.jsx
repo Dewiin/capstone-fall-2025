@@ -26,21 +26,29 @@ import { useState, useEffect } from "react"
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
+// Username and passphrase parameters
+const USER_LEN_MINIMUM = 6
+const USER_LEN_MAXIMUM = 20
+const PASS_LEN_MINIMUM = 10
+const PASS_LEN_MAXIMUM = 512
+const PRINTABLE_UNICODE = /^[\P{Cc}\P{Cn}\P{Cs}]+$/gu // allow only, printable (unicode) characters; https://stackoverflow.com/a/12054775
+const PRINTABLE_MESSAGE = "can only contain printable characters."
+
 // zod validator
 const signupSchema = z.object({
-  username: z.string().min(6, {
-    message: "Username must be at least 6 characters.",
-  }).max(20, {
-    message: "Username has a 20 character limit."
-  }).regex(/^[a-zA-Z0-9]+$/, {
-    message: "Username can only contain alphanumeric characters."
+  username: z.string().min(USER_LEN_MINIMUM, {
+    message: "Username must be at least " + USER_LEN_MINIMUM + " characters.",
+  }).max(USER_LEN_MAXIMUM, {
+    message: "Username has a " + USER_LEN_MAXIMUM + " character limit."
+  }).regex(PRINTABLE_UNICODE, { 
+    message: "Username " + PRINTABLE_MESSAGE
   }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters."
-  }). max(20, {
-    message: "Password has a 20 character limit."
-  }).regex(/^[a-zA-Z0-9]+$/, {
-    message: "Password can only contain alphanumeric characters."
+  password: z.string().min(PASS_LEN_MINIMUM, {
+    message: "Password must be at least " + PASS_LEN_MINIMUM + " characters."
+  }). max(PASS_LEN_MAXIMUM, {
+    message: "Password has a " + PASS_LEN_MAXIMUM + " character limit."
+  }).regex(PRINTABLE_UNICODE, { 
+    message: "Password " + PRINTABLE_MESSAGE
   }),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
