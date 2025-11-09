@@ -22,9 +22,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="relative w-full">
-          <Navbar01 />
-        </div>
+        <Navbar01 />
         <Routes>
           <Route path="/" element={ <LandingPage /> } />
           <Route path="/account" element={ <AccountPage /> } />

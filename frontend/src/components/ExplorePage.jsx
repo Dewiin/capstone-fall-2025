@@ -201,7 +201,15 @@ export function ExplorePage() {
 
   return (
     <div className="flex flex-col gap-8 max-w-3xl min-h-screen mx-auto md:mt-24 md:p-0 p-8">
-      <p className="font-bold text-2xl text-center">Explore.</p>
+      <p 
+        className="font-bold text-2xl w-fit m-auto cursor-pointer"
+        onClick={() => {
+          setContentTitle("Popular Study Sets")
+          getCategories();
+        }}
+      >
+        Explore.
+      </p>
       {/* Search Bar */}
       <div className="flex flex-col gap-2">
         <p 
@@ -228,6 +236,9 @@ export function ExplorePage() {
             if(e.target.value.trim().length === 0) {
               getCategories();
               setContentTitle("Popular Study Sets");
+            } else {
+              handleSearch(e.target.value);
+              setContentTitle(e.target.value.trim());
             }
           }}
         />
