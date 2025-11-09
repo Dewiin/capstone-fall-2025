@@ -13,7 +13,10 @@ export function LandingPage() {
   return (
     <div className="flex flex-col items-center text-center">
       {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center rounded-4xl text-center px-6 py-20 bg-gradient-to-b from-indigo-100 to-indigo-500 dark:from-indigo-900 dark:to-indigo-300 w-full my-12">
+      <section 
+        className="flex flex-col items-center justify-center rounded-4xl text-center px-6 py-20 bg-gradient-to-b from-indigo-100 to-indigo-500 dark:from-indigo-900 dark:to-indigo-300 w-full my-12"
+        id="hero"
+      >
         <h1 className="text-6xl font-bold text-gray-900 tracking-tight sm:text-7xl mb-4">
           Brainstorm
         </h1>
