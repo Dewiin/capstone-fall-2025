@@ -22,7 +22,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import { MdDeleteOutline } from "react-icons/md";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaRegEdit } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -84,45 +84,84 @@ export function AccountPage() {
         }
     }
 
-    async function handleDelete(studySet) {
+    function handleDelete(studySet) {
         setSingleLoading(studySet.id);
-        try {
-            const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySet.id}`, {
-                method: "DELETE",
-                credentials: "include",
-            });
-            if(!response.ok) {
-                console.error(`Error getting response for deleting study set: `, response.status);
-                return;
-            }
 
-            const result = await response.json();
-            if(result.status == 1) {
-                // getAccount();
-                setAccountUser((prev) => ({
-                    ...prev,
-                    studySets: prev.studySets.filter((s) => s.id !== studySet.id),
-                    favorites: prev.favorites.filter((f) => f.id !== studySet.id)
-                }));
-                toast.error("Removed study set!", {
-                    description: (
-                    <>
-                        Successfully deleted <i>{studySet.name}</i>
-                    </>
-                    ),
+        const deletedStudySet = accountUser.studySets.find(s => s.id === studySet.id);
+        const wasFavorite = accountUser.favorites.some(f => f.id === studySet.id);
+        const deletedFavorite = wasFavorite ? accountUser.favorites.find(s => s.id === studySet.id) : null;
+
+        setAccountUser((prev) => ({
+            ...prev,
+            studySets: prev.studySets.filter((s) => s.id !== studySet.id),
+            favorites: prev.favorites.filter((f) => f.id !== studySet.id)
+        }));
+
+        const undoToastId = toast("Study Set has been deleted", {
+            description: "You can undo this action within 5 seconds.",
+            duration: 5000,
+            action: {
+                label: "Undo",
+                onClick: () => {
+                    clearTimeout(deleteTimer);
+                    setAccountUser((prev) => ({
+                        ...prev,
+                        studySets: [...prev.studySets, {
+                            ...deletedStudySet,
+                            favoritedBy: deletedStudySet.favoritedBy,
+                            quiz: deletedStudySet.quiz,
+                            deck: deletedStudySet.deck,
+                        }],
+                        favorites: wasFavorite ? [...prev.favorites, {
+                            ...deletedFavorite,
+                            user: deletedFavorite.user,
+                            favoritedBy: deletedFavorite.favoritedBy,
+                            quiz: deletedFavorite.quiz,
+                            deck: deletedFavorite.deck,
+                        }] : prev.favorites,
+                    }));
+                    toast.dismiss(undoToastId);
+                    toast.success("Deletion undone!")
+                }
+            }
+        })
+
+        const deleteTimer = setTimeout(async () => {
+            try {
+                const response = await fetch(`${API_URL_DOMAIN}/api/study-set/${studySet.id}`, {
+                    method: "DELETE",
+                    credentials: "include",
                 });
-            }
-            else {
-                console.error("Error finding study set to delete");
-            }
-        } catch (err) {
-            toast.warning("Failed to get a response", {
-                description: ("Please try again later."),
-            });
-            console.error(`Error deleting study set: `, err);
-        } finally {
-            setSingleLoading(null);
-        }
+                if(!response.ok) {
+                    toast.error("Failed to get a response", {
+                        description: "Please try again later.",
+                    });
+                    console.error(`Error getting response for deleting study set: `, response.status);
+                    return;
+                }
+    
+                const result = await response.json();
+                if(result.status == 1) {
+                    toast.error("Removed study set!", {
+                        description: (
+                        <>
+                            <i>{studySet.name}</i> has been permanently deleted.
+                        </>
+                        ),
+                    });
+                }
+                else {
+                    console.error("Error finding study set to delete");
+                }
+            } catch (err) {
+                toast.warning("Failed to get a response", {
+                    description: ("Please try again later."),
+                });
+                console.error(`Error deleting study set: `, err);
+            } 
+        }, 5500);
+        
+        setSingleLoading(null);
     }
 
     async function handleFavorite(studySet) {
@@ -398,30 +437,41 @@ export function AccountPage() {
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent className="flex justify-between items-center">
-                                            <MdDeleteOutline 
-                                                className="justify-start p-2 box-content rounded-lg
-                                                hover:dark:bg-red-800 hover:bg-red-300 duration-150" 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleDelete(studySet);
-                                                }}    
-                                            />
-                                            <p 
-                                                className="flex justify-end items-center gap-1 text-sm font-semibold p-2 rounded-lg 
-                                                hover:dark:bg-slate-700 hover:bg-blue-300 duration-150
-                                                dark:text-indigo-100 text-indigo-950"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleFavorite(studySet);
-                                                }}
-                                            >
-                                                { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
-                                                    <FaHeart className="dark:text-rose-700 text-rose-400" /> 
-                                                ) : (
-                                                    <FaRegHeart />
-                                                )}
-                                                {studySet.favoritedBy.length}
-                                            </p>
+                                            <div className="justify-start flex gap-1">
+                                                <MdDeleteOutline 
+                                                    className="p-2 box-content rounded-lg
+                                                    hover:dark:bg-red-800 hover:bg-red-300 duration-150" 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDelete(studySet);
+                                                    }}    
+                                                />
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <FaRegEdit 
+                                                    className="p-2 box-content rounded-lg
+                                                    hover:dark:bg-slate-700 hover:bg-blue-300 duration-150" 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                    }}    
+                                                />
+                                                <p 
+                                                    className="flex justify-end items-center gap-1 text-sm font-semibold p-2 rounded-lg 
+                                                    hover:dark:bg-slate-700 hover:bg-blue-300 duration-150
+                                                    dark:text-indigo-100 text-indigo-950"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleFavorite(studySet);
+                                                    }}
+                                                    >
+                                                    { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
+                                                        <FaHeart className="dark:text-rose-700 text-rose-400" /> 
+                                                    ) : (
+                                                        <FaRegHeart />
+                                                    )}
+                                                    {studySet.favoritedBy.length}
+                                                </p>
+                                            </div>
                                         </CardContent>
                                     </Card>
                                 )) }
