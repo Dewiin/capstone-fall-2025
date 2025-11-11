@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./contexts/Contexts";
 import { useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Footer } from "@/components/Footer";
 import {
@@ -40,7 +43,25 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { CountingNumber } from "./ui/shadcn-io/counting-number";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
 
+// zod validator
+const generateSchema = z.object({
+    studySetName: z.string().trim().min(1, {
+        message: "Name must be at least a character."
+    }).max(50, {
+        message: "Name must be less than 50 characters"
+    }).regex(/^[a-zA-Z0-9 ]+$/, {
+        message: "Name can only contain alphanumeric characters (and space)."
+    }),
+});
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
@@ -58,6 +79,11 @@ export function AccountPage() {
     const [ loading, setLoading ] = useState(false);
     const [ singleLoading, setSingleLoading ] = useState(null);
     const navigate = useNavigate();
+
+    const form = useForm({
+        resolver: zodResolver(generateSchema),
+        mode: "onChange",
+    });
 
     useEffect(() => {
         if (!authLoading) {
@@ -289,6 +315,17 @@ export function AccountPage() {
         }
     }
 
+    async function handleEdit(studySet, data) {
+        console.log(data);
+        try {
+
+        } catch (err) {
+
+        } finally {
+
+        }
+    }
+
     return (
         <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 md:gap-16 gap-8 min-h-screen">
             {/* First Section */}
@@ -460,89 +497,125 @@ export function AccountPage() {
                                                     }}    
                                                 />
                                             </div>
-                                                <div className="flex items-center gap-1">
-                                                    <Dialog>
-                                                        <DialogTrigger
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <FaRegEdit 
-                                                                className="p-2 box-content rounded-lg
-                                                                hover:dark:bg-slate-700 hover:bg-blue-300 duration-150" 
-                                                            />
-                                                        </DialogTrigger>
-                                                        <DialogContent 
-                                                            className="sm:max-w-[425px] dark:bg-slate-950 bg-indigo-200"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <DialogHeader>
-                                                                <DialogTitle>Edit <i>{studySet.name}</i></DialogTitle>
-                                                                <DialogDescription>
-                                                                    Make changes to your study set here. Click save when you&apos;re
-                                                                    done.
-                                                                </DialogDescription>
-                                                            </DialogHeader>
-                                                            <div className="grid gap-4">
-                                                                <div className="grid gap-3">
-                                                                    <Label htmlFor="name-1">Name</Label>
-                                                                    <Input 
-                                                                        id="name-1" 
-                                                                        name="name" 
-                                                                        defaultValue={studySet.name}  
-                                                                        className="bg-indigo-100" 
+                                            <div 
+                                                className="flex items-center gap-1"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <Dialog>
+                                                    <DialogTrigger
+                                                        asChild
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        <FaRegEdit 
+                                                            className="p-2 box-content rounded-lg
+                                                            hover:dark:bg-slate-700 hover:bg-blue-300 duration-150" 
+                                                        />
+                                                    </DialogTrigger>
+                                                    <DialogContent 
+                                                        className="sm:max-w-[425px] dark:bg-slate-950 bg-indigo-200
+                                                        border-1 dark:border-indigo-200 border-indigo-900"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        <Form {...form}>
+                                                            <form
+                                                                onSubmit={form.handleSubmit((data) => handleEdit(studySet, data))}
+                                                            >
+                                                                <DialogHeader>
+                                                                    <DialogTitle>Edit <i>{studySet.name}</i></DialogTitle>
+                                                                    <DialogDescription>
+                                                                        Make changes to your study set here. Click save when you&apos;re
+                                                                        done.
+                                                                    </DialogDescription>
+                                                                </DialogHeader>
+                                                                <div className="grid gap-4">
+                                                                    <FormField 
+                                                                        control={form.control}
+                                                                        name="studySetName"
+                                                                        render={({ field }) => (
+                                                                            <FormItem>
+                                                                                <FormLabel> Study Set Name </FormLabel>
+                                                                                <FormControl>
+                                                                                    <Input
+                                                                                        className="bg-[rgba(255,255,255,0.3)]" 
+                                                                                        id="studySetName" 
+                                                                                        type="text" 
+                                                                                        defaultValue={studySet.name} 
+                                                                                        required 
+                                                                                        {...field} 
+                                                                                    />
+                                                                                </FormControl>
+                                                                                <FormMessage />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+                                                                    <FormField 
+                                                                        control={form.control}
+                                                                        name="studySetVisibility"
+                                                                        render={({ field }) => (
+                                                                            <FormItem>
+                                                                                <FormLabel> Visibility </FormLabel>
+                                                                                <FormControl>
+                                                                                    <Tabs
+                                                                                        value={field.value}
+                                                                                        onValueChange={field.onChange} 
+                                                                                        defaultValue={studySet.public ? "public" : "private"}
+                                                                                    >
+                                                                                        <TabsList>
+                                                                                            <TabsTrigger 
+                                                                                                value="public"
+                                                                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                                                                                                >
+                                                                                                Public
+                                                                                            </TabsTrigger>
+                                                                                            <TabsTrigger 
+                                                                                                value="private"
+                                                                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"    
+                                                                                                >
+                                                                                                Private
+                                                                                            </TabsTrigger>
+                                                                                        </TabsList>
+                                                                                    </Tabs>
+                                                                                </FormControl>
+                                                                            </FormItem>
+                                                                        )}
                                                                     />
                                                                 </div>
-                                                                <div className="grid gap-3">
-                                                                    <Label htmlFor="username-1">Visibility</Label>
-                                                                    <Tabs defaultValue={studySet.public ? "public" : "private"}>
-                                                                        <TabsList>
-                                                                            <TabsTrigger 
-                                                                                value="public"
-                                                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                                                                <DialogFooter>
+                                                                    <DialogClose asChild>
+                                                                        <Button 
+                                                                            variant="outline"
+                                                                            className="bg-indigo-100"
                                                                             >
-                                                                                Public
-                                                                            </TabsTrigger>
-                                                                            <TabsTrigger 
-                                                                                value="private"
-                                                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"    
-                                                                            >
-                                                                                Private
-                                                                            </TabsTrigger>
-                                                                        </TabsList>
-                                                                    </Tabs>
-                                                                </div>
-                                                            </div>
-                                                            <DialogFooter>
-                                                                <DialogClose asChild>
+                                                                            Cancel
+                                                                        </Button>
+                                                                    </DialogClose>
                                                                     <Button 
-                                                                        variant="outline"
-                                                                        className="bg-indigo-100"
+                                                                        type="submit"
                                                                     >
-                                                                        Cancel
+                                                                        Save changes
                                                                     </Button>
-                                                                </DialogClose>
-                                                                <Button>
-                                                                    Save changes
-                                                                </Button>
-                                                            </DialogFooter>
-                                                        </DialogContent>
-                                                    </Dialog>
-                                                    <p
-                                                        className="flex justify-end items-center gap-1 text-sm font-semibold p-2 rounded-lg 
-                                                        hover:dark:bg-slate-700 hover:bg-blue-300 duration-150
-                                                        dark:text-indigo-100 text-indigo-950"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleFavorite(studySet);
-                                                        }}
-                                                    >
-                                                        { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
-                                                            <FaHeart className="dark:text-rose-700 text-rose-400" /> 
-                                                        ) : (
-                                                            <FaRegHeart />
-                                                        )}
-                                                        {studySet.favoritedBy.length}
-                                                    </p>
-                                                </div>
+                                                                </DialogFooter>
+                                                            </form>
+                                                        </Form>
+                                                    </DialogContent>
+                                                </Dialog>
+                                                <p
+                                                    className="flex justify-end items-center gap-1 text-sm font-semibold p-2 rounded-lg 
+                                                    hover:dark:bg-slate-700 hover:bg-blue-300 duration-150
+                                                    dark:text-indigo-100 text-indigo-950"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleFavorite(studySet);
+                                                    }}
+                                                >
+                                                    { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
+                                                        <FaHeart className="dark:text-rose-700 text-rose-400" /> 
+                                                    ) : (
+                                                        <FaRegHeart />
+                                                    )}
+                                                    {studySet.favoritedBy.length}
+                                                </p>
+                                            </div>
                                         </CardContent>
                                     </Card>
                                 )) }

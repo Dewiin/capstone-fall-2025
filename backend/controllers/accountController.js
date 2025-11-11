@@ -125,7 +125,26 @@ async function favoritePost(req, res) {
     }
 }
 
+async function editPost(req, res) {
+    try {
+        const user = req.user;
+        const { userId, studySetId } = req.params;
+
+        if(user.id !== userId) {
+            return res.json({
+                status: 0,
+            });
+        }
+
+
+
+    } catch (err) {
+
+    }
+}
+
 export const accountController = {
     accountGet,
-    favoritePost
+    favoritePost,
+    editPost
 }
