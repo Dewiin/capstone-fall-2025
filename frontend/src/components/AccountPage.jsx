@@ -136,6 +136,9 @@ export function AccountPage() {
             favorites: prev.favorites.filter((f) => f.id !== studySet.id)
         }));
 
+        setFlashcardCount((prev) => prev - studySet.deck.cards.length);
+        setAttemptCount((prev) => prev - studySet.quiz.attempts.length);
+
         const undoToastId = toast("Study Set has been deleted", {
             description: "You can undo this action within 5 seconds.",
             duration: 5000,
@@ -159,6 +162,8 @@ export function AccountPage() {
                             deck: deletedFavorite.deck,
                         }] : prev.favorites,
                     }));
+                    setFlashcardCount((prev) => prev + studySet.deck.cards.length);
+                    setAttemptCount((prev) => prev + studySet.quiz.attempts.length);
                     toast.dismiss(undoToastId);
                     toast.success("Deletion undone!")
                 }
