@@ -21,6 +21,19 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { MdDeleteOutline } from "react-icons/md";
 import { FaHeart, FaRegHeart, FaRegEdit } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
@@ -447,31 +460,89 @@ export function AccountPage() {
                                                     }}    
                                                 />
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <FaRegEdit 
-                                                    className="p-2 box-content rounded-lg
-                                                    hover:dark:bg-slate-700 hover:bg-blue-300 duration-150" 
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                    }}    
-                                                />
-                                                <p 
-                                                    className="flex justify-end items-center gap-1 text-sm font-semibold p-2 rounded-lg 
-                                                    hover:dark:bg-slate-700 hover:bg-blue-300 duration-150
-                                                    dark:text-indigo-100 text-indigo-950"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleFavorite(studySet);
-                                                    }}
+                                                <div className="flex items-center gap-1">
+                                                    <Dialog>
+                                                        <DialogTrigger
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            <FaRegEdit 
+                                                                className="p-2 box-content rounded-lg
+                                                                hover:dark:bg-slate-700 hover:bg-blue-300 duration-150" 
+                                                            />
+                                                        </DialogTrigger>
+                                                        <DialogContent 
+                                                            className="sm:max-w-[425px] dark:bg-slate-950 bg-indigo-200"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            <DialogHeader>
+                                                                <DialogTitle>Edit <i>{studySet.name}</i></DialogTitle>
+                                                                <DialogDescription>
+                                                                    Make changes to your study set here. Click save when you&apos;re
+                                                                    done.
+                                                                </DialogDescription>
+                                                            </DialogHeader>
+                                                            <div className="grid gap-4">
+                                                                <div className="grid gap-3">
+                                                                    <Label htmlFor="name-1">Name</Label>
+                                                                    <Input 
+                                                                        id="name-1" 
+                                                                        name="name" 
+                                                                        defaultValue={studySet.name}  
+                                                                        className="bg-indigo-100" 
+                                                                    />
+                                                                </div>
+                                                                <div className="grid gap-3">
+                                                                    <Label htmlFor="username-1">Visibility</Label>
+                                                                    <Tabs defaultValue={studySet.public ? "public" : "private"}>
+                                                                        <TabsList>
+                                                                            <TabsTrigger 
+                                                                                value="public"
+                                                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
+                                                                            >
+                                                                                Public
+                                                                            </TabsTrigger>
+                                                                            <TabsTrigger 
+                                                                                value="private"
+                                                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"    
+                                                                            >
+                                                                                Private
+                                                                            </TabsTrigger>
+                                                                        </TabsList>
+                                                                    </Tabs>
+                                                                </div>
+                                                            </div>
+                                                            <DialogFooter>
+                                                                <DialogClose asChild>
+                                                                    <Button 
+                                                                        variant="outline"
+                                                                        className="bg-indigo-100"
+                                                                    >
+                                                                        Cancel
+                                                                    </Button>
+                                                                </DialogClose>
+                                                                <Button>
+                                                                    Save changes
+                                                                </Button>
+                                                            </DialogFooter>
+                                                        </DialogContent>
+                                                    </Dialog>
+                                                    <p
+                                                        className="flex justify-end items-center gap-1 text-sm font-semibold p-2 rounded-lg 
+                                                        hover:dark:bg-slate-700 hover:bg-blue-300 duration-150
+                                                        dark:text-indigo-100 text-indigo-950"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleFavorite(studySet);
+                                                        }}
                                                     >
-                                                    { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
-                                                        <FaHeart className="dark:text-rose-700 text-rose-400" /> 
-                                                    ) : (
-                                                        <FaRegHeart />
-                                                    )}
-                                                    {studySet.favoritedBy.length}
-                                                </p>
-                                            </div>
+                                                        { studySet.favoritedBy.some((userInfo) => userInfo.id === user.id) ? (
+                                                            <FaHeart className="dark:text-rose-700 text-rose-400" /> 
+                                                        ) : (
+                                                            <FaRegHeart />
+                                                        )}
+                                                        {studySet.favoritedBy.length}
+                                                    </p>
+                                                </div>
                                         </CardContent>
                                     </Card>
                                 )) }
