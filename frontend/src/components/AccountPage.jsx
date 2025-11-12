@@ -53,13 +53,13 @@ import {
 } from "@/components/ui/form"
 
 // zod validator
-const generateSchema = z.object({
+const studySetSchema = z.object({
     studySetName: z.string().trim().min(1, {
         message: "Name must be at least a character."
     }).max(50, {
         message: "Name must be less than 50 characters"
     }).regex(/^[a-zA-Z0-9 ]+$/, {
-        message: "Name can only contain alphanumeric characters (and space)."
+        message: "Name can only contain alphanumeric and whitespace characters."
     }),
 });
 
@@ -81,7 +81,7 @@ export function AccountPage() {
     const navigate = useNavigate();
 
     const form = useForm({
-        resolver: zodResolver(generateSchema),
+        resolver: zodResolver(studySetSchema),
         mode: "onChange",
     });
 
@@ -525,14 +525,14 @@ export function AccountPage() {
                                                             <form
                                                                 onSubmit={form.handleSubmit((data) => handleEdit(studySet, data))}
                                                             >
-                                                                <DialogHeader>
-                                                                    <DialogTitle>Edit <i>{studySet.name}</i></DialogTitle>
-                                                                    <DialogDescription>
-                                                                        Make changes to your study set here. Click save when you&apos;re
-                                                                        done.
-                                                                    </DialogDescription>
-                                                                </DialogHeader>
                                                                 <div className="grid gap-4">
+                                                                    <DialogHeader>
+                                                                        <DialogTitle>Edit <i>{studySet.name}</i></DialogTitle>
+                                                                        <DialogDescription>
+                                                                            Make changes to your study set here. Click save when you&apos;re
+                                                                            done.
+                                                                        </DialogDescription>
+                                                                    </DialogHeader>
                                                                     <FormField 
                                                                         control={form.control}
                                                                         name="studySetName"
@@ -544,7 +544,8 @@ export function AccountPage() {
                                                                                         className="bg-[rgba(255,255,255,0.3)]" 
                                                                                         id="studySetName" 
                                                                                         type="text" 
-                                                                                        defaultValue={studySet.name} 
+                                                                                        placeholder={studySet.name}
+                                                                                        autoComplete="off"
                                                                                         required 
                                                                                         {...field} 
                                                                                     />
