@@ -129,6 +129,8 @@ async function editPost(req, res) {
     try {
         const user = req.user;
         const { userId, studySetId } = req.params;
+        const { studySetName, studySetVisibility } = req.body;
+
 
         if(user.id !== userId) {
             return res.json({
@@ -136,10 +138,45 @@ async function editPost(req, res) {
             });
         }
 
+        const studySet = await prisma.studySet.update({
+            where: {
+                id: parseInt(studySetId),
+            },
+            data: {
+                name: studySetName,
+                public: studySetVisibility,
+            },
+            include: {
+                deck: {
+                    include: {
+                        cards: true,
+                    }
+                },
+                quiz: {
+                    include: {
+                        attempts: true,
+                    }
+                },
+                user: true,
+                favoritedBy: true,
+            }
+        })
 
-
+        if(studySet) {
+            return res.json({
+                status: 1,
+                studySet,
+            });
+        }
+        
+        return res.json({
+            status: 0,
+        });
     } catch (err) {
-
+        console.error(`Error editing study set for user: `, err);
+        return res.json({
+            status: 0,
+        })
     }
 }
 

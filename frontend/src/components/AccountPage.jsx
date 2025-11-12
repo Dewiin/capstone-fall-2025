@@ -290,11 +290,15 @@ export function AccountPage() {
                 credentials: "include",
             });
             if(!response.ok) {
-                console.error(`Error getting a response for favoriting: `, response.status);
+                toast.warning("Please try again later.", {
+                    description: "There was an error getting a response from the server."
+                });
+                console.error(`Error getting a response for unfavoriting: `, response.status);
+                return;
             }
 
             const result = await response.json();
-            if(result.status == 1) {
+            if(result.status === 1) {
                 setAccountUser((prev) => ({
                     ...prev,
                     studySets: prev.studySets.map((s) => (
@@ -327,22 +331,59 @@ export function AccountPage() {
     }
 
     async function handleEdit(studySet, data) {
+        setSingleLoading(studySet.id);
+
         const visibility = {
             true: !studySet.public,
             false: studySet.public,
         }
-        data = {
-            ...data,
-            "studySetVisibility": visibility[visibilityChanged],
-        }
-        console.log(data);
         
         try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}/edit/${studySet.id}`, {
+                method: "POST",
+                credentials: "include",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    ...data,
+                    "studySetVisibility": visibility[visibilityChanged],
+                }),
+            });
 
+            if(!response.ok) {
+                toast.warning("Please try again later.", {
+                    description: "There was an error getting a response from the server."
+                });
+                console.error(`Error getting a response for favoriting: `, response.status);
+                setSingleLoading(null);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                setAccountUser((prev) => ({
+                    ...prev,
+                    studySets: prev.studySets.map((s) => (
+                        s.id === studySet.id ? result.studySet : s
+                    )),
+                    favorites: prev.favorites.map((f) => (
+                        f.id === studySet.id ? result.studySet  : f
+                    )),
+                }));
+                setVisibilityChanged(false);
+                toast.success(`Successfully edited!`, {
+                    description: 
+                    <>
+                        <i>{studySet.name}</i> has been edited.
+                    </>
+                });
+            }
         } catch (err) {
-
+            toast.warning("Please try again later.", {
+                description: "There was an error editing your study set."
+            });
+            console.error(`Error editing study set: `, err);
         } finally {
-
+            setSingleLoading(null);
         }
     }
 
@@ -521,7 +562,7 @@ export function AccountPage() {
                                                 className="flex items-center gap-1"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
-                                                <Dialog>
+                                                <Dialog className="z-10000">
                                                     <DialogTrigger
                                                         asChild
                                                         onClick={(e) => e.stopPropagation()}
@@ -611,11 +652,13 @@ export function AccountPage() {
                                                                             Cancel
                                                                         </Button>
                                                                     </DialogClose>
-                                                                    <Button 
-                                                                        type="submit"
-                                                                    >
-                                                                        Save changes
-                                                                    </Button>
+                                                                    <DialogClose asChild>
+                                                                        <Button 
+                                                                            type="submit"
+                                                                        >
+                                                                            Save changes
+                                                                        </Button>
+                                                                    </DialogClose>
                                                                 </DialogFooter>
                                                             </form>
                                                         </Form>

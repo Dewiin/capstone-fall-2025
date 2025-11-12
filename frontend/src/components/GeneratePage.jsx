@@ -117,6 +117,9 @@ export function GeneratePage() {
             });
             if (!response.ok) {
                 setLoading(false);
+                toast.warning("Please try again later.", {
+                    description: "There was an error getting a response from the server."
+                });
                 return;
             }
 
