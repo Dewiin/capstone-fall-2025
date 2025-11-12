@@ -38,7 +38,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Divider */}
       <Separator className="max-w-1/2" />
 
       {/* Features Section */}
@@ -75,7 +74,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Divider */}
       <Separator className="max-w-1/2" /> 
 
       {/* About Section */}
@@ -101,10 +99,45 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Divider */}
       <Separator className="max-w-1/2" /> 
 
-      {/* Meet the Team Section */}
+    {/* Disclaimer Section */}
+    <section 
+      className="w-full max-w-4xl mx-auto px-8 py-10 my-12 bg-indigo-50 dark:bg-indigo-950 rounded-3xl shadow-sm"
+      id="disclaimer"
+    >
+      <h2 className="text-3xl font-bold mb-6 text-center dark:text-gray-100">Powered by Gemini</h2>
+
+      <div className="text-left">
+        <p className="text-gray-700 dark:text-gray-300 text-md leading-relaxed mb-4">
+          Brainstorm uses <strong>Google’s Gemini AI</strong> to enhance your studying experience. 
+          Please use this tool responsibly. It is designed to help you learn and study more effectively.
+        </p>
+
+        <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 text-md leading-relaxed mb-4">
+          <li>Don’t use Brainstorm or Gemini for harmful, offensive, or abusive content.</li>
+          <li>Use this platform for studying, learning, and educational purposes only.</li>
+          <li>Be mindful that AI responses may not always be 100% accurate.</li>
+        </ul>
+
+        <p className="text-gray-700 dark:text-gray-300 text-md">
+          To learn more about Gemini, visit{" "}
+          <a 
+            href="https://gemini.google/about/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-indigo-500 hover:underline"
+          >
+            Google Gemini
+          </a>.
+        </p>
+      </div>
+    </section>
+
+
+      <Separator className="max-w-1/2" /> 
+
+      {/* Team Section */}
       <section 
         className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12"
         id="team"
@@ -119,6 +152,14 @@ export function LandingPage() {
           <div className="flex flex-col items-center text-center max-w-xs">
             <h3 className="text-2xl font-semibold dark:text-gray-100">Fatima</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">Frontend Developer</p>
+            <a 
+              href="https://github.com/fatimasif"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-500 hover:underline text-sm mt-1"
+            >
+              @fatimasif
+            </a>
           </div>
 
           <div className="flex flex-col items-center text-center max-w-xs">
@@ -129,6 +170,14 @@ export function LandingPage() {
           <div className="flex flex-col items-center text-center max-w-xs">
             <h3 className="text-2xl font-semibold dark:text-gray-100">Christopher</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">Frontend Developer</p>
+            <a 
+              href="https://github.com/ChristopherZanabria"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-500 hover:underline text-sm mt-1"
+            >
+              @ChristopherZanabria
+            </a>
           </div>
 
           <div className="flex flex-col items-center text-center max-w-xs">
@@ -139,6 +188,14 @@ export function LandingPage() {
           <div className="flex flex-col items-center text-center max-w-xs">
             <h3 className="text-2xl font-semibold dark:text-gray-100">Devin</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">Backend Developer</p>
+            <a 
+              href="https://github.com/dewiin"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-500 hover:underline text-sm mt-1"
+            >
+              @dewiin
+            </a>
           </div>
         </div>
 
@@ -146,8 +203,7 @@ export function LandingPage() {
           Together, we built Brainstorm to empower students with smarter, AI-driven study tools to make learning easier for everyone.
         </p>
       </section> 
-      
-      {/* Footer */}
+
       <Footer />
     </div>
   );
