@@ -80,9 +80,15 @@ export function AccountPage() {
     const [ singleLoading, setSingleLoading ] = useState(null);
     const navigate = useNavigate();
 
+    // form
+    const [ visibilityChanged, setVisibilityChanged ] = useState(false);
+
     const form = useForm({
         resolver: zodResolver(studySetSchema),
         mode: "onChange",
+        defaultValues: {
+            studySetName: "",
+        }
     });
 
     useEffect(() => {
@@ -321,7 +327,16 @@ export function AccountPage() {
     }
 
     async function handleEdit(studySet, data) {
+        const visibility = {
+            true: !studySet.public,
+            false: studySet.public,
+        }
+        data = {
+            ...data,
+            "studySetVisibility": visibility[visibilityChanged],
+        }
         console.log(data);
+        
         try {
 
         } catch (err) {
@@ -529,8 +544,7 @@ export function AccountPage() {
                                                                     <DialogHeader>
                                                                         <DialogTitle>Edit <i>{studySet.name}</i></DialogTitle>
                                                                         <DialogDescription>
-                                                                            Make changes to your study set here. Click save when you&apos;re
-                                                                            done.
+                                                                            Make changes to your study set here.
                                                                         </DialogDescription>
                                                                     </DialogHeader>
                                                                     <FormField 
@@ -562,21 +576,23 @@ export function AccountPage() {
                                                                                 <FormLabel> Visibility </FormLabel>
                                                                                 <FormControl>
                                                                                     <Tabs
-                                                                                        value={field.value}
-                                                                                        onValueChange={field.onChange} 
-                                                                                        defaultValue={studySet.public ? "public" : "private"}
+                                                                                        onValueChange={() => setVisibilityChanged(prev => !prev)}
+                                                                                        defaultValue={visibilityChanged ? 
+                                                                                            (studySet.public ? "private" : "public")
+                                                                                            : (studySet.public ? "public" : "private") 
+                                                                                        }
                                                                                     >
                                                                                         <TabsList>
                                                                                             <TabsTrigger 
                                                                                                 value="public"
                                                                                                 className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"
-                                                                                                >
+                                                                                            >
                                                                                                 Public
                                                                                             </TabsTrigger>
                                                                                             <TabsTrigger 
                                                                                                 value="private"
                                                                                                 className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"    
-                                                                                                >
+                                                                                            >
                                                                                                 Private
                                                                                             </TabsTrigger>
                                                                                         </TabsList>
