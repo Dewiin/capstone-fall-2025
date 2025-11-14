@@ -5,6 +5,7 @@ import { ProfilePage } from './components/ProfilePage';
 import { GeneratePage } from './components/GeneratePage';
 import { StudySetPage } from './components/StudySetPage';
 import { ExplorePage } from './components/ExplorePage';
+import { SettingsPage } from './components/SettingsPage';
 import { PageNotFound } from './components/PageNotFound';
 import { UnauthorizedPage } from './components/UnauthorizedPage';
 import { ForbiddenPage } from './components/ForbiddenPage';
@@ -31,6 +32,7 @@ function App() {
           <Route path="/form/:method" element={ <Form /> } />
           <Route path="/generate" element={ <GeneratePage /> } />
           <Route path="/explore" element={ <ExplorePage /> } />
+          <Route path="/settings" element={ <SettingsPage /> } />
           <Route path="/unauthorized" element={ <UnauthorizedPage /> } />
           <Route path="/forbidden" element={ <ForbiddenPage /> } />
           <Route path="/*" element={ <PageNotFound /> } />
