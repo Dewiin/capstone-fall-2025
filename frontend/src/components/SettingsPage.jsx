@@ -1,6 +1,8 @@
 import { Footer } from "@/components/Footer";
 import { FaUser, FaKey } from "react-icons/fa";
 import { PiWarningFill } from "react-icons/pi";
+import { VscDebugRestart } from "react-icons/vsc";
+import { MdDelete } from "react-icons/md";
 import { useState } from "react";
 
 const allTabs = [
@@ -17,7 +19,7 @@ export function SettingsPage() {
             className="md:mt-16 mt-8 p-4 flex flex-col h-screen"
         >   
             <div
-                className="flex-1 flex md:flex-row flex-col gap-8"
+                className="flex-1 flex md:flex-row flex-col gap-12"
             >
                 <section
                     className="flex flex-col min-w-3xs h-fit py-4 rounded-2xl 
@@ -37,7 +39,7 @@ export function SettingsPage() {
                     ))}
                 </section>
                 <section
-                    className="w-full h-full"
+                    className="w-full h-full py-4"
                 >
                     {/* account settings section */}
                     {currentTab === "account" && 
@@ -53,42 +55,54 @@ export function SettingsPage() {
                     }
                     {/* danger zone settings section */}
                     {currentTab === "dangerZone" && 
-    <div className="flex flex-col gap-8 p-4">
-        {/* Reset Account Section */}
-        <div className="flex justify-between items-center p-4 bg-slate-900 rounded-lg border border-red-600">
-            <div className="flex flex-col">
-                <h2 className="text-red-600 font-bold text-lg">Reset Account</h2>
-                <p className="text-slate-400 text-sm">
-                    Completely resets your account to a blank state.<br />
-                    <span className="text-red-500 font-semibold">You can't undo this action!</span>
-                </p>
-            </div>
-            <button
-                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-                onClick={() => handleResetAccount()}
-            >
-                Reset Account
-            </button>
-        </div>
+                        <div className="grid gap-4">
+                            {/* Reset Account Section */}
+                            <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
+                                <div>
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <VscDebugRestart className="text-xl" />
+                                        <p>
+                                            reset account
+                                        </p>
+                                    </div>
+                                    <p>
+                                        Completely resets your account to a blank state.<br />
+                                        <span className="text-red-500">You can't undo this action!</span>
+                                    </p>    
+                                </div>
+                                <button
+                                    className="py-2 rounded-lg text-slate-950 font-semibold 
+                                    hover:bg-red-200 bg-red-500"
+                                    onClick={() => handleResetAccount()}
+                                >
+                                    reset account
+                                </button>
+                            </div>
 
-        {/* Delete Account Section */}
-        <div className="flex justify-between items-center p-4 bg-slate-900 rounded-lg border border-red-600">
-            <div className="flex flex-col">
-                <h2 className="text-red-600 font-bold text-lg">Delete Account</h2>
-                <p className="text-slate-400 text-sm">
-                    Deletes your account and all data connected to it.<br />
-                    <span className="text-red-500 font-semibold">You can't undo this action!</span>
-                </p>
-            </div>
-            <button
-                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-                onClick={() => handleDeleteAccount()}
-            >
-                Delete Account
-            </button>
-        </div>
-    </div>
-}
+                            {/* Delete Account Section */}
+                            <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
+                                <div>
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <MdDelete className="text-xl" />
+                                        <p>
+                                            delete account
+                                        </p>
+                                    </div>
+                                    <p>
+                                        Deletes your account and all data connected to it.<br />
+                                        <span className="text-red-500">You can't undo this action!</span>
+                                    </p>    
+                                </div>
+                                <button
+                                    className="py-2 rounded-lg text-slate-950 font-semibold 
+                                    hover:bg-red-200 bg-red-500"
+                                    onClick={() => handleDeleteAccount()}
+                                >
+                                    delete account
+                                </button>
+                            </div>
+                        </div>
+                    }
                 </section>
             </div>
             <Footer />
