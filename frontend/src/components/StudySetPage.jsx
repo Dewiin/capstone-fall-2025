@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
+import { CountingNumber } from "@/components/ui/shadcn-io/counting-number";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -44,7 +46,7 @@ import {
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "./contexts/Contexts";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { CountingNumber } from "./ui/shadcn-io/counting-number";
+import { toast } from "sonner";
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
@@ -52,10 +54,11 @@ export function StudySetPage() {
     const { user, authLoading } = useAuth();
     const [ notesType, setNotesType ] = useState("deck");
     const [ loading, setLoading ] = useState(false);
+    const [ submissionLoading, setSubmissionLoading ] = useState(false);
     const { studySetId } = useParams();
+    const [ searchParams, setSearchParams ] = useSearchParams();
     const smoothScroll = useRef(null);
     const navigate = useNavigate();
-    const [ searchParams, setSearchParams ] = useSearchParams();
 
     // notes
     const [ quiz, setQuiz ] = useState({questions: []});
@@ -172,7 +175,7 @@ export function StudySetPage() {
     }, [submitted]);
 
     async function handleSubmit(score) {
-        setLoading(true);
+        setSubmissionLoading(true);
 
         if (submitted) {
             setSubmitted(false);
@@ -187,7 +190,7 @@ export function StudySetPage() {
                     choices: shuffleAnswers(question.choices),
                 }));
             });
-            setLoading(false);
+            setSubmissionLoading(false);
             return;
         } 
 
@@ -202,6 +205,9 @@ export function StudySetPage() {
                 headers: {"Content-Type": "application/json"}
             })
             if(!response.ok) {
+                toast.warning("Please try again later", {
+                    description: "Error getting a response for quiz submission."
+                });
                 console.error(`Error getting a response for updating quiz: `, response.status);
                 return;
             }
@@ -216,7 +222,7 @@ export function StudySetPage() {
         } catch (err) {
             console.error(`Error handling quiz submission: `, err);
         } finally {
-            setLoading(false);
+            setSubmissionLoading(false);
         }
     }
 
@@ -413,8 +419,8 @@ export function StudySetPage() {
                         value="quiz"
                         className="flex flex-col justify-center items-center gap-2 relative"
                     >
-                        { loading && <LoadingOverlay /> }
-                        { submitted && !loading && 
+                        { loading && <LoadingOverlay className="backdrop-blur-none" /> }
+                        { submitted && 
                             <Card className="md:items-start bg-transparent shadow-none items-center md:w-2xl w-sm mb-5 border-none md:p-6 p-12">
                                 <CardContent className="flex flex-wrap md:gap-12 gap-2 justify-center items-center">
                                     <div
@@ -512,7 +518,7 @@ export function StudySetPage() {
                                                                 ${!submitted && "hover:dark:bg-slate-900 hover:bg-indigo-300 duration-150"}`
                                                             }
                                                             onClick={() => {
-                                                                if(submitted) return;
+                                                                if(submitted || submissionLoading) return;
                                                                 setSelected((prev) => {
                                                                     return {
                                                                         ...prev,
@@ -539,15 +545,16 @@ export function StudySetPage() {
                                 ))}
                             </CarouselContent>
                             <Button 
-                                className="block m-auto mt-5"
+                                className="block m-auto mt-5 w-20"
                                 onClick={() => {
                                     // count correct answers
                                     const count = Object.values(correct).filter(Boolean).length;
                                     setScore(count);
                                     handleSubmit(count);
                                 }}
-                            >
-                                {submitted ? "Retry" : "Submit"}
+                            >   
+                                {submissionLoading && <Spinner className="m-auto" />}
+                                {!submissionLoading && (submitted ? "Retry" : "Submit")}
                             </Button>
                         </Carousel>
                     </TabsContent>
