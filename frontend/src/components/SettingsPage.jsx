@@ -23,15 +23,16 @@ export function SettingsPage() {
             >
                 <section
                     className="flex flex-col min-w-3xs h-fit py-4 rounded-2xl 
-                    bg-slate-950 
-                    border-1 border-indigo-200"
+                    dark:bg-slate-950 bg-indigo-200 
+                    border-1 dark:border-indigo-200 border-indigo-950"
                 >
                     {allTabs.map((tab, index) => (
                         <button
                             key={index}
                             className={`flex items-center gap-4 py-4 px-8 text-left
-                            ${ currentTab === tab.tabValue ? "text-slate-100" : "text-slate-500" } 
-                            hover:text-slate-100 active:text-slate-500 duration-150`}
+                            ${ currentTab === tab.tabValue ? "dark:text-slate-100 text-slate-950" : "text-slate-500" } 
+                            hover:dark:text-slate-100 hover:text-slate-950
+                            active:dark:text-slate-500 active:text-slate-500 duration-150`}
                             onClick={() => setCurrentTab(tab.tabValue)}
                         >
                             {tab.icon} {tab.label}
@@ -72,7 +73,9 @@ export function SettingsPage() {
                                 </div>
                                 <button
                                     className="py-2 rounded-lg text-slate-950 font-semibold 
-                                    hover:bg-red-200 bg-red-500"
+                                    dark:bg-red-500 bg-red-400
+                                    hover:dark:bg-red-200 hover:bg-red-100
+                                    active:dark:bg-gray-500 active:bg-gray-300"
                                     onClick={() => handleResetAccount()}
                                 >
                                     reset account
@@ -95,7 +98,9 @@ export function SettingsPage() {
                                 </div>
                                 <button
                                     className="py-2 rounded-lg text-slate-950 font-semibold 
-                                    hover:bg-red-200 bg-red-500"
+                                    dark:bg-red-500 bg-red-400
+                                    hover:dark:bg-red-200 hover:bg-red-100
+                                    active:dark:bg-gray-500 active:bg-gray-300"
                                     onClick={() => handleDeleteAccount()}
                                 >
                                     delete account
