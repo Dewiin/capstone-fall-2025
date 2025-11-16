@@ -477,11 +477,11 @@ export function StudySetPage() {
                         }
                         
                         <div
-                            className="flex flex-col gap-4 w-full max-w-2xl"
+                            className="flex flex-col gap-4 w-full md:w-2xl"
                         >
                             {shuffledQuizQuestions.map((question, index) => (
                                 <Card
-                                    className="aspect-video md:p-12 py-12 relative
+                                    className="md:p-12 py-12 relative
                                         dark:bg-slate-950 bg-indigo-200
                                         border-1 dark:border-indigo-200 border-indigo-900"
                                 >
