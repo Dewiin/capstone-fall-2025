@@ -476,74 +476,67 @@ export function StudySetPage() {
                             </Card>
                         }
                         
-                        <Carousel
-                            orientation="vertical"
-                            className="w-full max-w-2xl"
+                        <div
+                            className="flex flex-col gap-4 w-full max-w-2xl"
                         >
-                            <CarouselContent>
-                                {shuffledQuizQuestions.map((question, index) => (
-                                    <CarouselItem 
-                                        key={question.id}
-                                    >
-                                        <Card
-                                            className="aspect-video md:p-12 py-12 relative
-                                                dark:bg-slate-950 bg-indigo-200
-                                                border-1 dark:border-indigo-200 border-indigo-900"
-                                        >
-                                            <p className="absolute top-5 right-5 text-gray-500">
-                                                {index+1} of {quiz.questions.length}
-                                            </p>
-                                            <CardHeader>
-                                                <CardTitle className="md:text-base text-sm">
-                                                    {question.question}
-                                                </CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <div className="grid sm:grid-cols-2 grid-cols-1 gap-6">
-                                                    {Object.entries(question.choices).map(([key, value]) => (
-                                                        <Card 
-                                                            key={key}
-                                                            className={
-                                                                `md:text-sm text-xs cursor-pointer border-1 
-                                                                dark:bg-[rgba(255,255,255,0.1)]
-                                                                bg-[rgba(255,255,255,0.3)] 
-                                                                ${key == selected[question.id] &&
-                                                                (submitted ?
-                                                                (
-                                                                    correct[question.id] ? "dark:bg-green-900 bg-green-200 border-green-400" : "dark:bg-red-900 bg-red-200 border-red-400"
-                                                                ) : (
-                                                                    "border-indigo-700 dark:border-indigo-50"
-                                                                ))} 
-                                                                ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "dark:border-green-500 border-green-700 border-dashed"}
-                                                                ${!submitted && "hover:dark:bg-slate-900 hover:bg-indigo-300 duration-150"}`
+                            {shuffledQuizQuestions.map((question, index) => (
+                                <Card
+                                    className="aspect-video md:p-12 py-12 relative
+                                        dark:bg-slate-950 bg-indigo-200
+                                        border-1 dark:border-indigo-200 border-indigo-900"
+                                >
+                                    <p className="absolute top-5 right-5 text-gray-500">
+                                        {index+1} of {quiz.questions.length}
+                                    </p>
+                                    <CardHeader>
+                                        <CardTitle className="md:text-base text-sm">
+                                            {question.question}
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid sm:grid-cols-2 grid-cols-1 gap-6">
+                                            {Object.entries(question.choices).map(([key, value]) => (
+                                                <Card 
+                                                    key={key}
+                                                    className={
+                                                        `md:text-sm text-xs cursor-pointer border-1 
+                                                        dark:bg-[rgba(255,255,255,0.1)]
+                                                        bg-[rgba(255,255,255,0.3)] 
+                                                        ${key == selected[question.id] &&
+                                                        (submitted ?
+                                                        (
+                                                            correct[question.id] ? "dark:bg-green-900 bg-green-200 border-green-400" : "dark:bg-red-900 bg-red-200 border-red-400"
+                                                        ) : (
+                                                            "border-indigo-700 dark:border-indigo-50"
+                                                        ))} 
+                                                        ${submitted && (key == question.correctAnswer && key != selected[question.id]) && "dark:border-green-500 border-green-700 border-dashed"}
+                                                        ${!submitted && "hover:dark:bg-slate-900 hover:bg-indigo-300 duration-150"}`
+                                                    }
+                                                    onClick={() => {
+                                                        if(submitted || submissionLoading) return;
+                                                        setSelected((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                [question.id]: key,
                                                             }
-                                                            onClick={() => {
-                                                                if(submitted || submissionLoading) return;
-                                                                setSelected((prev) => {
-                                                                    return {
-                                                                        ...prev,
-                                                                        [question.id]: key,
-                                                                    }
-                                                                })
-                                                                setCorrect((prev) => {
-                                                                    return {
-                                                                        ...prev,
-                                                                        [question.id]: key == question.correctAnswer
-                                                                    }
-                                                                })
-                                                            }}
-                                                        >
-                                                            <CardContent>
-                                                                {value}
-                                                            </CardContent>
-                                                        </Card>
-                                                    ))}
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </CarouselItem>
-                                ))}
-                            </CarouselContent>
+                                                        })
+                                                        setCorrect((prev) => {
+                                                            return {
+                                                                ...prev,
+                                                                [question.id]: key == question.correctAnswer
+                                                            }
+                                                        })
+                                                    }}
+                                                >
+                                                    <CardContent>
+                                                        {value}
+                                                    </CardContent>
+                                                </Card>
+                                            ))}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
                             <Button 
                                 className="block m-auto mt-5 w-20"
                                 onClick={() => {
@@ -556,7 +549,7 @@ export function StudySetPage() {
                                 {submissionLoading && <Spinner className="m-auto" />}
                                 {!submissionLoading && (submitted ? "Retry" : "Submit")}
                             </Button>
-                        </Carousel>
+                        </div>
                     </TabsContent>
                     <TabsContent
                         value="progress"
