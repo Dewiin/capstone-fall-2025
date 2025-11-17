@@ -50,8 +50,56 @@ export function SettingsPage() {
                     }
                     {/* authentication settings section */}
                     {currentTab === "authentication" && 
-                        <div>
-                            authentication stuff
+                        <div className="grid gap-4">
+                            {/* Reset Account Section */}
+                            <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
+                                <div>
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <VscDebugRestart className="text-xl" />
+                                        <p>
+                                            reset account
+                                        </p>
+                                    </div>
+                                    <p>
+                                        Completely resets your account to a blank state.<br />
+                                        <span className="text-red-500">You can't undo this action!</span>
+                                    </p>    
+                                </div>
+                                <button
+                                    className="py-2 rounded-lg text-slate-950 font-semibold 
+                                    dark:bg-red-500 bg-red-400
+                                    hover:dark:bg-red-200 hover:bg-red-100
+                                    active:dark:bg-gray-500 active:bg-gray-300"
+                                    onClick={() => handleResetAccount()}
+                                >
+                                    reset account
+                                </button>
+                            </div>
+
+                            {/* Delete Account Section */}
+                            <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
+                                <div>
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <MdDelete className="text-xl" />
+                                        <p>
+                                            delete account
+                                        </p>
+                                    </div>
+                                    <p>
+                                        Deletes your account and all data connected to it.<br />
+                                        <span className="text-red-500">You can't undo this action!</span>
+                                    </p>    
+                                </div>
+                                <button
+                                    className="py-2 rounded-lg text-slate-950 font-semibold 
+                                    dark:bg-red-500 bg-red-400
+                                    hover:dark:bg-red-200 hover:bg-red-100
+                                    active:dark:bg-gray-500 active:bg-gray-300"
+                                    onClick={() => handleDeleteAccount()}
+                                >
+                                    delete account
+                                </button>
+                            </div>
                         </div>
                     }
                     {/* danger zone settings section */}
