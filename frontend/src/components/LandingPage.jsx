@@ -165,6 +165,14 @@ export function LandingPage() {
           <div className="flex flex-col items-center text-center max-w-xs">
             <h3 className="text-2xl font-semibold dark:text-gray-100">Alex</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">Frontend Developer</p>
+            <a 
+              href="https://github.com/alexdoesnotexist1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-500 hover:underline text-sm mt-1"
+            >
+              @alexdoesnotexist1
+            </a>
           </div>
 
           <div className="flex flex-col items-center text-center max-w-xs">
