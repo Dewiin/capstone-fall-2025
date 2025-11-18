@@ -1,5 +1,6 @@
 import { Footer } from "@/components/Footer";
 import { FaUser, FaKey } from "react-icons/fa";
+import { FaLock } from "react-icons/fa6";
 import { PiWarningFill } from "react-icons/pi";
 import { VscDebugRestart } from "react-icons/vsc";
 import { MdDelete } from "react-icons/md";
@@ -55,49 +56,25 @@ export function SettingsPage() {
                             <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
                                 <div>
                                     <div className="flex items-center gap-2 text-slate-500">
-                                        <VscDebugRestart className="text-xl" />
+                                        <FaLock className="text-xl" />
                                         <p>
-                                            reset account
+                                            password authentication settings
                                         </p>
                                     </div>
                                     <p>
-                                        Completely resets your account to a blank state.<br />
-                                        <span className="text-red-500">You can't undo this action!</span>
+                                        Update your password.
                                     </p>    
                                 </div>
                                 <button
-                                    className="py-2 rounded-lg text-slate-950 font-semibold 
-                                    dark:bg-red-500 bg-red-400
-                                    hover:dark:bg-red-200 hover:bg-red-100
-                                    active:dark:bg-gray-500 active:bg-gray-300"
-                                    onClick={() => handleResetAccount()}
+                                    className="py-2 rounded-lg font-semibold 
+                                    text-zinc-300 hover:text-zinc-900
+                                    dark:bg-zinc-900 bg-zinc-700
+                                    hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                    active:dark:bg-zinc-700 active:bg-zinc-400
+                                    duration-150"
+                                    onClick={() => handleUpdatePassword()}
                                 >
-                                    reset account
-                                </button>
-                            </div>
-
-                            {/* Delete Account Section */}
-                            <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
-                                <div>
-                                    <div className="flex items-center gap-2 text-slate-500">
-                                        <MdDelete className="text-xl" />
-                                        <p>
-                                            delete account
-                                        </p>
-                                    </div>
-                                    <p>
-                                        Deletes your account and all data connected to it.<br />
-                                        <span className="text-red-500">You can't undo this action!</span>
-                                    </p>    
-                                </div>
-                                <button
-                                    className="py-2 rounded-lg text-slate-950 font-semibold 
-                                    dark:bg-red-500 bg-red-400
-                                    hover:dark:bg-red-200 hover:bg-red-100
-                                    active:dark:bg-gray-500 active:bg-gray-300"
-                                    onClick={() => handleDeleteAccount()}
-                                >
-                                    delete account
+                                    update password
                                 </button>
                             </div>
                         </div>
