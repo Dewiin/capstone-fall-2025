@@ -156,84 +156,118 @@ export function ProfilePage() {
     }
 
     return (
-        <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 md:gap-16 gap-8 min-h-screen">
-            {/* First Section */}
-            <section className='flex md:flex-row flex-col gap-8 p-4 rounded-lg md:h-30 select-none
-                bg-indigo-200 dark:bg-slate-950 
-                border-1 border-indigo-900 dark:border-indigo-300'
-            >
-                {/* Avatar/Name */}
-                <div className="flex gap-4 items-center md:max-w-1/4 text-indigo-900 dark:text-indigo-200">
-                    <Avatar className="size-20 rounded-2xl">
-                        <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
-                        <AvatarFallback>Icon</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col gap-2 truncate">
-                        { loading && 
-                        <>
-                            <Skeleton className="h-4 w-[150px]" />
-                            <Skeleton className="h-4 w-[100px]" />
-                        </>
-                        }
-                        { !loading && 
-                        <>
-                            <p className="text-3xl font-semibold truncate">
-                                {accountUser?.displayName}
-                            </p>
-                            <p className="text-xs">
-                                Joined {createdAt ? createdAt : "..."}
-                            </p>
-                        </>
-                        }
+        <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 gap-2 min-h-screen">
+            <div className="flex md:flex-row flex-col gap-2 md:h-30">
+                {/* First Section */}
+                <section className='flex md:flex-row flex-col md:gap-8 gap-4 p-4 rounded-lg h-full w-full select-none
+                    bg-indigo-200 dark:bg-slate-950 
+                    border-1 border-indigo-900 dark:border-indigo-300'
+                >
+                    {/* Avatar/Name */}
+                    <div className="flex gap-4 items-center md:max-w-1/3 text-indigo-900 dark:text-indigo-200">
+                        <Avatar className="size-20 rounded-2xl">
+                            <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                            <AvatarFallback>Icon</AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col gap-2 truncate">
+                            { loading && 
+                            <>
+                                <Skeleton className="h-4 w-[150px]" />
+                                <Skeleton className="h-4 w-[100px]" />
+                            </>
+                            }
+                            { !loading && 
+                            <>
+                                <p className="text-3xl font-semibold truncate">
+                                    {accountUser?.displayName}
+                                </p>
+                                <p className="text-xs">
+                                    Joined {createdAt ? createdAt : "..."}
+                                </p>
+                            </>
+                            }
+                        </div>
                     </div>
-                </div>
 
-                {/* Divider */}
-                <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl border-indigo-300" />
+                    {/* Divider */}
+                    <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl border-indigo-300" />
 
-                {/* Personal Stats */}
-                <div className=" flex-1 grid md:grid-cols-4 grid-cols-1 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
-                    <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
-                            study sets created
+                    {/* Personal Stats */}
+                    <div className=" flex-1 grid md:grid-cols-4 grid-cols-2 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
+                        <span>
+                            <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                study sets
+                            </p>
+                            <CountingNumber 
+                                number={ accountUser ? accountUser.studySets.length : 0 }
+                                className="md:text-4xl text-2xl font-semibold"
+                                />
+                        </span>
+                        <span>
+                            <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                flash cards
+                            </p>
+                            <CountingNumber 
+                                number={ flashcardCount }
+                                className="md:text-4xl text-2xl font-semibold"
+                                />
+                        </span>
+                        <span>
+                            <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                quiz attempts
+                            </p>
+                            <CountingNumber 
+                                number={ attemptCount }
+                                className="md:text-4xl text-2xl font-semibold"
+                                />
+                        </span>
+                        <span> 
+                            <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                favorites added
+                            </p>
+                            <CountingNumber 
+                                number={ accountUser ? accountUser.favorites.length : 0 }
+                                className="md:text-4xl text-2xl font-semibold"
+                                />
+                        </span>
+                    </div>
+                </section>
+
+                {/* Followers Section */}
+                <section
+                    className='p-4 rounded-lg h-full w-fit select-none flex flex-col gap-4
+                    bg-indigo-200 dark:bg-slate-950 
+                    border-1 border-indigo-900 dark:border-indigo-300'
+                    >
+                    <div
+                        className="flex gap-4 
+                        dark:text-indigo-300 text-indigo-900 text-sm font-semibold"
+                        >
+                        <p>
+                            {accountUser?.followers.length} followers
                         </p>
-                        <CountingNumber 
-                            number={ accountUser ? accountUser.studySets.length : 0 }
-                            className="text-4xl font-semibold"
-                        />
-                    </span>
-                    <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
-                            flash cards created
+                        <p>
+                            {accountUser?.following.length} following
                         </p>
-                        <CountingNumber 
-                            number={ flashcardCount }
-                            className="text-4xl font-semibold"
-                        />
-                    </span>
-                    <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
-                            quiz attempts recorded
-                        </p>
-                        <CountingNumber 
-                            number={ attemptCount }
-                            className="text-4xl font-semibold"
-                        />
-                    </span>
-                    <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
-                            favorites added
-                        </p>
-                        <CountingNumber 
-                            number={ accountUser ? accountUser.favorites.length : 0 }
-                            className="text-4xl font-semibold"
-                        />
-                    </span>
-                </div>
-            </section>
+                    </div>
+                    <div>
+                        <button
+                            className="py-1 rounded-lg font-semibold w-full
+                            text-zinc-300 hover:text-zinc-900 text-sm
+                            dark:bg-slate-900 bg-slate-700
+                            hover:dark:bg-zinc-300 hover:bg-zinc-200
+                            active:dark:bg-zinc-700 active:bg-zinc-400
+                            duration-150"
+                            onClick={() => handleFollow()}
+                            >
+                            follow
+                        </button>
+                    </div>
+                </section>
+            </div>
 
             {/* Second Section */}
-            <section className="flex-1 flex">
+            <section className="flex-1 flex mt-12">
                 <Tabs 
                     defaultValue={accountTab}
                     onValueChange={(val) => setAccountTab(val)}

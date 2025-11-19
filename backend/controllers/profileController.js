@@ -47,6 +47,8 @@ async function profileGet(req, res) {
                         user: true,
                     }
                 },
+                followers: true,
+                following: true,
             }
         })
 
