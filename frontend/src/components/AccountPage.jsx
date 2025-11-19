@@ -424,41 +424,41 @@ export function AccountPage() {
                 <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl border-indigo-300" />
 
                 {/* Personal Stats */}
-                <div className=" flex-1 grid md:grid-cols-4 grid-cols-1 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
+                <div className=" flex-1 grid md:grid-cols-4 grid-cols-2 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
                     <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
+                        <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
                             study sets created
                         </p>
                         <CountingNumber 
                             number={ accountUser ? accountUser.studySets.length : 0 }
-                            className="text-4xl font-semibold"
+                            className="md:text-4xl text-2xl font-semibold"
                         />
                     </span>
                     <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
+                        <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
                             flash cards created
                         </p>
                         <CountingNumber 
                             number={ flashcardCount }
-                            className="text-4xl font-semibold"
+                            className="md:text-4xl text-2xl font-semibold"
                         />
                     </span>
                     <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
+                        <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
                             quiz attempts recorded
                         </p>
                         <CountingNumber 
                             number={ attemptCount }
-                            className="text-4xl font-semibold"
+                            className="md:text-4xl text-2xl font-semibold"
                         />
                     </span>
                     <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
+                        <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
                             favorites added
                         </p>
                         <CountingNumber 
                             number={ accountUser ? accountUser.favorites.length : 0 }
-                            className="text-4xl font-semibold"
+                            className="md:text-4xl text-2xl font-semibold"
                         />
                     </span>
                 </div>

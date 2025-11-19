@@ -3,8 +3,9 @@ import { FaUser, FaKey } from "react-icons/fa";
 import { FaLock } from "react-icons/fa6";
 import { PiWarningFill } from "react-icons/pi";
 import { VscDebugRestart } from "react-icons/vsc";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdVisibility } from "react-icons/md";
 import { useState } from "react";
+import { useAuth } from "./contexts/Contexts";
 
 const allTabs = [
   { tabValue: 'account', label: 'account', icon: <FaUser className="text-xl" /> },
@@ -14,6 +15,7 @@ const allTabs = [
 
 export function SettingsPage() {
     const [ currentTab, setCurrentTab ] = useState("account");
+    const { user } = useAuth();
 
     return (
         <div
@@ -45,14 +47,64 @@ export function SettingsPage() {
                 >
                     {/* account settings section */}
                     {currentTab === "account" && 
-                        <div>
-                            account stuff
+                        <div className="grid gap-8">
+                            {/* update name */}
+                            <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
+                                <div>
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <FaUser className="text-xl" />
+                                        <p>
+                                            update account name
+                                        </p>
+                                    </div>
+                                    <p>
+                                        Change the name of your account.
+                                    </p>    
+                                </div>
+                                <button
+                                    className="py-2 rounded-lg font-semibold 
+                                    text-zinc-300 hover:text-zinc-900
+                                    dark:bg-zinc-900 bg-zinc-700
+                                    hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                    active:dark:bg-zinc-700 active:bg-zinc-400
+                                    duration-150"
+                                    onClick={() => handleUpdateName()}
+                                >
+                                    update name
+                                </button>
+                            </div>
+                            
+                            {/* update profile visibility */}
+                            <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
+                                <div>
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <MdVisibility className="text-xl" />
+                                        <p>
+                                            update account visibility
+                                        </p>
+                                    </div>
+                                    <p>
+                                        Change the visibility of your account.
+                                    </p>    
+                                </div>
+                                <button
+                                    className="py-2 rounded-lg font-semibold 
+                                    text-zinc-300 hover:text-zinc-900
+                                    dark:bg-zinc-900 bg-zinc-700
+                                    hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                    active:dark:bg-zinc-700 active:bg-zinc-400
+                                    duration-150"
+                                    onClick={() => handleUpdateVisibility()}
+                                >
+                                    {user?.public ? "public" : "private"}
+                                </button>
+                            </div>
                         </div>
                     }
                     {/* authentication settings section */}
                     {currentTab === "authentication" && 
-                        <div className="grid gap-4">
-                            {/* Reset Account Section */}
+                        <div className="grid gap-8">
+                            {/* Change Password Section */}
                             <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
                                 <div>
                                     <div className="flex items-center gap-2 text-slate-500">
@@ -81,7 +133,7 @@ export function SettingsPage() {
                     }
                     {/* danger zone settings section */}
                     {currentTab === "dangerZone" && 
-                        <div className="grid gap-4">
+                        <div className="grid gap-8">
                             {/* Reset Account Section */}
                             <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
                                 <div>

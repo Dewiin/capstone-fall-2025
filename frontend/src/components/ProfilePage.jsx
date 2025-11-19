@@ -243,12 +243,22 @@ export function ProfilePage() {
                         className="flex gap-4 
                         dark:text-indigo-300 text-indigo-900 text-sm font-semibold"
                         >
-                        <p>
-                            {accountUser?.followers.length} followers
-                        </p>
-                        <p>
-                            {accountUser?.following.length} following
-                        </p>
+                        <div>
+                            <CountingNumber 
+                                number={ accountUser ? accountUser.followers.length : 0 }
+                            />
+                            <p>
+                                followers
+                            </p>
+                        </div>
+                        <div>
+                            <CountingNumber 
+                                number={ accountUser ? accountUser.following.length : 0 }
+                            />
+                            <p>
+                                following
+                            </p>
+                        </div>
                     </div>
                     <div>
                         <button
