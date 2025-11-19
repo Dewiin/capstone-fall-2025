@@ -35,6 +35,8 @@ model User {
   studySets StudySet[]
   favorites StudySet[]    @relation("UserFavorites")
   attempts  QuizAttempt[]
+  followers User[]        @relation("UserFollows")
+  following User[]        @relation("UserFollows")
 
   @@index([id])
   @@index([username])
