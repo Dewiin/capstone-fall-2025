@@ -1,5 +1,5 @@
 import { useAuth } from './contexts/Contexts';
-import { FaBook, FaBrain, FaLightbulb } from "react-icons/fa";
+import { FaBook, FaBrain, FaLightbulb, FaCompass } from "react-icons/fa";
 import { RiGeminiFill } from "react-icons/ri";
 import { FlipButton } from '@/components/ui/shadcn-io/flip-button';
 import { Separator } from '@/components/ui/separator';
@@ -43,7 +43,7 @@ export function LandingPage() {
 
       <Separator className="max-w-1/2" />
 
-      {/* Features Section */}
+      {/* Features Section
       <section 
         className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12" 
         id='features'
@@ -77,7 +77,51 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Separator className="max-w-1/2" /> 
+      <Separator className="max-w-1/2" />  */}
+
+      {/* Features Section */}
+      <section 
+        className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12" 
+        id='features'
+      >
+        <h2 className="text-4xl font-bold mb-10">Features</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 justify-items-center">
+          <div className="flex flex-col items-center gap-4 max-w-xs">
+            <FaBook className="text-5xl text-indigo-500 dark:text-indigo-400" />
+            <h3 className="text-xl font-semibold dark:text-gray-100">Generate Study Guides</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Quickly turn your notes into structured study guides.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center gap-4 max-w-xs">
+            <RiGeminiFill className="text-5xl text-indigo-500 dark:text-indigo-400" />
+            <h3 className="text-xl font-semibold dark:text-gray-100">AI-Powered Learning</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Get intelligent suggestions to help remember key concepts faster.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center gap-4 max-w-xs">
+            <FaLightbulb className="text-5xl text-indigo-500 dark:text-indigo-400" />
+            <h3 className="text-xl font-semibold dark:text-gray-100">Organize Smarter</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Keep all your study materials neatly organized and accessible anytime.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center gap-4 max-w-xs">
+            <FaCompass className="text-5xl text-indigo-500 dark:text-indigo-400" />
+            <h3 className="text-xl font-semibold dark:text-gray-100">Explore Study Sets</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Browse study sets created by others and save your favorites to learn from.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <Separator className="max-w-1/2" />
 
       {/* About Section */}
       <section 
@@ -102,7 +146,52 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Separator className="max-w-1/2" /> 
+      <Separator className="max-w-1/2" />
+
+
+      {/* How It Works Section */}
+      <section 
+        className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12" 
+        id="how-it-works"
+      >
+        <h2 className="text-4xl font-bold mb-10">How It Works</h2>
+
+        <div className="flex flex-col md:flex-row justify-center items-start gap-10">
+          {/* Step 1 */}
+          <div className="flex flex-col items-center max-w-xs text-center">
+            <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 rounded-full p-6 mb-4">
+              <FaBook className="text-4xl" />
+            </div>
+            <h3 className="text-xl font-semibold dark:text-gray-100 mb-2">1. Upload Notes</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Upload your lecture notes as PDFs, or text files to Brainstorm in seconds.
+            </p>
+          </div>
+
+          {/* Step 2 */}
+          <div className="flex flex-col items-center max-w-xs text-center">
+            <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 rounded-full p-6 mb-4">
+              <FaLightbulb className="text-4xl" />
+            </div>
+            <h3 className="text-xl font-semibold dark:text-gray-100 mb-2">2. AI Generates Guides</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Brainstorm’s AI creates structured study guides and flashcards.
+            </p>
+          </div>
+
+          {/* Step 3 */}
+          <div className="flex flex-col items-center max-w-xs text-center">
+            <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 rounded-full p-6 mb-4">
+              <FaBrain className="text-4xl" />
+            </div>
+            <h3 className="text-xl font-semibold dark:text-gray-100 mb-2">3. Study Smarter</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Review your AI-generated study materials anytime to learn faster and retain more.
+            </p>
+          </div>
+        </div>
+      </section>
+      
 
     {/* Disclaimer Section */}
     <section 
