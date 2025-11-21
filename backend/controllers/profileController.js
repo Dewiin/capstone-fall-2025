@@ -81,10 +81,26 @@ async function profileGet(req, res) {
 
 async function followPost(req, res) {
     try {
+        console.log("ping");
         const user = req.user;
         const { followId } = req.params;
 
+        const userFollow = await prisma.userFollow.create({
+            data: {
+                followerId: user.id,
+                followingId: followId,
+            }
+        });
 
+        if(userFollow) {
+            return res.json({
+                status: 1,
+                userFollow
+            });
+        }
+        return res.json({
+            status: 0,
+        });
     } catch (err) {
         console.error(`Error submitting follow request: `, err);
         return res.json({

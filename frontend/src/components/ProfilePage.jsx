@@ -156,13 +156,45 @@ export function ProfilePage() {
     }
 
     async function handleFollow() {
-        
         try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/profile/follow/${userId}`, {
+                method: "POST",
+                credentials: "include"
+            });
+            if(!response.ok) {
+                toast.warning("There was an error getting a response", {
+                    description: "Please try again later."
+                });
+                console.error(`Error getting a response for the follow request: `, response.status);
+                return;
+            }
 
-        } catch {
-
-        } finally {
-            
+            const result = await response.json();
+            if(result.status === 1) {
+                setAccountUser((prev) => ({
+                    ...prev,
+                    followers: [
+                        ...prev.followers,
+                        userId,
+                    ]
+                }));
+                toast.success("Successful follow!", {
+                    description: 
+                    <>
+                        You followed <i>{accountUser.name}</i>
+                    </>
+                });
+            } else {
+                toast.warning("There was an error!", {
+                    description: "Please try again later."
+                });
+            }
+        } catch (err) {
+            toast.warning("There was an error!", {
+                description: "Please try again later."
+            });
+            console.error(`Error handling the follow request: `, err);
+            return;
         }
     }
 
