@@ -79,6 +79,21 @@ async function profileGet(req, res) {
     }
 }
 
+async function followPost(req, res) {
+    try {
+        const user = req.user;
+        const { followId } = req.params;
+
+
+    } catch (err) {
+        console.error(`Error submitting follow request: `, err);
+        return res.json({
+            status: 0,
+        });
+    }
+}
+
 export const profileController = {
     profileGet,
+    followPost
 }

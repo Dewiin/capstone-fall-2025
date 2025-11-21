@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")  
 }
 
 model Session {
@@ -34,14 +34,27 @@ model User {
 
   // Relations
   studySets StudySet[]
-  favorites StudySet[]    @relation("UserFavorites")
+  favorites StudySet[]          @relation("UserFavorites")
   attempts  QuizAttempt[]
-  followers User[]        @relation("UserFollows")
-  following User[]        @relation("UserFollows")
+  followers UserFollow[]        @relation("UserFollows")
+  following UserFollow[]        @relation("UserFollowing")
 
   @@index([id])
   @@index([username])
   @@map("users")
+}
+
+model UserFollow {
+  id          String   @id @default(uuid())
+  follower    User     @relation("UserFollows", fields: [followerId], references: [id])
+  followerId  String
+
+  following   User     @relation("UserFollowing", fields: [followingId], references: [id])
+  followingId String
+
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
 }
 
 // ---------- ENUMS ----------
