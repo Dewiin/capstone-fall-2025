@@ -155,11 +155,22 @@ export function ProfilePage() {
         }
     }
 
+    async function handleFollow() {
+        
+        try {
+
+        } catch {
+
+        } finally {
+            
+        }
+    }
+
     return (
         <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 gap-2 min-h-screen">
-            <div className="flex md:flex-row flex-col gap-2 md:h-30">
+            <div className="flex flex-col gap-2 h-fit">
                 {/* First Section */}
-                <section className='flex md:flex-row flex-col md:gap-8 gap-4 p-4 rounded-lg h-full w-full select-none
+                <section className='flex md:flex-row flex-col md:gap-8 gap-4 p-4 rounded-lg md:h-30 w-full select-none
                     bg-indigo-200 dark:bg-slate-950 
                     border-1 border-indigo-900 dark:border-indigo-300'
                 >
@@ -235,30 +246,26 @@ export function ProfilePage() {
 
                 {/* Followers Section */}
                 <section
-                    className='p-4 rounded-lg h-full w-fit select-none flex flex-col gap-4
+                    className='p-4 rounded-lg h-full w-3xs select-none flex flex-col gap-4
                     bg-indigo-200 dark:bg-slate-950 
                     border-1 border-indigo-900 dark:border-indigo-300'
                     >
                     <div
-                        className="flex gap-4 
+                        className="flex justify-evenly
                         dark:text-indigo-300 text-indigo-900 text-sm font-semibold"
                         >
-                        <div>
+                        <p>
                             <CountingNumber 
                                 number={ accountUser ? accountUser.followers.length : 0 }
-                            />
-                            <p>
-                                followers
-                            </p>
-                        </div>
-                        <div>
+                            /> 
+                            &nbsp;followers
+                        </p>
+                        <p>
                             <CountingNumber 
                                 number={ accountUser ? accountUser.following.length : 0 }
                             />
-                            <p>
-                                following
-                            </p>
-                        </div>
+                            &nbsp;following
+                        </p>
                     </div>
                     <div>
                         <button
