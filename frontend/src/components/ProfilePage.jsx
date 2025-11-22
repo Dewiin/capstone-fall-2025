@@ -175,13 +175,13 @@ export function ProfilePage() {
                     ...prev,
                     followers: [
                         ...prev.followers,
-                        userId,
+                        result.userFollow,
                     ]
                 }));
                 toast.success("Successful follow!", {
                     description: 
                     <>
-                        You followed <i>{accountUser.name}</i>
+                        You followed <i>{accountUser.displayName}</i>
                     </>
                 });
             } else {
@@ -278,7 +278,7 @@ export function ProfilePage() {
 
                 {/* Followers Section */}
                 <section
-                    className='p-4 rounded-lg h-full w-3xs select-none flex flex-col gap-4
+                    className='p-4 rounded-lg min-w-55 max-w-fit select-none flex flex-col gap-4
                     bg-indigo-200 dark:bg-slate-950 
                     border-1 border-indigo-900 dark:border-indigo-300'
                     >
@@ -309,7 +309,7 @@ export function ProfilePage() {
                             duration-150"
                             onClick={() => handleFollow()}
                             >
-                            follow
+                            { accountUser?.followers.some((u) => u.followerId === user.id) ? "unfollow" : "follow" }
                         </button>
                     </div>
                 </section>
