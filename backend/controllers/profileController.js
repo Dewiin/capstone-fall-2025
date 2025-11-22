@@ -81,9 +81,29 @@ async function profileGet(req, res) {
 
 async function followPost(req, res) {
     try {
-        console.log("ping");
         const user = req.user;
         const { followId } = req.params;
+
+        const existing = await prisma.userFollow.findUnique({
+            where: {
+                followerId_followingId: {
+                    followerId: user.id,
+                    followingId: followId
+                }
+            }
+        });
+
+        if(existing) {
+            await prisma.userFollow.delete({
+                where: {
+                    id: existing.id
+                }
+            });
+            return res.json({
+                status: 1,
+                action: "unfollow"
+            })
+        }
 
         const userFollow = await prisma.userFollow.create({
             data: {
@@ -95,6 +115,7 @@ async function followPost(req, res) {
         if(userFollow) {
             return res.json({
                 status: 1,
+                action: "follow",
                 userFollow
             });
         }

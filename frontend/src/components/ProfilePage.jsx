@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton"
+// import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { CountingNumber } from "@/components/ui/shadcn-io/counting-number";
 import { toast } from "sonner";
@@ -41,6 +42,7 @@ export function ProfilePage() {
     // frontend
     const [ loading, setLoading ] = useState(false);
     const [ singleLoading, setSingleLoading ] = useState(null);
+    const [ followLoading, setFollowLoading ] = useState(false);
     const [ accountTab, setAccountTab ] = useState("studySets");
     const navigate = useNavigate();
     const { userId } = useParams();
@@ -156,6 +158,8 @@ export function ProfilePage() {
     }
 
     async function handleFollow() {
+        setFollowLoading(true);
+
         try {
             const response = await fetch(`${API_URL_DOMAIN}/api/profile/follow/${userId}`, {
                 method: "POST",
@@ -171,19 +175,32 @@ export function ProfilePage() {
 
             const result = await response.json();
             if(result.status === 1) {
-                setAccountUser((prev) => ({
-                    ...prev,
-                    followers: [
-                        ...prev.followers,
-                        result.userFollow,
-                    ]
-                }));
-                toast.success("Successful follow!", {
-                    description: 
-                    <>
-                        You followed <i>{accountUser.displayName}</i>
-                    </>
-                });
+                if(result.action === "follow") {
+                    setAccountUser((prev) => ({
+                        ...prev,
+                        followers: [
+                            ...prev.followers,
+                            result.userFollow,
+                        ]
+                    }));
+                    toast.success("Successful follow!", {
+                        description: 
+                        <>
+                            You followed <i>{accountUser.displayName}</i>
+                        </>
+                    });
+                } else {
+                    setAccountUser((prev) => ({
+                        ...prev,
+                        followers: prev.followers.filter((u) => u.followerId !== user.id)
+                    }));
+                    toast.error("Successful unfollow!", {
+                        description: 
+                        <>
+                            You unfollowed <i>{accountUser.displayName}</i>
+                        </>
+                    });
+                }
             } else {
                 toast.warning("There was an error!", {
                     description: "Please try again later."
@@ -195,6 +212,8 @@ export function ProfilePage() {
             });
             console.error(`Error handling the follow request: `, err);
             return;
+        } finally {
+            setFollowLoading(false);
         }
     }
 
@@ -278,10 +297,11 @@ export function ProfilePage() {
 
                 {/* Followers Section */}
                 <section
-                    className='p-4 rounded-lg min-w-55 max-w-fit select-none flex flex-col gap-4
+                    className='p-4 rounded-lg min-w-55 max-w-fit select-none flex flex-col gap-4 
                     bg-indigo-200 dark:bg-slate-950 
-                    border-1 border-indigo-900 dark:border-indigo-300'
-                    >
+                    border-1 border-indigo-900 dark:border-indigo-300
+                    relative'
+                >
                     <div
                         className="flex justify-evenly
                         dark:text-indigo-300 text-indigo-900 text-sm font-semibold"
@@ -301,14 +321,24 @@ export function ProfilePage() {
                     </div>
                     <div>
                         <button
-                            className="py-1 rounded-lg font-semibold w-full
-                            text-zinc-300 hover:text-zinc-900 text-sm
+                            className={`py-1 rounded-lg font-semibold w-full
+                            ${accountUser?.followers.some((u) => u.followerId === user.id) ? 
+                            `text-zinc-900 hover:text-zinc-300
+                            dark:bg-zinc-200 bg-zinc-300
+                            hover:dark:bg-slate-900 hover:bg-slate-700
+                            active:dark:bg-zinc-700 active:bg-zinc-400
+                            ` 
+                            : 
+                            `text-zinc-300 hover:text-zinc-900 
                             dark:bg-slate-900 bg-slate-700
                             hover:dark:bg-zinc-300 hover:bg-zinc-200
                             active:dark:bg-zinc-700 active:bg-zinc-400
-                            duration-150"
+                            ` } 
+                            text-sm
+                            duration-150`}
                             onClick={() => handleFollow()}
-                            >
+                        >
+                            { followLoading && <LoadingOverlay /> }
                             { accountUser?.followers.some((u) => u.followerId === user.id) ? "unfollow" : "follow" }
                         </button>
                     </div>
