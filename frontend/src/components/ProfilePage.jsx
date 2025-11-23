@@ -310,6 +310,7 @@ export function ProfilePage() {
                     border-1 border-indigo-900 dark:border-indigo-300
                     relative'
                 >
+                    { loading && <LoadingOverlay /> }
                     <div
                         className="flex justify-evenly
                         dark:text-indigo-300 text-indigo-900 text-sm font-semibold"
@@ -346,7 +347,7 @@ export function ProfilePage() {
                                         { accountUser?.followers.map((f) => (
                                             <div
                                                 key={f.follower.id}
-                                                className="flex justify-between items-center font-semibold"
+                                                className="flex justify-between items-center font-semibold text-sm"
                                             >
                                                 <div className="flex items-center gap-2">
                                                     <Avatar className="size-9 rounded-2xl border-1">
@@ -362,7 +363,7 @@ export function ProfilePage() {
                                                             dark:bg-zinc-200 bg-zinc-300
                                                             hover:dark:bg-slate-900 hover:bg-slate-700
                                                             active:dark:bg-zinc-700 active:bg-zinc-400 
-                                                            text-sm duration-150`}
+                                                            text-xs duration-150`}
                                                             onClick={() => {
                                                                 navigate(`/profile/${f.follower.id}`)
                                                             }}
@@ -381,7 +382,7 @@ export function ProfilePage() {
                                         { accountUser ? accountUser.following.length : 0 } following
                                     </p>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-[425px]">
+                                <DialogContent className="sm:max-w-[425px] gap-6">
                                     <DialogHeader>
                                         <DialogTitle>Following</DialogTitle>
                                         <Separator />
@@ -397,7 +398,7 @@ export function ProfilePage() {
                                         </div>
                                     </DialogHeader>
                                     <div 
-                                        className="flex flex-col gap-2 md:h-100 h-75 overflow-y-scroll"
+                                        className="flex flex-col gap-6 md:h-100 h-75 overflow-y-scroll"
                                     >
                                         { accountUser?.following.length == 0 && 
                                         <p className="text-center text-sm">
@@ -407,7 +408,7 @@ export function ProfilePage() {
                                         { accountUser?.following.map((f) => (
                                             <div
                                                 key={f.following.id}
-                                                className="flex justify-between items-center font-semibold"
+                                                className="flex justify-between items-center font-semibold text-sm"
                                             >
                                                 <div className="flex items-center gap-2">
                                                     <Avatar className="size-9 rounded-2xl border-1">
@@ -423,7 +424,7 @@ export function ProfilePage() {
                                                             dark:bg-zinc-200 bg-zinc-300
                                                             hover:dark:bg-slate-900 hover:bg-slate-700
                                                             active:dark:bg-zinc-700 active:bg-zinc-400 
-                                                            text-sm duration-150`}
+                                                            text-xs duration-150`}
                                                             onClick={() => {
                                                                 navigate(`/profile/${f.following.id}`)
                                                             }}
