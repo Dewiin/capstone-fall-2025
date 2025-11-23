@@ -142,7 +142,84 @@ async function followPost(req, res) {
     }
 }
 
+async function followersSearch(req, res) {
+    try {
+        const { userId } = req.params;
+        const { search_query } = req.query;
+
+        const userFollowers = await prisma.userFollow.findMany({
+            where: {
+                followingId: userId,
+                follower: {
+                    displayName: {
+                        contains: search_query,
+                        mode: "insensitive"
+                    }
+                }
+            },
+            include: {
+                follower: true,
+            }
+        });
+
+        if(userFollowers) {
+            return res.json({
+                status: 1,
+                userFollowers,
+            });
+        }
+        return res.json({
+            status: 0,
+        })
+    } catch (err) {
+        console.error(`Error handling search request for user's followers tab: `, err);
+        return res.json({
+            status: 0,
+        });
+    }
+}   
+
+async function followingSearch(req, res) {
+    try {
+        const { userId } = req.params;
+        const { search_query } = req.query;
+
+        const userFollowing = await prisma.userFollow.findMany({
+            where: {
+                followerId: userId,
+                following: {
+                    displayName: {
+                        contains: search_query,
+                        mode: "insensitive",
+                    }
+                }
+            },
+            include: {
+                following: true,
+            }
+        });
+
+        if(userFollowing) {
+            return res.json({
+                status: 1,
+                userFollowing,
+            });
+        }
+
+        return res.json({
+            status: 0,
+        })
+    } catch (err) {
+        console.error(`Error handling search request for user's following tab: `, err);
+        return res.json({
+            status: 0,
+        });
+    }
+}
+
 export const profileController = {
     profileGet,
-    followPost
+    followPost,
+    followersSearch,
+    followingSearch
 }

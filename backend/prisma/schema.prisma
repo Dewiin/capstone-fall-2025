@@ -55,6 +55,8 @@ model UserFollow {
   createdAt   DateTime @default(now())
 
   @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
 }
 
 // ---------- ENUMS ----------

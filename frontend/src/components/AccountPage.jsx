@@ -72,6 +72,8 @@ export function AccountPage() {
     const [ attemptCount, setAttemptCount ] = useState(0);
     const [ createdAt, setCreatedAt ] = useState(null);
     const [ accountUser, setAccountUser ] = useState(null);
+    const [ accountFollowers, setAccountFollowers ] = useState([]);
+    const [ accountFollowing, setAccountFollowing ] = useState([]);
     
     // frontend
     const [ accountTab, setAccountTab ] = useState("studySets");
@@ -116,6 +118,9 @@ export function AccountPage() {
 
             if(result.status == 1) {
                 setAccountUser(result.user);
+                setAccountFollowers(result.user.followers);
+                setAccountFollowing(result.user.following);
+
                 setFlashcardCount(result.flashcardCount);
                 setAttemptCount(result.attemptCount);
                 setCreatedAt(result.createdAt);
@@ -386,6 +391,39 @@ export function AccountPage() {
         }
     }
 
+    async function handleFollowSearch(val, tab) {
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/${accountUser.id}/search/${tab}?search_query=${val}`, {
+                method: "POST",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                toast.warning("There was an error getting a response", {
+                    description: "Please try again later."
+                });
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                if (tab === "followers") {
+                    setAccountFollowers(result.userFollowers); 
+                } else if(tab === "following") {
+                    setAccountFollowing(result.userFollowing);
+                }
+            } else {
+                toast.warning("There was an error!", {
+                    description: "Please try again later."
+                });
+            }
+
+        } catch (err) {
+            toast.warning("Error handling search request", {
+                description: "Please try again later."
+            });
+            console.error(`Error handling search request: `, err);
+        }
+    }
+
     return (
         <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 md:gap-16 gap-8 min-h-screen">
             <div className="flex flex-col gap-2">
@@ -482,7 +520,7 @@ export function AccountPage() {
                                         { accountUser ? accountUser.followers.length : 0 } followers
                                     </p>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-[425px]">
+                                <DialogContent className="sm:max-w-[425px] gap-6">
                                     <DialogHeader>
                                         <DialogTitle>Followers</DialogTitle>
                                         <Separator />
@@ -491,6 +529,20 @@ export function AccountPage() {
                                             <Input 
                                                 type="text" 
                                                 placeholder="Search" 
+                                                onChange={(e) => {
+                                                    if(e.target.value.trim().length === 0) {
+                                                        setAccountFollowers(accountUser.followers);
+                                                    } else {
+                                                        handleFollowSearch(e.target.value, "followers");
+                                                    }
+                                                }}
+                                                onClick={(e) => {
+                                                    if(e.target.value.trim().length === 0) {
+                                                        setAccountFollowers(accountUser.followers);
+                                                    } else {
+                                                        handleFollowSearch(e.target.value, "followers");
+                                                    }
+                                                }}
                                                 className="pl-10
                                                 dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
                                                 hover:dark:bg-slate-800 hover:bg-indigo-200 transition duration-50"
@@ -498,14 +550,19 @@ export function AccountPage() {
                                         </div>
                                     </DialogHeader>
                                     <div 
-                                        className="flex flex-col gap-2 md:h-100 h-75 overflow-y-scroll"
+                                        className="flex flex-col gap-6 md:h-100 h-75 overflow-y-scroll"
                                     >
                                         { accountUser?.followers.length == 0 && 
                                         <p className="text-center text-sm">
-                                            <i>{accountUser?.displayName}</i> currently has no followers.
+                                            You currently have no followers.
                                         </p>
                                         }
-                                        { accountUser?.followers.map((f) => (
+                                        { (accountFollowers.length === 0 && accountUser?.followers.length > 0) &&
+                                        <p className="text-center text-sm">
+                                            No results found.
+                                        </p>
+                                        }
+                                        { accountFollowers.map((f) => (
                                             <div
                                                 key={f.follower.id}
                                                 className="flex justify-between items-center font-semibold text-sm"
@@ -552,6 +609,20 @@ export function AccountPage() {
                                             <Input 
                                                 type="text" 
                                                 placeholder="Search" 
+                                                onChange={(e) => {
+                                                    if(e.target.value.trim().length === 0) {
+                                                        setAccountFollowing(accountUser.following);
+                                                    } else {
+                                                        handleFollowSearch(e.target.value, "following");
+                                                    }
+                                                }}
+                                                onClick={(e) => {
+                                                    if(e.target.value.trim().length === 0) {
+                                                        setAccountFollowing(accountUser.following);
+                                                    } else {
+                                                        handleFollowSearch(e.target.value, "following");
+                                                    }
+                                                }}
                                                 className="pl-10
                                                 dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
                                                 hover:dark:bg-slate-800 hover:bg-indigo-200 transition duration-50"
@@ -566,7 +637,12 @@ export function AccountPage() {
                                             <i>{accountUser?.displayName}</i> currently follows no profiles.
                                         </p>
                                         }
-                                        { accountUser?.following.map((f) => (
+                                        { (accountFollowing.length === 0 && accountUser?.following.length > 0) &&
+                                        <p className="text-center text-sm">
+                                            No results found.
+                                        </p>
+                                        }
+                                        { accountFollowing.map((f) => (
                                             <div
                                                 key={f.following.id}
                                                 className="flex justify-between items-center font-semibold text-sm"
