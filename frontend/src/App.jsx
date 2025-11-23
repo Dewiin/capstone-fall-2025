@@ -27,7 +27,7 @@ function App() {
         <Routes>
           <Route path="/" element={ <LandingPage /> } />
           <Route path="/account" element={ <AccountPage /> } />
-          <Route path="/profile/:userId?" element={ <ProfilePage /> } />
+          <Route path="/profile/:userId" element={ <ProfilePage /> } />
           <Route path="/study-set/:studySetId?" element={ <StudySetPage /> } />
           <Route path="/form/:method" element={ <Form /> } />
           <Route path="/generate" element={ <GeneratePage /> } />

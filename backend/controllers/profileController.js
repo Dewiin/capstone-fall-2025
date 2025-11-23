@@ -47,8 +47,16 @@ async function profileGet(req, res) {
                         user: true,
                     }
                 },
-                followers: true,
-                following: true,
+                followers: {
+                    include: {
+                        follower: true,
+                    }
+                },
+                following: {
+                    include: {
+                        following: true,
+                    }
+                },
             }
         })
 
@@ -109,6 +117,10 @@ async function followPost(req, res) {
             data: {
                 followerId: user.id,
                 followingId: followId,
+            },
+            include: {
+                follower: true,
+                following: true,
             }
         });
 

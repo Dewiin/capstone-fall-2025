@@ -21,10 +21,18 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose
+} from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton"
-// import { Spinner } from "@/components/ui/shadcn-io/spinner";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { Input } from "@/components/ui/input";
+import { FaHeart, FaRegHeart, FaSearch } from "react-icons/fa";
 import { CountingNumber } from "@/components/ui/shadcn-io/counting-number";
 import { toast } from "sonner";
 
@@ -59,7 +67,7 @@ export function ProfilePage() {
                 }
             }
         }
-    }, [authLoading]);
+    }, [authLoading, userId]);
 
     async function getProfile() {
         setLoading(true);
@@ -306,43 +314,153 @@ export function ProfilePage() {
                         className="flex justify-evenly
                         dark:text-indigo-300 text-indigo-900 text-sm font-semibold"
                         >
-                        <p>
-                            <CountingNumber 
-                                number={ accountUser ? accountUser.followers.length : 0 }
-                            /> 
-                            &nbsp;followers
-                        </p>
-                        <p>
-                            <CountingNumber 
-                                number={ accountUser ? accountUser.following.length : 0 }
-                            />
-                            &nbsp;following
-                        </p>
-                    </div>
-                    <div>
-                        <button
-                            className={`py-1 rounded-lg font-semibold w-full
-                            ${accountUser?.followers.some((u) => u.followerId === user.id) ? 
-                            `text-zinc-900 hover:text-zinc-300
-                            dark:bg-zinc-200 bg-zinc-300
-                            hover:dark:bg-slate-900 hover:bg-slate-700
-                            active:dark:bg-zinc-700 active:bg-zinc-400
-                            ` 
-                            : 
-                            `text-zinc-300 hover:text-zinc-900 
-                            dark:bg-slate-900 bg-slate-700
-                            hover:dark:bg-zinc-300 hover:bg-zinc-200
-                            active:dark:bg-zinc-700 active:bg-zinc-400
-                            ` } 
-                            text-sm
-                            duration-150`}
-                            onClick={() => handleFollow()}
-                        >
-                            { followLoading && <LoadingOverlay /> }
-                            { accountUser?.followers.some((u) => u.followerId === user.id) ? "unfollow" : "follow" }
-                        </button>
-                    </div>
-                </section>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <p className="cursor-pointer">
+                                        { accountUser ? accountUser.followers.length : 0 } followers
+                                    </p>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>Followers</DialogTitle>
+                                        <Separator />
+                                        <div className="relative">
+                                            <FaSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                            <Input 
+                                                type="text" 
+                                                placeholder="Search" 
+                                                className="pl-10
+                                                dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
+                                                hover:dark:bg-slate-800 hover:bg-indigo-200 transition duration-50"
+                                            />
+                                        </div>
+                                    </DialogHeader>
+                                    <div 
+                                        className="flex flex-col gap-2 md:h-100 h-75 overflow-y-scroll"
+                                    >
+                                        { accountUser?.followers.length == 0 && 
+                                        <p className="text-center text-sm">
+                                            <i>{accountUser?.displayName}</i> currently has no followers.
+                                        </p>
+                                        }
+                                        { accountUser?.followers.map((f) => (
+                                            <div
+                                                key={f.follower.id}
+                                                className="flex justify-between items-center font-semibold"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <Avatar className="size-9 rounded-2xl border-1">
+                                                        <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                                        <AvatarFallback>Icon</AvatarFallback>
+                                                    </Avatar>
+                                                    {f.follower.displayName}
+                                                </div>
+                                                <DialogClose asChild>
+                                                    <button
+                                                        className={`px-4 py-1 rounded-lg font-semibold w-fit h-fit
+                                                            text-zinc-900 hover:text-zinc-300
+                                                            dark:bg-zinc-200 bg-zinc-300
+                                                            hover:dark:bg-slate-900 hover:bg-slate-700
+                                                            active:dark:bg-zinc-700 active:bg-zinc-400 
+                                                            text-sm duration-150`}
+                                                            onClick={() => {
+                                                                navigate(`/profile/${f.follower.id}`)
+                                                            }}
+                                                            >
+                                                        View
+                                                    </button>
+                                                </DialogClose>
+                                            </div>
+                                        )) }
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <p className="cursor-pointer">
+                                        { accountUser ? accountUser.following.length : 0 } following
+                                    </p>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>Following</DialogTitle>
+                                        <Separator />
+                                        <div className="relative">
+                                            <FaSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                            <Input 
+                                                type="text" 
+                                                placeholder="Search" 
+                                                className="pl-10
+                                                dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
+                                                hover:dark:bg-slate-800 hover:bg-indigo-200 transition duration-50"
+                                            />
+                                        </div>
+                                    </DialogHeader>
+                                    <div 
+                                        className="flex flex-col gap-2 md:h-100 h-75 overflow-y-scroll"
+                                    >
+                                        { accountUser?.following.length == 0 && 
+                                        <p className="text-center text-sm">
+                                            <i>{accountUser?.displayName}</i> currently follows no profiles.
+                                        </p>
+                                        }
+                                        { accountUser?.following.map((f) => (
+                                            <div
+                                                key={f.following.id}
+                                                className="flex justify-between items-center font-semibold"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <Avatar className="size-9 rounded-2xl border-1">
+                                                        <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                                        <AvatarFallback>Icon</AvatarFallback>
+                                                    </Avatar>
+                                                    {f.following.displayName}
+                                                </div>
+                                                <DialogClose asChild>
+                                                    <button
+                                                        className={`px-4 py-1 rounded-lg font-semibold w-fit h-fit
+                                                            text-zinc-900 hover:text-zinc-300
+                                                            dark:bg-zinc-200 bg-zinc-300
+                                                            hover:dark:bg-slate-900 hover:bg-slate-700
+                                                            active:dark:bg-zinc-700 active:bg-zinc-400 
+                                                            text-sm duration-150`}
+                                                            onClick={() => {
+                                                                navigate(`/profile/${f.following.id}`)
+                                                            }}
+                                                    >
+                                                        View
+                                                    </button>
+                                                </DialogClose>
+                                            </div>
+                                        )) }
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                        <div>
+                            <button
+                                className={`py-1 rounded-lg font-semibold w-full
+                                ${accountUser?.followers.some((u) => u.followerId === user.id) ? 
+                                `text-zinc-900 hover:text-zinc-300
+                                dark:bg-zinc-200 bg-zinc-300
+                                hover:dark:bg-slate-900 hover:bg-slate-700
+                                active:dark:bg-zinc-700 active:bg-zinc-400
+                                ` 
+                                : 
+                                `text-zinc-300 hover:text-zinc-900 
+                                dark:bg-slate-900 bg-slate-700
+                                hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                active:dark:bg-zinc-700 active:bg-zinc-400
+                                ` } 
+                                text-sm
+                                duration-150`}
+                                onClick={() => handleFollow()}
+                            >
+                                { followLoading && <LoadingOverlay /> }
+                                { accountUser?.followers.some((u) => u.followerId === user.id) ? "unfollow" : "follow" }
+                            </button>
+                        </div>
+                    </section>
             </div>
 
             {/* Second Section */}
