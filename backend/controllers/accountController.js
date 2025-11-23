@@ -44,6 +44,16 @@ async function accountGet(req, res) {
                         favoritedBy: true,
                     },
                 },
+                followers: {
+                    include: {
+                        follower: true,
+                    }
+                },
+                following: {
+                    include: {
+                        following: true,
+                    }
+                },
             }
         })
 
