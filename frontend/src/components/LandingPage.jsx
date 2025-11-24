@@ -48,7 +48,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Separator className="max-w-1/2" />
 
       {/* Features Section */}
       <section 
@@ -164,7 +163,7 @@ export function LandingPage() {
         </div>
       </section>
 
-   <Separator className="max-w-1/2" /> 
+      <Separator className="max-w-1/2" /> 
 
       {/* Team Section */}
       <section 
@@ -241,6 +240,96 @@ export function LandingPage() {
         </p>
       </section> 
 
+      <Separator className="max-w-1/2" /> 
+
+      {/* FAQ Section */}
+      <section 
+        className="w-full max-w-4xl mx-auto px-8 py-12 my-12 text-left"
+        id="faqs"
+      >
+          <h2 className="text-4xl font-bold mb-8 text-center">FAQs</h2>
+
+          <Accordion type="single" collapsible className="w-full space-y-4">
+
+            {/* General */}
+            <AccordionItem value="general">
+              <AccordionTrigger className="text-2xl font-semibold">
+                General
+              </AccordionTrigger>
+              <AccordionContent className="space-y-4 mt-4">
+
+                <div>
+                  <h4 className="font-semibold text-lg">Do I need an account to get started?</h4>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    You can browse the landing page without an account, but you'll need one
+                    to save, generate, and track your study materials.
+                  </p>
+                </div>
+
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* How It Works */}
+            <AccordionItem value="how-it-works">
+              <AccordionTrigger className="text-2xl font-semibold">
+                How It Works
+              </AccordionTrigger>
+              <AccordionContent className="space-y-4 mt-4">
+
+                <div>
+                  <h4 className="font-semibold text-lg">How do I upload my notes?</h4>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    You can upload PDF files or text directly to the generate page after logging in.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-lg">What file types does Brainstorm support?</h4>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Brainstorm supports PDF fils.
+                  </p>
+                </div>
+
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Features & Tools */}
+            <AccordionItem value="features-tools">
+              <AccordionTrigger className="text-2xl font-semibold">
+                Features and Tools
+              </AccordionTrigger>
+              <AccordionContent className="space-y-4 mt-4">
+
+                <div>
+                  <h4 className="font-semibold text-lg">Can I share my study sets with others?</h4>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Yes! Other users can view your study sets on the explore page or search them up if you make them public.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-lg">
+                    Can I edit the study guides or flashcards after they’re generated?
+                  </h4>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Yes, you can edit any generated content and save your changes.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-lg">
+                    Can I explore or save study sets created by other users?
+                  </h4>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Yes. You can browse public study sets and save your favorites to study later.
+                  </p>
+                </div>
+
+              </AccordionContent>
+            </AccordionItem>
+
+          </Accordion>
+        </section>
       <Footer />
     </div>
   );
