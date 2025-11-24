@@ -1,10 +1,17 @@
 import { useAuth } from './contexts/Contexts';
-import { FaBook, FaBrain, FaLightbulb } from "react-icons/fa";
+import { FaBook, FaBrain, FaLightbulb, FaCompass } from "react-icons/fa";
 import { RiGeminiFill } from "react-icons/ri";
 import { FlipButton } from '@/components/ui/shadcn-io/flip-button';
 import { Separator } from '@/components/ui/separator';
 import { Footer } from './Footer';
 import { useNavigate } from 'react-router-dom';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
+
 
 export function LandingPage() {
   const { user } = useAuth();
@@ -41,7 +48,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Separator className="max-w-1/2" />
 
       {/* Features Section */}
       <section 
@@ -50,7 +56,7 @@ export function LandingPage() {
       >
         <h2 className="text-4xl font-bold mb-10">Features</h2>
 
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 justify-items-center">
           <div className="flex flex-col items-center gap-4 max-w-xs">
             <FaBook className="text-5xl text-indigo-500 dark:text-indigo-400" />
             <h3 className="text-xl font-semibold dark:text-gray-100">Generate Study Guides</h3>
@@ -74,10 +80,18 @@ export function LandingPage() {
               Keep all your study materials neatly organized and accessible anytime.
             </p>
           </div>
+
+          <div className="flex flex-col items-center gap-4 max-w-xs">
+            <FaCompass className="text-5xl text-indigo-500 dark:text-indigo-400" />
+            <h3 className="text-xl font-semibold dark:text-gray-100">Explore Study Sets</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Browse study sets created by others and save your favorites to learn from.
+            </p>
+          </div>
         </div>
       </section>
 
-      <Separator className="max-w-1/2" /> 
+      <Separator className="max-w-1/2" />
 
       {/* About Section */}
       <section 
@@ -102,8 +116,52 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Separator className="max-w-1/2" /> 
+      <Separator className="max-w-1/2" />
 
+
+      {/* How It Works Section */}
+      <section 
+        className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12" 
+        id="how-it-works"
+      >
+        <h2 className="text-4xl font-bold mb-10">How It Works</h2>
+
+        <div className="flex flex-col md:flex-row justify-center items-start gap-10">
+          {/* Step 1 */}
+          <div className="flex flex-col items-center max-w-xs text-center">
+            <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 rounded-full p-6 mb-4">
+              <FaBook className="text-4xl" />
+            </div>
+            <h3 className="text-xl font-semibold dark:text-gray-100 mb-2">1. Upload Notes</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Upload your lecture notes as PDFs, or text files to Brainstorm in seconds.
+            </p>
+          </div>
+
+          {/* Step 2 */}
+          <div className="flex flex-col items-center max-w-xs text-center">
+            <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 rounded-full p-6 mb-4">
+              <FaLightbulb className="text-4xl" />
+            </div>
+            <h3 className="text-xl font-semibold dark:text-gray-100 mb-2">2. AI Generates Guides</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Brainstorm’s AI creates structured study guides and flashcards.
+            </p>
+          </div>
+
+          {/* Step 3 */}
+          <div className="flex flex-col items-center max-w-xs text-center">
+            <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 rounded-full p-6 mb-4">
+              <FaBrain className="text-4xl" />
+            </div>
+            <h3 className="text-xl font-semibold dark:text-gray-100 mb-2">3. Study Smarter</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Review your AI-generated study materials anytime to learn faster and retain more.
+            </p>
+          </div>
+        </div>
+      </section>
+      
     {/* Disclaimer Section */}
     <section 
       className="w-full max-w-4xl mx-auto px-8 py-10 my-12 bg-indigo-50 dark:bg-indigo-950 rounded-3xl shadow-sm"
@@ -139,6 +197,97 @@ export function LandingPage() {
 
 
       <Separator className="max-w-1/2" /> 
+
+    {/* FAQ Section */}
+    <section 
+      className="w-full max-w-4xl mx-auto px-8 py-12 my-12 text-left"
+      id="faqs"
+    >
+      <h2 className="text-4xl font-bold mb-8 text-center">FAQs</h2>
+
+      <Accordion type="single" collapsible className="w-full space-y-4">
+
+        {/* General */}
+        <AccordionItem value="general">
+          <AccordionTrigger className="text-2xl font-semibold">
+            General
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 mt-4">
+
+            <div>
+              <h4 className="font-semibold text-lg">Do I need an account to get started?</h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                You can browse the landing page without an account, but you'll need one
+                to save, generate, and track your study materials.
+              </p>
+            </div>
+
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* How It Works */}
+        <AccordionItem value="how-it-works">
+          <AccordionTrigger className="text-2xl font-semibold">
+            How It Works
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 mt-4">
+
+            <div>
+              <h4 className="font-semibold text-lg">How do I upload my notes?</h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                You can upload PDF files or text directly to the generate page after logging in.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-lg">What file types does Brainstorm support?</h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                Brainstorm supports PDF fils.
+              </p>
+            </div>
+
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Features & Tools */}
+        <AccordionItem value="features-tools">
+          <AccordionTrigger className="text-2xl font-semibold">
+            Features and Tools
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 mt-4">
+
+            <div>
+              <h4 className="font-semibold text-lg">Can I share my study sets with others?</h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                Yes! Other users can view your study sets on the explore page or search them up if you make them public.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-lg">
+                Can I edit the study guides or flashcards after they’re generated?
+              </h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                Yes, you can edit any generated content and save your changes.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-lg">
+                Can I explore or save study sets created by other users?
+              </h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                Yes. You can browse public study sets and save your favorites to study later.
+              </p>
+            </div>
+
+          </AccordionContent>
+        </AccordionItem>
+
+      </Accordion>
+    </section>
+
+   <Separator className="max-w-1/2" /> 
 
       {/* Team Section */}
       <section 
