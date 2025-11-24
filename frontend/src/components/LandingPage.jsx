@@ -5,6 +5,13 @@ import { FlipButton } from '@/components/ui/shadcn-io/flip-button';
 import { Separator } from '@/components/ui/separator';
 import { Footer } from './Footer';
 import { useNavigate } from 'react-router-dom';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
+
 
 export function LandingPage() {
   const { user } = useAuth();
@@ -86,6 +93,7 @@ export function LandingPage() {
       </section>
 
       <Separator className="max-w-1/2" />
+      <Separator className="max-w-1/2" />
 
       {/* About Section */}
       <section 
@@ -156,7 +164,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Separator className="max-w-1/2" /> 
+   <Separator className="max-w-1/2" /> 
 
       {/* Team Section */}
       <section 
