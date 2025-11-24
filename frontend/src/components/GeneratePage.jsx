@@ -160,6 +160,40 @@ export function GeneratePage() {
         <div className="flex flex-col gap-8 h-full w-full items-center mt-24">
             { loading && <LoadingOverlay className="fixed" /> }
             <p className="font-bold text-2xl text-center">Generate.</p>
+
+            {/* Disclaimer Section */}
+            <section 
+            className="w-full max-w-4xl mx-auto p-6 bg-indigo-50 dark:bg-indigo-950 rounded-3xl shadow-sm"
+            id="disclaimer"
+            >
+            <h2 className="text-xl font-bold mb-6 text-center dark:text-gray-100">Powered by Gemini</h2>
+
+            <div className="text-left text-sm">
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                Brainstorm uses <strong>Google’s Gemini AI</strong> to enhance your studying experience. 
+                Please use this tool responsibly. It is designed to help you learn and study more effectively.
+                </p>
+
+                <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                <li>Don’t use Brainstorm or Gemini for harmful, offensive, or abusive content.</li>
+                <li>Use this platform for studying, learning, and educational purposes only.</li>
+                <li>Be mindful that AI responses may not always be 100% accurate.</li>
+                </ul>
+
+                <p className="text-gray-700 dark:text-gray-300">
+                To learn more about Gemini, visit{" "}
+                <a 
+                    href="https://gemini.google/about/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-indigo-500 hover:underline"
+                >
+                    Google Gemini
+                </a>.
+                </p>
+            </div>
+            </section>
+
             <Tabs 
                 defaultValue={uploadType} 
                 className="md:w-4xl w-sm"

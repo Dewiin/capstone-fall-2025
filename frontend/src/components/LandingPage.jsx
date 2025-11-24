@@ -43,42 +43,6 @@ export function LandingPage() {
 
       <Separator className="max-w-1/2" />
 
-      {/* Features Section
-      <section 
-        className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12" 
-        id='features'
-      >
-        <h2 className="text-4xl font-bold mb-10">Features</h2>
-
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-10">
-          <div className="flex flex-col items-center gap-4 max-w-xs">
-            <FaBook className="text-5xl text-indigo-500 dark:text-indigo-400" />
-            <h3 className="text-xl font-semibold dark:text-gray-100">Generate Study Guides</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Quickly turn your notes into structured study guides.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center gap-4 max-w-xs">
-            <RiGeminiFill className="text-5xl text-indigo-500 dark:text-indigo-400" />
-            <h3 className="text-xl font-semibold dark:text-gray-100">AI-Powered Learning</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Get intelligent suggestions to help remember key concepts faster.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center gap-4 max-w-xs">
-            <FaLightbulb className="text-5xl text-indigo-500 dark:text-indigo-400" />
-            <h3 className="text-xl font-semibold dark:text-gray-100">Organize Smarter</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Keep all your study materials neatly organized and accessible anytime.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <Separator className="max-w-1/2" />  */}
-
       {/* Features Section */}
       <section 
         className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12" 
@@ -191,41 +155,6 @@ export function LandingPage() {
           </div>
         </div>
       </section>
-      
-
-    {/* Disclaimer Section */}
-    <section 
-      className="w-full max-w-4xl mx-auto px-8 py-10 my-12 bg-indigo-50 dark:bg-indigo-950 rounded-3xl shadow-sm"
-      id="disclaimer"
-    >
-      <h2 className="text-3xl font-bold mb-6 text-center dark:text-gray-100">Powered by Gemini</h2>
-
-      <div className="text-left">
-        <p className="text-gray-700 dark:text-gray-300 text-md leading-relaxed mb-4">
-          Brainstorm uses <strong>Google’s Gemini AI</strong> to enhance your studying experience. 
-          Please use this tool responsibly. It is designed to help you learn and study more effectively.
-        </p>
-
-        <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 text-md leading-relaxed mb-4">
-          <li>Don’t use Brainstorm or Gemini for harmful, offensive, or abusive content.</li>
-          <li>Use this platform for studying, learning, and educational purposes only.</li>
-          <li>Be mindful that AI responses may not always be 100% accurate.</li>
-        </ul>
-
-        <p className="text-gray-700 dark:text-gray-300 text-md">
-          To learn more about Gemini, visit{" "}
-          <a 
-            href="https://gemini.google/about/" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="text-indigo-500 hover:underline"
-          >
-            Google Gemini
-          </a>.
-        </p>
-      </div>
-    </section>
-
 
       <Separator className="max-w-1/2" /> 
 
