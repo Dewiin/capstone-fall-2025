@@ -47,6 +47,16 @@ async function profileGet(req, res) {
                         user: true,
                     }
                 },
+                followers: {
+                    include: {
+                        follower: true,
+                    }
+                },
+                following: {
+                    include: {
+                        following: true,
+                    }
+                },
             }
         })
 
@@ -77,6 +87,139 @@ async function profileGet(req, res) {
     }
 }
 
+async function followPost(req, res) {
+    try {
+        const user = req.user;
+        const { followId } = req.params;
+
+        const existing = await prisma.userFollow.findUnique({
+            where: {
+                followerId_followingId: {
+                    followerId: user.id,
+                    followingId: followId
+                }
+            }
+        });
+
+        if(existing) {
+            await prisma.userFollow.delete({
+                where: {
+                    id: existing.id
+                }
+            });
+            return res.json({
+                status: 1,
+                action: "unfollow"
+            })
+        }
+
+        const userFollow = await prisma.userFollow.create({
+            data: {
+                followerId: user.id,
+                followingId: followId,
+            },
+            include: {
+                follower: true,
+                following: true,
+            }
+        });
+
+        if(userFollow) {
+            return res.json({
+                status: 1,
+                action: "follow",
+                userFollow
+            });
+        }
+        return res.json({
+            status: 0,
+        });
+    } catch (err) {
+        console.error(`Error submitting follow request: `, err);
+        return res.json({
+            status: 0,
+        });
+    }
+}
+
+async function followersSearch(req, res) {
+    try {
+        const { userId } = req.params;
+        const { search_query } = req.query;
+
+        const userFollowers = await prisma.userFollow.findMany({
+            where: {
+                followingId: userId,
+                follower: {
+                    displayName: {
+                        contains: search_query,
+                        mode: "insensitive"
+                    }
+                }
+            },
+            include: {
+                follower: true,
+            }
+        });
+
+        if(userFollowers) {
+            return res.json({
+                status: 1,
+                userFollowers,
+            });
+        }
+        return res.json({
+            status: 0,
+        })
+    } catch (err) {
+        console.error(`Error handling search request for user's followers tab: `, err);
+        return res.json({
+            status: 0,
+        });
+    }
+}   
+
+async function followingSearch(req, res) {
+    try {
+        const { userId } = req.params;
+        const { search_query } = req.query;
+
+        const userFollowing = await prisma.userFollow.findMany({
+            where: {
+                followerId: userId,
+                following: {
+                    displayName: {
+                        contains: search_query,
+                        mode: "insensitive",
+                    }
+                }
+            },
+            include: {
+                following: true,
+            }
+        });
+
+        if(userFollowing) {
+            return res.json({
+                status: 1,
+                userFollowing,
+            });
+        }
+
+        return res.json({
+            status: 0,
+        })
+    } catch (err) {
+        console.error(`Error handling search request for user's following tab: `, err);
+        return res.json({
+            status: 0,
+        });
+    }
+}
+
 export const profileController = {
     profileGet,
+    followPost,
+    followersSearch,
+    followingSearch
 }

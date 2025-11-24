@@ -21,7 +21,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { toast } from "sonner";
-import { FaBook, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaBook, FaHeart, FaRegHeart, FaSearch } from "react-icons/fa";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdScience, MdComputer, MdMiscellaneousServices } from "react-icons/md";
@@ -217,31 +217,34 @@ export function ExplorePage() {
         >
           Search
         </p>
-        <Input 
-          type="text" 
-          placeholder="Search for a study set..." 
-          className="
-          dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
-          hover:dark:bg-slate-800 hover:bg-indigo-200 transition duration-50"
-          onChange={(e) => {
-            if(e.target.value.trim().length > 0) {
-              handleSearch(e.target.value);
-              setContentTitle(e.target.value.trim());
-            } else {
-              getCategories();
-              setContentTitle("Popular Study Sets");
-            }
-          }}
-          onClick={(e) => {
-            if(e.target.value.trim().length === 0) {
-              getCategories();
-              setContentTitle("Popular Study Sets");
-            } else {
-              handleSearch(e.target.value);
-              setContentTitle(e.target.value.trim());
-            }
-          }}
-        />
+        <div className="relative">
+          <FaSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input 
+            type="text" 
+            placeholder="Search for a study set..." 
+            className="pl-10
+            dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
+            hover:dark:bg-slate-800 hover:bg-indigo-200 transition duration-50"
+            onChange={(e) => {
+              if(e.target.value.trim().length > 0) {
+                handleSearch(e.target.value);
+                setContentTitle(e.target.value.trim());
+              } else {
+                getCategories();
+                setContentTitle("Popular Study Sets");
+              }
+            }}
+            onClick={(e) => {
+              if(e.target.value.trim().length === 0) {
+                getCategories();
+                setContentTitle("Popular Study Sets");
+              } else {
+                handleSearch(e.target.value);
+                setContentTitle(e.target.value.trim());
+              }
+            }}
+          />
+        </div>
       </div>
 
       {/* Categories */}

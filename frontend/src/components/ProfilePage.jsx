@@ -21,9 +21,18 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose
+} from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton"
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { Input } from "@/components/ui/input";
+import { FaHeart, FaRegHeart, FaSearch } from "react-icons/fa";
 import { CountingNumber } from "@/components/ui/shadcn-io/counting-number";
 import { toast } from "sonner";
 
@@ -34,6 +43,8 @@ export function ProfilePage() {
 
     // backend
     const [ accountUser, setAccountUser ] = useState(null);
+    const [ accountFollowers, setAccountFollowers ] = useState([]);
+    const [ accountFollowing, setAccountFollowing ] = useState([]);
     const [ flashcardCount, setFlashcardCount ] = useState(0);
     const [ attemptCount, setAttemptCount ] = useState(0);
     const [ createdAt, setCreatedAt ] = useState(null);
@@ -41,6 +52,7 @@ export function ProfilePage() {
     // frontend
     const [ loading, setLoading ] = useState(false);
     const [ singleLoading, setSingleLoading ] = useState(null);
+    const [ followLoading, setFollowLoading ] = useState(false);
     const [ accountTab, setAccountTab ] = useState("studySets");
     const navigate = useNavigate();
     const { userId } = useParams();
@@ -57,7 +69,7 @@ export function ProfilePage() {
                 }
             }
         }
-    }, [authLoading]);
+    }, [authLoading, userId]);
 
     async function getProfile() {
         setLoading(true);
@@ -75,6 +87,9 @@ export function ProfilePage() {
 
             if(result.status == 1) {
                 setAccountUser(result.user);
+                setAccountFollowers(result.user.followers);
+                setAccountFollowing(result.user.following);
+
                 setFlashcardCount(result.flashcardCount);
                 setAttemptCount(result.attemptCount);
                 setCreatedAt(result.createdAt);
@@ -155,85 +170,385 @@ export function ProfilePage() {
         }
     }
 
+    async function handleFollow() {
+        setFollowLoading(true);
+
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/profile/follow/${userId}`, {
+                method: "POST",
+                credentials: "include"
+            });
+            if(!response.ok) {
+                toast.warning("There was an error getting a response", {
+                    description: "Please try again later."
+                });
+                console.error(`Error getting a response for the follow request: `, response.status);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                if(result.action === "follow") {
+                    setAccountUser((prev) => ({
+                        ...prev,
+                        followers: [
+                            ...prev.followers,
+                            result.userFollow,
+                        ]
+                    }));
+                    setAccountFollowers((prev) => ([
+                        ...prev,
+                        result.userFollow,
+                    ]));
+                    toast.success("Successful follow!", {
+                        description: 
+                        <>
+                            You followed <i>{accountUser.displayName}</i>
+                        </>
+                    });
+                } else {
+                    setAccountUser((prev) => ({
+                        ...prev,
+                        followers: prev.followers.filter((u) => u.followerId !== user.id)
+                    }));
+                    setAccountFollowers((prev) => (
+                        prev.filter((u) => u.followerId !== user.id)
+                    ));
+                    toast.error("Successful unfollow!", {
+                        description: 
+                        <>
+                            You unfollowed <i>{accountUser.displayName}</i>
+                        </>
+                    });
+                }
+            } else {
+                toast.warning("There was an error!", {
+                    description: "Please try again later."
+                });
+            }
+        } catch (err) {
+            toast.warning("There was an error!", {
+                description: "Please try again later."
+            });
+            console.error(`Error handling the follow request: `, err);
+            return;
+        } finally {
+            setFollowLoading(false);
+        }
+    }
+
+    async function handleFollowSearch(val, tab) {
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/profile/${userId}/search/${tab}?search_query=${val}`, {
+                method: "POST",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                toast.warning("There was an error getting a response", {
+                    description: "Please try again later."
+                });
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                if (tab === "followers") {
+                    setAccountFollowers(result.userFollowers); 
+                } else if(tab === "following") {
+                    setAccountFollowing(result.userFollowing);
+                }
+            } else {
+                toast.warning("There was an error!", {
+                    description: "Please try again later."
+                });
+            }
+
+        } catch (err) {
+            toast.warning("Error handling search request", {
+                description: "Please try again later."
+            });
+            console.error(`Error handling search request: `, err);
+        }
+    }
+
     return (
-        <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 md:gap-16 gap-8 min-h-screen">
-            {/* First Section */}
-            <section className='flex md:flex-row flex-col gap-8 p-4 rounded-lg md:h-30 select-none
-                bg-indigo-200 dark:bg-slate-950 
-                border-1 border-indigo-900 dark:border-indigo-300'
-            >
-                {/* Avatar/Name */}
-                <div className="flex gap-4 items-center md:max-w-1/4 text-indigo-900 dark:text-indigo-200">
-                    <Avatar className="size-20 rounded-2xl">
-                        <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
-                        <AvatarFallback>Icon</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col gap-2 truncate">
-                        { loading && 
-                        <>
-                            <Skeleton className="h-4 w-[150px]" />
-                            <Skeleton className="h-4 w-[100px]" />
-                        </>
-                        }
-                        { !loading && 
-                        <>
-                            <p className="text-3xl font-semibold truncate">
-                                {accountUser?.displayName}
-                            </p>
-                            <p className="text-xs">
-                                Joined {createdAt ? createdAt : "..."}
-                            </p>
-                        </>
-                        }
+        <div className="flex flex-col md:mx-24 md:mt-24 mx-8 mt-8 mb-0 gap-2 min-h-screen">
+            <div className="flex flex-col gap-2 h-fit">
+                {/* First Section */}
+                <section className='flex md:flex-row flex-col md:gap-8 gap-4 p-4 rounded-lg md:h-30 w-full select-none
+                    bg-indigo-200 dark:bg-slate-950 
+                    border-1 border-indigo-900 dark:border-indigo-300'
+                >
+                    {/* Avatar/Name */}
+                    <div className="flex gap-4 items-center md:max-w-1/3 text-indigo-900 dark:text-indigo-200">
+                        <Avatar className="size-20 rounded-2xl">
+                            <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                            <AvatarFallback>Icon</AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col gap-2 truncate">
+                            { loading && 
+                            <>
+                                <Skeleton className="h-4 w-[150px]" />
+                                <Skeleton className="h-4 w-[100px]" />
+                            </>
+                            }
+                            { !loading && 
+                            <>
+                                <p className="text-3xl font-semibold truncate">
+                                    {accountUser?.displayName}
+                                </p>
+                                <p className="text-xs">
+                                    Joined {createdAt ? createdAt : "..."}
+                                </p>
+                            </>
+                            }
+                        </div>
                     </div>
-                </div>
 
-                {/* Divider */}
-                <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl border-indigo-300" />
+                    {/* Divider */}
+                    <Separator orientation="vertical" className="hidden md:block border-3 rounded-xl border-indigo-300" />
 
-                {/* Personal Stats */}
-                <div className=" flex-1 grid md:grid-cols-4 grid-cols-1 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
-                    <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
-                            study sets created
-                        </p>
-                        <CountingNumber 
-                            number={ accountUser ? accountUser.studySets.length : 0 }
-                            className="text-4xl font-semibold"
-                        />
-                    </span>
-                    <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
-                            flash cards created
-                        </p>
-                        <CountingNumber 
-                            number={ flashcardCount }
-                            className="text-4xl font-semibold"
-                        />
-                    </span>
-                    <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
-                            quiz attempts recorded
-                        </p>
-                        <CountingNumber 
-                            number={ attemptCount }
-                            className="text-4xl font-semibold"
-                        />
-                    </span>
-                    <span>
-                        <p className="text-sm dark:text-indigo-300 text-indigo-900">
-                            favorites added
-                        </p>
-                        <CountingNumber 
-                            number={ accountUser ? accountUser.favorites.length : 0 }
-                            className="text-4xl font-semibold"
-                        />
-                    </span>
-                </div>
-            </section>
+                    {/* Personal Stats */}
+                    <div className=" flex-1 grid md:grid-cols-4 grid-cols-2 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
+                        <span>
+                            <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                study sets
+                            </p>
+                            <CountingNumber 
+                                number={ accountUser ? accountUser.studySets.length : 0 }
+                                className="md:text-4xl text-2xl font-semibold"
+                                />
+                        </span>
+                        <span>
+                            <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                flash cards
+                            </p>
+                            <CountingNumber 
+                                number={ flashcardCount }
+                                className="md:text-4xl text-2xl font-semibold"
+                                />
+                        </span>
+                        <span>
+                            <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                quiz attempts
+                            </p>
+                            <CountingNumber 
+                                number={ attemptCount }
+                                className="md:text-4xl text-2xl font-semibold"
+                                />
+                        </span>
+                        <span> 
+                            <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                favorites added
+                            </p>
+                            <CountingNumber 
+                                number={ accountUser ? accountUser.favorites.length : 0 }
+                                className="md:text-4xl text-2xl font-semibold"
+                                />
+                        </span>
+                    </div>
+                </section>
+
+                {/* Followers Section */}
+                <section
+                    className='p-4 rounded-lg min-w-55 max-w-fit select-none flex flex-col gap-4 
+                    bg-indigo-200 dark:bg-slate-950 
+                    border-1 border-indigo-900 dark:border-indigo-300
+                    relative'
+                >
+                    { loading && <LoadingOverlay /> }
+                    <div
+                        className="flex justify-evenly
+                        dark:text-indigo-300 text-indigo-900 text-sm font-semibold"
+                        >
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <p className="cursor-pointer">
+                                        { accountUser ? accountUser.followers.length : 0 } followers
+                                    </p>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px] gap-6">
+                                    <DialogHeader>
+                                        <DialogTitle>Followers</DialogTitle>
+                                        <Separator />
+                                        <div className="relative">
+                                            <FaSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                            <Input 
+                                                type="text" 
+                                                placeholder="Search" 
+                                                onChange={(e) => {
+                                                    if(e.target.value.trim().length === 0) {
+                                                        setAccountFollowers(accountUser.followers);
+                                                    } else {
+                                                        handleFollowSearch(e.target.value, "followers");
+                                                    }
+                                                }}
+                                                onClick={(e) => {
+                                                    if(e.target.value.trim().length === 0) {
+                                                        setAccountFollowers(accountUser.followers);
+                                                    } else {
+                                                        handleFollowSearch(e.target.value, "followers");
+                                                    }
+                                                }}
+                                                className="pl-10
+                                                dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
+                                                hover:dark:bg-slate-800 hover:bg-indigo-200 transition duration-50"
+                                            />
+                                        </div>
+                                    </DialogHeader>
+                                    <div 
+                                        className="flex flex-col gap-6 md:h-100 h-75 overflow-y-scroll"
+                                    >
+                                        { accountUser?.followers.length == 0 && 
+                                        <p className="text-center text-sm">
+                                            <i>{accountUser?.displayName}</i> currently has no followers.
+                                        </p>
+                                        }
+                                        { (accountFollowers.length === 0 && accountUser?.followers.length > 0) &&
+                                        <p className="text-center text-sm">
+                                            No results found.
+                                        </p>
+                                        }
+                                        { accountFollowers.map((f) => (
+                                            <div
+                                                key={f.follower.id}
+                                                className="flex justify-between items-center font-semibold text-sm"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <Avatar className="size-9 rounded-2xl border-1">
+                                                        <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                                        <AvatarFallback>Icon</AvatarFallback>
+                                                    </Avatar>
+                                                    {f.follower.displayName}
+                                                </div>
+                                                <DialogClose asChild>
+                                                    <button
+                                                        className={`px-4 py-1 rounded-lg font-semibold w-fit h-fit
+                                                            text-zinc-900 hover:text-zinc-300
+                                                            dark:bg-zinc-200 bg-zinc-300
+                                                            hover:dark:bg-slate-900 hover:bg-slate-700
+                                                            active:dark:bg-zinc-700 active:bg-zinc-400 
+                                                            text-xs duration-150`}
+                                                            onClick={() => {
+                                                                navigate(`/profile/${f.follower.id}`)
+                                                            }}
+                                                            >
+                                                        View
+                                                    </button>
+                                                </DialogClose>
+                                            </div>
+                                        )) }
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <p className="cursor-pointer">
+                                        { accountUser ? accountUser.following.length : 0 } following
+                                    </p>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px] gap-6">
+                                    <DialogHeader>
+                                        <DialogTitle>Following</DialogTitle>
+                                        <Separator />
+                                        <div className="relative">
+                                            <FaSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                            <Input 
+                                                type="text" 
+                                                placeholder="Search" 
+                                                onChange={(e) => {
+                                                    if(e.target.value.trim().length === 0) {
+                                                        setAccountFollowing(accountUser.following);
+                                                    } else {
+                                                        handleFollowSearch(e.target.value, "following");
+                                                    }
+                                                }}
+                                                onClick={(e) => {
+                                                    if(e.target.value.trim().length === 0) {
+                                                        setAccountFollowing(accountUser.following);
+                                                    } else {
+                                                        handleFollowSearch(e.target.value, "following");
+                                                    }
+                                                }}
+                                                className="pl-10
+                                                dark:bg-slate-900 bg-[rgba(255,255,255,0.4)] border-none
+                                                hover:dark:bg-slate-800 hover:bg-indigo-200 transition duration-50"
+                                            />
+                                        </div>
+                                    </DialogHeader>
+                                    <div 
+                                        className="flex flex-col gap-6 md:h-100 h-75 overflow-y-scroll"
+                                    >
+                                        { accountUser?.following.length == 0 && 
+                                        <p className="text-center text-sm">
+                                            <i>{accountUser?.displayName}</i> currently follows no profiles.
+                                        </p>
+                                        }
+                                        { (accountFollowing.length === 0 && accountUser?.following.length > 0) &&
+                                        <p className="text-center text-sm">
+                                            No results found.
+                                        </p>
+                                        }
+                                        { accountFollowing.map((f) => (
+                                            <div
+                                                key={f.following.id}
+                                                className="flex justify-between items-center font-semibold text-sm"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <Avatar className="size-9 rounded-2xl border-1">
+                                                        <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                                        <AvatarFallback>Icon</AvatarFallback>
+                                                    </Avatar>
+                                                    {f.following.displayName}
+                                                </div>
+                                                <DialogClose asChild>
+                                                    <button
+                                                        className={`px-4 py-1 rounded-lg font-semibold w-fit h-fit
+                                                            text-zinc-900 hover:text-zinc-300
+                                                            dark:bg-zinc-200 bg-zinc-300
+                                                            hover:dark:bg-slate-900 hover:bg-slate-700
+                                                            active:dark:bg-zinc-700 active:bg-zinc-400 
+                                                            text-xs duration-150`}
+                                                            onClick={() => {
+                                                                navigate(`/profile/${f.following.id}`)
+                                                            }}
+                                                    >
+                                                        View
+                                                    </button>
+                                                </DialogClose>
+                                            </div>
+                                        )) }
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                        <div>
+                            <button
+                                className={`py-1 rounded-lg font-semibold w-full
+                                ${accountUser?.followers.some((u) => u.followerId === user.id) ? 
+                                `text-zinc-900 hover:text-zinc-300
+                                dark:bg-zinc-200 bg-zinc-300
+                                hover:dark:bg-slate-900 hover:bg-slate-700
+                                active:dark:bg-zinc-700 active:bg-zinc-400
+                                ` 
+                                : 
+                                `text-zinc-300 hover:text-zinc-900 
+                                dark:bg-slate-900 bg-slate-700
+                                hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                active:dark:bg-zinc-700 active:bg-zinc-400
+                                ` } 
+                                text-sm
+                                duration-150`}
+                                onClick={() => handleFollow()}
+                            >
+                                { followLoading && <LoadingOverlay /> }
+                                { accountUser?.followers.some((u) => u.followerId === user.id) ? "unfollow" : "follow" }
+                            </button>
+                        </div>
+                    </section>
+            </div>
 
             {/* Second Section */}
-            <section className="flex-1 flex">
+            <section className="flex-1 flex mt-12">
                 <Tabs 
                     defaultValue={accountTab}
                     onValueChange={(val) => setAccountTab(val)}

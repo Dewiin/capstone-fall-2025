@@ -9,7 +9,8 @@ async function indexGet(req, res) {
                 loggedIn: true, 
                 id: req.user.id, 
                 username: req.user.username, 
-                displayName: req.user.displayName 
+                displayName: req.user.displayName,
+                public: req.user.public,
             });
         } 
         return res.json({ loggedIn: false });
@@ -45,6 +46,7 @@ async function loginPost(req, res) {
                     id: user.id,
                     username: user.username,
                     displayName: user.displayName,
+                    public: user.public,
                 });
             });
         })(req, res);
@@ -79,6 +81,7 @@ async function signupPost(req, res, next) {
                 id: user.id,
                 username: user.username,
                 displayName: user.displayName,
+                public: user.public,
             });
         });
     } catch (err) {

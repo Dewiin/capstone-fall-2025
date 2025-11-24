@@ -29,7 +29,8 @@ export default function AuthProvider({ children }) {
                 setUser({
                     id: result.id,
                     username: result.username,
-                    displayName: result.displayName
+                    displayName: result.displayName,
+                    public: result.public
                 })
             }
             else {
