@@ -1,6 +1,5 @@
 import { useAuth } from './contexts/Contexts';
 import { FaBook, FaBrain, FaLightbulb, FaCompass } from "react-icons/fa";
-import { FaBook, FaBrain, FaLightbulb, FaCompass } from "react-icons/fa";
 import { RiGeminiFill } from "react-icons/ri";
 import { FlipButton } from '@/components/ui/shadcn-io/flip-button';
 import { Separator } from '@/components/ui/separator';
