@@ -465,7 +465,8 @@ export function SettingsPage() {
                                     className="py-2 rounded-lg text-slate-950 font-semibold 
                                     dark:bg-red-500 bg-red-400
                                     hover:dark:bg-red-200 hover:bg-red-100
-                                    active:dark:bg-gray-500 active:bg-gray-300"
+                                    active:dark:bg-gray-500 active:bg-gray-300 
+                                    duration-150"
                                     onClick={() => handleResetAccount()}
                                 >
                                     reset account
@@ -490,7 +491,8 @@ export function SettingsPage() {
                                     className="py-2 rounded-lg text-slate-950 font-semibold 
                                     dark:bg-red-500 bg-red-400
                                     hover:dark:bg-red-200 hover:bg-red-100
-                                    active:dark:bg-gray-500 active:bg-gray-300"
+                                    active:dark:bg-gray-500 active:bg-gray-300
+                                    duration-150"
                                     onClick={() => handleDeleteAccount()}
                                 >
                                     delete account
