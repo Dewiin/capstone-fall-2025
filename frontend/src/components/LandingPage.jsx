@@ -167,169 +167,123 @@ export function LandingPage() {
 
       {/* Team Section */}
       <section 
-        className="w-full max-w-6xl mx-auto px-8 py-12 text-center my-12"
+        className="w-full max-w-6xl mx-auto px-6 py-16 my-12"
         id="team"
       >
-        <h2 className="text-4xl font-bold mb-6">Meet the Team</h2>
-        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed mb-10">
-          Meet the team of five undergraduate students at Hunter College working together on Brainstorm: 
-          an AI-powered study app designed to help students learn smarter and stay organized.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-          <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-2xl font-semibold dark:text-gray-100">Fatima</h3>
-            <p className="text-gray-600 dark:text-gray-300 text-sm">Frontend Developer</p>
-            <a 
-              href="https://github.com/fatimasif"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-500 hover:underline text-sm mt-1"
-            >
-              @fatimasif
-            </a>
+        <div className="flex flex-col lg:flex-row items-start gap-12">
+          {/* Title/Side Text */}
+          <div className="lg:w-1/3 text-left">
+            <h2 className="text-4xl font-bold mb-4">Meet the Team</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
+              Meet the five Hunter College students behind Brainstorm.
+            </p>
           </div>
 
-          <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-2xl font-semibold dark:text-gray-100">Alex</h3>
-            <p className="text-gray-600 dark:text-gray-300 text-sm">Frontend Developer</p>
-            <a 
-              href="https://github.com/alexdoesnotexist1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-500 hover:underline text-sm mt-1"
-            >
-              @alexdoesnotexist1
-            </a>
-          </div>
-
-          <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-2xl font-semibold dark:text-gray-100">Christopher</h3>
-            <p className="text-gray-600 dark:text-gray-300 text-sm">Frontend Developer</p>
-            <a 
-              href="https://github.com/ChristopherZanabria"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-500 hover:underline text-sm mt-1"
-            >
-              @ChristopherZanabria
-            </a>
-          </div>
-
-          <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-2xl font-semibold dark:text-gray-100">Moshe</h3>
-            <p className="text-gray-600 dark:text-gray-300 text-sm">Backend Developer</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center max-w-xs">
-            <h3 className="text-2xl font-semibold dark:text-gray-100">Devin</h3>
-            <p className="text-gray-600 dark:text-gray-300 text-sm">Backend Developer</p>
-            <a 
-              href="https://github.com/dewiin"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-500 hover:underline text-sm mt-1"
-            >
-              @dewiin
-            </a>
+          {/* Team Cards */}
+          <div className="lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { name: "Fatima", role: "Frontend Developer", github: "https://github.com/fatimasif", handle: "@fatimasif" },
+              { name: "Alex", role: "Frontend Developer", github: "https://github.com/alexdoesnotexist1", handle: "@alexdoesnotexist1" },
+              { name: "Christopher", role: "Frontend Developer", github: "https://github.com/ChristopherZanabria", handle: "@ChristopherZanabria" },
+              { name: "Moshe", role: "Backend Developer", github: "https://github.com/mokills", handle: "@MosheLevinson770" },
+              { name: "Devin", role: "Backend Developer", github: "https://github.com/dewiin", handle: "@dewiin" },
+            ].map((member) => (
+              <div 
+                key={member.name} 
+                className="flex flex-col items-center text-center bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+              >
+                <h3 className="text-2xl font-semibold dark:text-gray-100">{member.name}</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">{member.role}</p>
+                <a 
+                  href={member.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400 font-medium"
+                >
+                  {member.handle}
+                </a>
+              </div>
+            ))}
           </div>
         </div>
+      </section>
 
-        <p className="mt-10 text-md text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-          Together, we built Brainstorm to empower students with smarter, AI-driven study tools to make learning easier for everyone.
-        </p>
-      </section> 
+      <Separator className="max-w-1/2 mx-auto" />
 
-      <Separator className="max-w-1/2" /> 
 
-      {/* FAQ Section */}
+            {/* FAQ Section */}
       <section 
         className="w-full max-w-4xl mx-auto px-8 py-12 my-12 text-left"
         id="faqs"
       >
-          <h2 className="text-4xl font-bold mb-8 text-center">FAQs</h2>
+        <h2 className="text-4xl font-bold mb-8 text-center">FAQs</h2>
 
-          <Accordion type="single" collapsible className="w-full space-y-4">
+        <Accordion type="single" collapsible className="w-full space-y-4">
 
-            {/* General */}
-            <AccordionItem value="general">
-              <AccordionTrigger className="text-2xl font-semibold">
-                General
-              </AccordionTrigger>
-              <AccordionContent className="space-y-4 mt-4">
+          {/* Q1 */}
+          <AccordionItem value="need-account">
+            <AccordionTrigger className="text-xl font-semibold">
+              Do I need an account to get started?
+            </AccordionTrigger>
+            <AccordionContent className="text-gray-600 dark:text-gray-300">
+              You can browse the landing page without an account, but you'll need one
+              to save, generate, and track your study materials.
+            </AccordionContent>
+          </AccordionItem>
 
-                <div>
-                  <h4 className="font-semibold text-lg">Do I need an account to get started?</h4>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    You can browse the landing page without an account, but you'll need one
-                    to save, generate, and track your study materials.
-                  </p>
-                </div>
+          {/* Q2 */}
+          <AccordionItem value="upload-notes">
+            <AccordionTrigger className="text-xl font-semibold">
+              How do I upload my notes?
+            </AccordionTrigger>
+            <AccordionContent className="text-gray-600 dark:text-gray-300">
+              You can upload PDF files or text directly to the generate page after logging in.
+            </AccordionContent>
+          </AccordionItem>
 
-              </AccordionContent>
-            </AccordionItem>
+          {/* Q3 */}
+          <AccordionItem value="file-types">
+            <AccordionTrigger className="text-xl font-semibold">
+              What file types does Brainstorm support?
+            </AccordionTrigger>
+            <AccordionContent className="text-gray-600 dark:text-gray-300">
+              Brainstorm supports PDF files.
+            </AccordionContent>
+          </AccordionItem>
 
-            {/* How It Works */}
-            <AccordionItem value="how-it-works">
-              <AccordionTrigger className="text-2xl font-semibold">
-                How It Works
-              </AccordionTrigger>
-              <AccordionContent className="space-y-4 mt-4">
+          {/* Q4 */}
+          <AccordionItem value="share-sets">
+            <AccordionTrigger className="text-xl font-semibold">
+              Can I share my study sets with others?
+            </AccordionTrigger>
+            <AccordionContent className="text-gray-600 dark:text-gray-300">
+              Yes! Other users can view your study sets on the explore page or search them up if you make them public.
+            </AccordionContent>
+          </AccordionItem>
 
-                <div>
-                  <h4 className="font-semibold text-lg">How do I upload my notes?</h4>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    You can upload PDF files or text directly to the generate page after logging in.
-                  </p>
-                </div>
+          {/* Q5 */}
+          <AccordionItem value="edit-generated">
+            <AccordionTrigger className="text-xl font-semibold">
+              Can I edit the study guides or flashcards after they’re generated?
+            </AccordionTrigger>
+            <AccordionContent className="text-gray-600 dark:text-gray-300">
+              Yes, you can edit any generated content and save your changes.
+            </AccordionContent>
+          </AccordionItem>
 
-                <div>
-                  <h4 className="font-semibold text-lg">What file types does Brainstorm support?</h4>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Brainstorm supports PDF fils.
-                  </p>
-                </div>
+          {/* Q6 */}
+          <AccordionItem value="explore-save">
+            <AccordionTrigger className="text-xl font-semibold">
+              Can I explore or save study sets created by other users?
+            </AccordionTrigger>
+            <AccordionContent className="text-gray-600 dark:text-gray-300">
+              Yes. You can browse public study sets and save your favorites to study later.
+            </AccordionContent>
+          </AccordionItem>
 
-              </AccordionContent>
-            </AccordionItem>
+        </Accordion>
+      </section>
 
-            {/* Features & Tools */}
-            <AccordionItem value="features-tools">
-              <AccordionTrigger className="text-2xl font-semibold">
-                Features and Tools
-              </AccordionTrigger>
-              <AccordionContent className="space-y-4 mt-4">
-
-                <div>
-                  <h4 className="font-semibold text-lg">Can I share my study sets with others?</h4>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Yes! Other users can view your study sets on the explore page or search them up if you make them public.
-                  </p>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-lg">
-                    Can I edit the study guides or flashcards after they’re generated?
-                  </h4>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Yes, you can edit any generated content and save your changes.
-                  </p>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-lg">
-                    Can I explore or save study sets created by other users?
-                  </h4>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Yes. You can browse public study sets and save your favorites to study later.
-                  </p>
-                </div>
-
-              </AccordionContent>
-            </AccordionItem>
-
-          </Accordion>
-        </section>
       <Footer />
     </div>
   );
