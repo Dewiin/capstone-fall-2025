@@ -1,11 +1,62 @@
+// components
 import { Footer } from "@/components/Footer";
+import { useAuth } from "./contexts/Contexts";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input";
+
+// form 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { json, z } from "zod"
+import { useForm } from "react-hook-form"
+
+// react
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+// icons
 import { FaUser, FaKey } from "react-icons/fa";
 import { FaLock } from "react-icons/fa6";
 import { PiWarningFill } from "react-icons/pi";
 import { VscDebugRestart } from "react-icons/vsc";
-import { MdDelete, MdVisibility } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { useState } from "react";
-import { useAuth } from "./contexts/Contexts";
+import { Spinner } from "./ui/shadcn-io/spinner";
+import { toast } from "sonner";
+
+
+// Username and passphrase parameters
+const USER_LEN_MINIMUM = 6
+const USER_LEN_MAXIMUM = 20
+const PRINTABLE_UNICODE = /^[\P{Cc}\P{Cn}\P{Cs}]+$/gu // allow only, printable (unicode) characters; https://stackoverflow.com/a/12054775
+const PRINTABLE_MESSAGE = "can only contain printable characters."
+
+// zod validator -> display name
+const settingsSchema = z.object({
+    displayName: z.string().min(USER_LEN_MINIMUM, {
+        message: "Display name must be at least " + USER_LEN_MINIMUM + " characters.",
+    }).max(USER_LEN_MAXIMUM, {
+        message: "Display name has a " + USER_LEN_MAXIMUM + " character limit."
+    }).regex(PRINTABLE_UNICODE, { 
+        message: "Display name " + PRINTABLE_MESSAGE
+    }),
+});
 
 const allTabs = [
   { tabValue: 'account', label: 'account', icon: <FaUser className="text-xl" /> },
@@ -13,9 +64,75 @@ const allTabs = [
   { tabValue: 'dangerZone', label: 'danger zone', icon: <PiWarningFill className="text-xl" /> },
 ];
 
+const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
+
 export function SettingsPage() {
     const [ currentTab, setCurrentTab ] = useState("account");
-    const { user } = useAuth();
+    const [ loading, setLoading ] = useState("");
+    const [ isDialogOpen, setIsDialogOpen ] = useState("");
+    const { user, setUser, authLoading } = useAuth();
+
+    const navigate = useNavigate();
+
+    const form = useForm({
+        resolver: zodResolver(settingsSchema),
+        mode: "onChange",
+        defaultValues: {
+            displayName: "",
+        }
+    });
+
+    useEffect(() => {
+        if (!authLoading && !user) {
+            navigate("/unauthorized");
+        }
+    }, [authLoading]);
+
+    // account settings functions
+    async function handleDisplayName(data) {
+        setLoading("displayName");
+
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/settings/displayName`, {
+                method: "PUT",
+                body: JSON.stringify(data),
+                headers: {"Content-Type": "application/json"},
+                credentials: "include",
+            });
+            if(!response.ok) {
+                toast.warning("There was an error getting a reponse", {
+                    description: "Please try again later."
+                });
+                console.error("Error getting a response for updating name: ", response.status);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                setUser((prev) => ({
+                    ...prev,
+                    displayName: result.displayName,
+                }));
+                toast.success("Successfully updated!", {
+                    description: 
+                    <>
+                    You changed your name to <i>{result.displayName}</i>
+                    </>
+                });
+            } else {
+                toast.error("There was an error!", {
+                    description: "Please try again later."
+                });
+            }
+        } catch(err) {
+            toast.warning("Error updating display name", {
+                description: "Please try again later."
+            });
+            console.error("Error updating display name: ", err);
+        } finally {
+            setLoading("");
+        }
+    }
 
     return (
         <div
@@ -58,46 +175,76 @@ export function SettingsPage() {
                                         </p>
                                     </div>
                                     <p>
-                                        Change the name of your account.
+                                        Change the display name of your account.
                                     </p>    
                                 </div>
-                                <button
-                                    className="py-2 rounded-lg font-semibold 
-                                    text-zinc-300 hover:text-zinc-900
-                                    dark:bg-zinc-900 bg-zinc-700
-                                    hover:dark:bg-zinc-300 hover:bg-zinc-200
-                                    active:dark:bg-zinc-700 active:bg-zinc-400
-                                    duration-150"
-                                    onClick={() => handleUpdateName()}
-                                >
-                                    update name
-                                </button>
-                            </div>
-                            
-                            {/* update profile visibility */}
-                            <div className="grid md:grid-cols-[2fr_1fr] grid-cols-[1fr] gap-4 items-center rounded-lg">
-                                <div>
-                                    <div className="flex items-center gap-2 text-slate-500">
-                                        <MdVisibility className="text-xl" />
-                                        <p>
-                                            update account visibility
-                                        </p>
-                                    </div>
-                                    <p>
-                                        Change the visibility of your account.
-                                    </p>    
-                                </div>
-                                <button
-                                    className="py-2 rounded-lg font-semibold 
-                                    text-zinc-300 hover:text-zinc-900
-                                    dark:bg-zinc-900 bg-zinc-700
-                                    hover:dark:bg-zinc-300 hover:bg-zinc-200
-                                    active:dark:bg-zinc-700 active:bg-zinc-400
-                                    duration-150"
-                                    onClick={() => handleUpdateVisibility()}
-                                >
-                                    {user?.public ? "public" : "private"}
-                                </button>
+                                <Dialog open={isDialogOpen === "displayName"} onOpenChange={setIsDialogOpen}>
+                                    <button
+                                        className="py-2 rounded-lg font-semibold 
+                                        text-zinc-300 hover:text-zinc-900
+                                        dark:bg-zinc-900 bg-zinc-700
+                                        hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                        active:dark:bg-zinc-700 active:bg-zinc-400
+                                        duration-150"
+                                        onClick={() => {
+                                            if(loading === "displayName") {
+                                                return;
+                                            }
+                                            setIsDialogOpen("displayName")
+                                        }}
+                                        >
+                                        {loading === "displayName" ? 
+                                        <Spinner className="m-auto" />
+                                        : 
+                                        "update name"
+                                        }
+                                    </button>
+                                    <DialogContent className="sm:max-w-[425px]">
+                                        <DialogHeader>
+                                            <DialogTitle>
+                                                Update name
+                                            </DialogTitle>
+                                        </DialogHeader>
+                                        <Form {...form}>
+                                            <form 
+                                                onSubmit={form.handleSubmit(data => handleDisplayName(data))}
+                                            >
+                                                <FormField
+                                                    control={form.control}
+                                                    name="displayName"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <Input
+                                                                    className="bg-[rgba(255,255,255,0.3)]" 
+                                                                    id="displayName" 
+                                                                    type="text" 
+                                                                    placeholder={user.displayName}
+                                                                    autoComplete="off"
+                                                                    {...field} 
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <DialogClose asChild>
+                                                    <button
+                                                        type="submit"
+                                                        className="py-1.5 w-full mt-4 text-sm rounded-sm font-semibold 
+                                                        text-zinc-300 hover:text-zinc-900
+                                                        dark:bg-zinc-900 bg-zinc-700
+                                                        hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                                        active:dark:bg-zinc-700 active:bg-zinc-400
+                                                        duration-150"
+                                                    >
+                                                        Confirm
+                                                    </button>
+                                                </DialogClose>
+                                            </form>
+                                        </Form>
+                                    </DialogContent>
+                                </Dialog>
                             </div>
                         </div>
                     }

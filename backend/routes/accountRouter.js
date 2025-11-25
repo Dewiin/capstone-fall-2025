@@ -7,3 +7,4 @@ accountRouter.post("/:userId/favorite/:studySetId", accountController.favoritePo
 accountRouter.post("/:userId/edit/:studySetId", accountController.editPost);
 accountRouter.post("/:userId/search/followers", accountController.followersSearch);
 accountRouter.post("/:userId/search/following", accountController.followingSearch);
+accountRouter.put("/settings/displayName", accountController.editDisplayName);

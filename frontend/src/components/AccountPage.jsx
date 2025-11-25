@@ -815,7 +815,6 @@ export function AccountPage() {
                                                                                         type="text" 
                                                                                         placeholder={studySet.name}
                                                                                         autoComplete="off"
-                                                                                        required 
                                                                                         {...field} 
                                                                                     />
                                                                                 </FormControl>

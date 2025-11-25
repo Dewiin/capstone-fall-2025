@@ -265,10 +265,42 @@ async function followingSearch(req, res) {
     }
 }
 
+async function editDisplayName(req, res) {
+    try {
+        const user = req.user;
+        const { displayName } = req.body;
+
+        const newUser = await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                displayName,
+            }
+        });
+
+        if(newUser) {
+            return res.json({
+                status: 1,
+                displayName: newUser.displayName,
+            });
+        }
+        return res.json({
+            status: 0,
+        });
+    } catch (err) {
+        console.error(`Error updating user's display name: `, err);
+        return res.json({
+            status: 0,
+        });
+    }
+}
+
 export const accountController = {
     accountGet,
     favoritePost,
     editPost,
     followersSearch,
-    followingSearch
+    followingSearch,
+    editDisplayName
 }

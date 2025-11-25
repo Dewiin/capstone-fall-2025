@@ -136,6 +136,7 @@ export default function AuthProvider({ children }) {
     const value = {
         fetchUser,
         user,
+        setUser,
         signup,
         login,
         googleLogin,
