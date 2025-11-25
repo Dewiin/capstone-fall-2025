@@ -1,4 +1,5 @@
 import { prisma } from "../config/prismaClient.js"
+import bcrypt from "bcryptjs"
 
 async function accountGet(req, res) {
     try {
@@ -296,11 +297,53 @@ async function editDisplayName(req, res) {
     }
 }
 
+async function editPassword(req, res) {
+    try {
+        const user = req.user;
+        const { currentPassword, newPassword } = req.body;
+
+        const account = await prisma.user.findUnique({
+            where: {
+                id: user.id,
+            }
+        });
+        const isValid = await bcrypt.compare(currentPassword, account.password);
+        if (!isValid) {
+            return res.json({
+                status: 0,
+                message: "Current password is incorrect.",
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                password: hashedPassword,
+            }
+        });
+
+        return res.json({
+            status: 1,
+            message: "Password updated successfully",
+        });
+    } catch (err) {
+        console.error(`Error updating user's password: `, err);
+        return res.json({
+            status: 0,
+            message: "Error updating password",
+        });
+    }
+}
+
 export const accountController = {
     accountGet,
     favoritePost,
     editPost,
     followersSearch,
     followingSearch,
-    editDisplayName
+    editDisplayName,
+    editPassword
 }

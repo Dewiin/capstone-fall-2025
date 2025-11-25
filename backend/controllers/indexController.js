@@ -10,6 +10,7 @@ async function indexGet(req, res) {
                 id: req.user.id, 
                 username: req.user.username, 
                 displayName: req.user.displayName,
+                provider: req.user.provider,
                 public: req.user.public,
             });
         } 
@@ -46,6 +47,7 @@ async function loginPost(req, res) {
                     id: user.id,
                     username: user.username,
                     displayName: user.displayName,
+                    provider: req.user.provider,
                     public: user.public,
                 });
             });
@@ -81,6 +83,7 @@ async function signupPost(req, res, next) {
                 id: user.id,
                 username: user.username,
                 displayName: user.displayName,
+                provider: req.user.provider,
                 public: user.public,
             });
         });

@@ -30,6 +30,7 @@ export default function AuthProvider({ children }) {
                     id: result.id,
                     username: result.username,
                     displayName: result.displayName,
+                    provider: result.provider,
                     public: result.public
                 })
             }
@@ -62,7 +63,9 @@ export default function AuthProvider({ children }) {
                 setUser({
                     id: result.id,
                     username: result.username,
-                    displayName: result.displayName
+                    displayName: result.displayName,
+                    provider: result.provider,
+                    public: result.public,
                 })
             } else {
                 setUser(null);
@@ -97,6 +100,8 @@ export default function AuthProvider({ children }) {
                     id: result.id,
                     username: result.username,
                     displayName: result.displayName,
+                    provider: result.provider,
+                    public: result.public,
                 });
             }
             else {

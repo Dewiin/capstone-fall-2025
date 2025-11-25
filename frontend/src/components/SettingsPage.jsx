@@ -44,11 +44,13 @@ import { toast } from "sonner";
 // Username and passphrase parameters
 const USER_LEN_MINIMUM = 6
 const USER_LEN_MAXIMUM = 20
+const PASS_LEN_MINIMUM = 10
+const PASS_LEN_MAXIMUM = 512
 const PRINTABLE_UNICODE = /^[\P{Cc}\P{Cn}\P{Cs}]+$/gu // allow only, printable (unicode) characters; https://stackoverflow.com/a/12054775
 const PRINTABLE_MESSAGE = "can only contain printable characters."
 
 // zod validator -> display name
-const settingsSchema = z.object({
+const displayNameSchema = z.object({
     displayName: z.string().min(USER_LEN_MINIMUM, {
         message: "Display name must be at least " + USER_LEN_MINIMUM + " characters.",
     }).max(USER_LEN_MAXIMUM, {
@@ -56,6 +58,22 @@ const settingsSchema = z.object({
     }).regex(PRINTABLE_UNICODE, { 
         message: "Display name " + PRINTABLE_MESSAGE
     }),
+})
+
+// zod validator -> password
+const passwordSchema = z.object({
+    currentPassword: z.string(),
+    newPassword: z.string().min(PASS_LEN_MINIMUM, {
+        message: "Password must be at least " + PASS_LEN_MINIMUM + " characters."
+    }). max(PASS_LEN_MAXIMUM, {
+        message: "Password has a " + PASS_LEN_MAXIMUM + " character limit."
+    }).regex(PRINTABLE_UNICODE, { 
+        message: "Password " + PRINTABLE_MESSAGE
+    }),
+    confirmNewPassword: z.string(),
+}).refine((data) => data.newPassword === data.confirmNewPassword, {
+  message: "Passwords do not match.",
+  path: ["confirmNewPassword"]
 });
 
 const allTabs = [
@@ -74,13 +92,23 @@ export function SettingsPage() {
 
     const navigate = useNavigate();
 
-    const form = useForm({
-        resolver: zodResolver(settingsSchema),
+    const displayNameForm = useForm({
+        resolver: zodResolver(displayNameSchema),
         mode: "onChange",
         defaultValues: {
             displayName: "",
         }
     });
+
+    const passwordForm = useForm({
+        resolver: zodResolver(passwordSchema),
+        mode: "onChange",
+        defaultValues: {
+            currentPassword: "",
+            newPassword: "",
+            confirmNewPassword: "",
+        }
+    })
 
     useEffect(() => {
         if (!authLoading && !user) {
@@ -130,6 +158,43 @@ export function SettingsPage() {
             });
             console.error("Error updating display name: ", err);
         } finally {
+            setLoading("");
+        }
+    }
+
+    // authentication settings functions
+    async function handlePassword(data) {
+        setLoading("password");
+        
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/settings/password`, {
+                method: "PUT",
+                body: JSON.stringify(data),
+                headers: {"Content-Type": "application/json"},
+                credentials: "include",
+            });
+            if(!response.ok) {
+                toast.warning("There was an error getting a reponse", {
+                    description: "Please try again later."
+                });
+                console.error("Error getting a response for updating password: ", response.status);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                toast.success(result.message);
+            } else {
+                toast.error(result.message, {
+                    description: "Please try again."
+                });
+            }
+        } catch(err) {
+            toast.warning("Error updating password", {
+                description: "Please try again later."
+            });
+            console.error("Error updating password: ", err);
+        } finally { 
             setLoading("");
         }
     }
@@ -199,18 +264,21 @@ export function SettingsPage() {
                                         "update name"
                                         }
                                     </button>
-                                    <DialogContent className="sm:max-w-[425px]">
+                                    <DialogContent className="sm:max-w-[425px] gap-6">
                                         <DialogHeader>
                                             <DialogTitle>
                                                 Update name
                                             </DialogTitle>
+                                            <DialogDescription>
+                                                This changes your display name <i>NOT</i> your username.
+                                            </DialogDescription>
                                         </DialogHeader>
-                                        <Form {...form}>
+                                        <Form {...displayNameForm}>
                                             <form 
-                                                onSubmit={form.handleSubmit(data => handleDisplayName(data))}
+                                                onSubmit={displayNameForm.handleSubmit(data => handleDisplayName(data))}
                                             >
                                                 <FormField
-                                                    control={form.control}
+                                                    control={displayNameForm.control}
                                                     name="displayName"
                                                     render={({ field }) => (
                                                         <FormItem>
@@ -264,17 +332,115 @@ export function SettingsPage() {
                                         Update your password.
                                     </p>    
                                 </div>
-                                <button
-                                    className="py-2 rounded-lg font-semibold 
-                                    text-zinc-300 hover:text-zinc-900
-                                    dark:bg-zinc-900 bg-zinc-700
-                                    hover:dark:bg-zinc-300 hover:bg-zinc-200
-                                    active:dark:bg-zinc-700 active:bg-zinc-400
-                                    duration-150"
-                                    onClick={() => handleUpdatePassword()}
-                                >
-                                    update password
-                                </button>
+                                <Dialog open={isDialogOpen === "password"} onOpenChange={setIsDialogOpen}>
+                                    <button
+                                        disabled={user?.provider === "google"}
+                                        className={`py-2 rounded-lg font-semibold 
+                                        text-zinc-300
+                                        dark:bg-zinc-900 bg-zinc-700
+                                        ${user?.provider === "local" ? 
+                                        "hover:dark:bg-zinc-300 hover:bg-zinc-200 active:dark:bg-zinc-700 active:bg-zinc-400 hover:text-zinc-900 duration-150"
+                                        :
+                                        "cursor-not-allowed"
+                                        }`}
+                                        onClick={() => {
+                                            if(loading === "password") {
+                                                return;
+                                            }
+                                            setIsDialogOpen("password");
+                                        }}
+                                        >
+                                        {loading === "password" ? 
+                                        <Spinner className="m-auto" />
+                                        : 
+                                        "update password"
+                                        }
+                                    </button>
+                                    <DialogContent className="sm:max-w-[425px] gap-6">
+                                        <DialogHeader>
+                                            <DialogTitle>
+                                                Update password
+                                            </DialogTitle>
+                                        </DialogHeader>
+                                        <Form {...passwordForm}>
+                                            <form 
+                                                className="flex flex-col gap-4"
+                                                onSubmit={passwordForm.handleSubmit(data => handlePassword(data))}
+                                            >
+                                                <FormField
+                                                    control={passwordForm.control}
+                                                    name="currentPassword"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <Input
+                                                                    className="bg-[rgba(255,255,255,0.3)]" 
+                                                                    id="currentPassword" 
+                                                                    type="password" 
+                                                                    placeholder="current password"
+                                                                    autoComplete="off"
+                                                                    {...field} 
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={passwordForm.control}
+                                                    name="newPassword"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <Input
+                                                                    className="bg-[rgba(255,255,255,0.3)]" 
+                                                                    id="newPassword" 
+                                                                    type="password" 
+                                                                    placeholder="new password"
+                                                                    autoComplete="off"
+                                                                    {...field} 
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={passwordForm.control}
+                                                    name="confirmNewPassword"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormControl>
+                                                                <Input
+                                                                    className="bg-[rgba(255,255,255,0.3)]" 
+                                                                    id="confirmNewPassword" 
+                                                                    type="password" 
+                                                                    placeholder="confirm new password"
+                                                                    autoComplete="off"
+                                                                    {...field} 
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <DialogClose asChild>
+                                                    <button
+                                                        type="submit"
+                                                        className="py-1.5 w-full text-sm rounded-sm font-semibold 
+                                                        text-zinc-300 hover:text-zinc-900
+                                                        dark:bg-zinc-900 bg-zinc-700
+                                                        hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                                        active:dark:bg-zinc-700 active:bg-zinc-400
+                                                        duration-150"
+                                                    >
+                                                        Confirm
+                                                    </button>
+                                                </DialogClose>
+                                            </form>
+                                        </Form>
+                                    </DialogContent>
+                                </Dialog>
                             </div>
                         </div>
                     }
