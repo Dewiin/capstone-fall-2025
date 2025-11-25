@@ -127,7 +127,7 @@ export function LandingPage() {
       >
         <h2 className="text-4xl font-bold mb-10">How It Works</h2>
 
-        <div className="flex flex-col md:flex-row justify-center items-start gap-10">
+        <div className="flex flex-col md:flex-row justify-center md:items-start items-center gap-10">
           {/* Step 1 */}
           <div className="flex flex-col items-center max-w-xs text-center">
             <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 rounded-full p-6 mb-4">
@@ -170,7 +170,7 @@ export function LandingPage() {
         className="w-full max-w-6xl mx-auto px-6 py-16 my-12"
         id="team"
       >
-        <div className="flex flex-col lg:flex-row items-start gap-12">
+        <div className="flex flex-col lg:flex-row lg:items-start items-center gap-12">
           {/* Title/Side Text */}
           <div className="lg:w-1/3 text-left">
             <h2 className="text-4xl font-bold mb-4">Meet the Team</h2>
@@ -222,7 +222,7 @@ export function LandingPage() {
 
           {/* Q1 */}
           <AccordionItem value="need-account">
-            <AccordionTrigger className="text-xl font-semibold">
+            <AccordionTrigger className="md:text-xl text-lg font-semibold">
               Do I need an account to get started?
             </AccordionTrigger>
             <AccordionContent className="text-gray-600 dark:text-gray-300">
@@ -233,7 +233,7 @@ export function LandingPage() {
 
           {/* Q2 */}
           <AccordionItem value="upload-notes">
-            <AccordionTrigger className="text-xl font-semibold">
+            <AccordionTrigger className="md:text-xl text-lg font-semibold">
               How do I upload my notes?
             </AccordionTrigger>
             <AccordionContent className="text-gray-600 dark:text-gray-300">
@@ -243,7 +243,7 @@ export function LandingPage() {
 
           {/* Q3 */}
           <AccordionItem value="file-types">
-            <AccordionTrigger className="text-xl font-semibold">
+            <AccordionTrigger className="md:text-xl text-lg font-semibold">
               What file types does Brainstorm support?
             </AccordionTrigger>
             <AccordionContent className="text-gray-600 dark:text-gray-300">
@@ -253,7 +253,7 @@ export function LandingPage() {
 
           {/* Q4 */}
           <AccordionItem value="share-sets">
-            <AccordionTrigger className="text-xl font-semibold">
+            <AccordionTrigger className="md:text-xl text-lg font-semibold">
               Can I share my study sets with others?
             </AccordionTrigger>
             <AccordionContent className="text-gray-600 dark:text-gray-300">
@@ -263,7 +263,7 @@ export function LandingPage() {
 
           {/* Q5 */}
           <AccordionItem value="edit-generated">
-            <AccordionTrigger className="text-xl font-semibold">
+            <AccordionTrigger className="md:text-xl text-lg font-semibold">
               Can I edit the study guides or flashcards after they’re generated?
             </AccordionTrigger>
             <AccordionContent className="text-gray-600 dark:text-gray-300">
@@ -273,7 +273,7 @@ export function LandingPage() {
 
           {/* Q6 */}
           <AccordionItem value="explore-save">
-            <AccordionTrigger className="text-xl font-semibold">
+            <AccordionTrigger className="md:text-xl text-lg font-semibold">
               Can I explore or save study sets created by other users?
             </AccordionTrigger>
             <AccordionContent className="text-gray-600 dark:text-gray-300">
