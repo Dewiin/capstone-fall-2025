@@ -29,6 +29,11 @@ import {
     DialogTrigger,
     DialogClose
 } from "@/components/ui/dialog"
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input";
@@ -413,13 +418,23 @@ export function ProfilePage() {
                                                 key={f.follower.id}
                                                 className="flex justify-between items-center font-semibold text-sm"
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    <Avatar className="size-9 rounded-2xl border-1">
-                                                        <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
-                                                        <AvatarFallback>Icon</AvatarFallback>
-                                                    </Avatar>
-                                                    {f.follower.displayName}
-                                                </div>
+                                                <HoverCard>
+                                                    <HoverCardTrigger asChild>
+                                                        <div className="flex items-center gap-2">
+                                                            <Avatar className="size-9 rounded-2xl border-1">
+                                                                <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                                                <AvatarFallback>Icon</AvatarFallback>
+                                                            </Avatar>
+                                                            {f.follower.displayName}
+                                                        </div>
+                                                    </HoverCardTrigger>
+                                                    <HoverCardContent
+                                                        className="w-md"
+                                                        side="left"
+                                                    >
+
+                                                    </HoverCardContent>
+                                                </HoverCard>
                                                 <DialogClose asChild>
                                                     <button
                                                         className={`px-4 py-1 rounded-lg font-semibold w-fit h-fit

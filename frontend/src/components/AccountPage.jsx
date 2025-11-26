@@ -34,6 +34,11 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MdDeleteOutline } from "react-icons/md";
@@ -567,13 +572,56 @@ export function AccountPage() {
                                                 key={f.follower.id}
                                                 className="flex justify-between items-center font-semibold text-sm"
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    <Avatar className="size-9 rounded-2xl border-1">
-                                                        <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
-                                                        <AvatarFallback>Icon</AvatarFallback>
-                                                    </Avatar>
-                                                    {f.follower.displayName}
-                                                </div>
+                                                <HoverCard>
+                                                    <HoverCardTrigger asChild>
+                                                        <div className="flex items-center gap-2 select-none">
+                                                            <Avatar className="size-9 rounded-2xl border-1">
+                                                                <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                                                <AvatarFallback>Icon</AvatarFallback>
+                                                            </Avatar>
+                                                            {f.follower.displayName}
+                                                        </div>
+                                                    </HoverCardTrigger>
+                                                    <HoverCardContent 
+                                                        className="w-md"
+                                                        side="left"  
+                                                    >
+                                                        <section className='flex md:flex-row flex-col p-2 pl-6 rounded-lg md:h-20 select-none
+                                                           bg-indigo-200 dark:bg-slate-950'
+                                                        > 
+                                                            {/* Personal Stats */}
+                                                            <div className=" flex-1 grid md:grid-cols-3 grid-cols-2 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
+                                                                <span>
+                                                                    <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                                                        study sets
+                                                                    </p>
+                                                                    <CountingNumber 
+                                                                        number={ f.follower.studySets.length }
+                                                                        className="md:text-4xl text-2xl font-semibold"
+                                                                    />
+                                                                </span>
+                                                                <span>
+                                                                    <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                                                        quiz attempts
+                                                                    </p>
+                                                                    <CountingNumber 
+                                                                        number={ f.follower.attempts.length }
+                                                                        className="md:text-4xl text-2xl font-semibold"
+                                                                        />
+                                                                </span>
+                                                                <span>
+                                                                    <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                                                        favorites added
+                                                                    </p>
+                                                                    <CountingNumber 
+                                                                        number={ f.follower.favorites.length }
+                                                                        className="md:text-4xl text-2xl font-semibold"
+                                                                        />
+                                                                </span>
+                                                            </div>
+                                                        </section>  
+                                                    </HoverCardContent>
+                                                </HoverCard>
                                                 <DialogClose asChild>
                                                     <button
                                                         className={`px-4 py-1 rounded-lg font-semibold w-fit h-fit
@@ -647,13 +695,56 @@ export function AccountPage() {
                                                 key={f.following.id}
                                                 className="flex justify-between items-center font-semibold text-sm"
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    <Avatar className="size-9 rounded-2xl border-1">
-                                                        <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
-                                                        <AvatarFallback>Icon</AvatarFallback>
-                                                    </Avatar>
-                                                    {f.following.displayName}
-                                                </div>
+                                                <HoverCard>
+                                                    <HoverCardTrigger asChild>
+                                                        <div className="flex items-center gap-2 select-none">
+                                                            <Avatar className="size-9 rounded-2xl border-1">
+                                                                <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                                                <AvatarFallback>Icon</AvatarFallback>
+                                                            </Avatar>
+                                                            {f.following.displayName}
+                                                        </div>
+                                                    </HoverCardTrigger>
+                                                    <HoverCardContent 
+                                                        className="w-md"
+                                                        side="left"    
+                                                    >
+                                                        <section className='flex md:flex-row flex-col p-2 pl-6 rounded-lg md:h-20 select-none
+                                                           bg-indigo-200 dark:bg-slate-950'
+                                                        > 
+                                                            {/* Personal Stats */}
+                                                            <div className=" flex-1 grid md:grid-cols-3 grid-cols-2 md:gap-0 gap-4 items-center text-indigo-900 dark:text-indigo-100">
+                                                                <span>
+                                                                    <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                                                        study sets
+                                                                    </p>
+                                                                    <CountingNumber 
+                                                                        number={ f.following.studySets.length }
+                                                                        className="md:text-4xl text-2xl font-semibold"
+                                                                    />
+                                                                </span>
+                                                                <span>
+                                                                    <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                                                        quiz attempts
+                                                                    </p>
+                                                                    <CountingNumber 
+                                                                        number={ f.following.attempts.length }
+                                                                        className="md:text-4xl text-2xl font-semibold"
+                                                                        />
+                                                                </span>
+                                                                <span>
+                                                                    <p className="text-sm dark:text-indigo-300 text-indigo-900 font-semibold">
+                                                                        favorites added
+                                                                    </p>
+                                                                    <CountingNumber 
+                                                                        number={ f.following.favorites.length }
+                                                                        className="md:text-4xl text-2xl font-semibold"
+                                                                        />
+                                                                </span>
+                                                            </div>
+                                                        </section>  
+                                                    </HoverCardContent>
+                                                </HoverCard>
                                                 <DialogClose asChild>
                                                     <button
                                                         className={`px-4 py-1 rounded-lg font-semibold w-fit h-fit

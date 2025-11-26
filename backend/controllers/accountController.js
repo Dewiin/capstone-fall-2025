@@ -47,12 +47,40 @@ async function accountGet(req, res) {
                 },
                 followers: {
                     include: {
-                        follower: true,
+                        follower: {
+                            include: {
+                                studySets: {
+                                    where: {
+                                        public: true,
+                                    }
+                                },
+                                attempts: true,
+                                favorites: {
+                                    where: {
+                                        public: true,
+                                    }
+                                },
+                            }
+                        },
                     }
                 },
                 following: {
                     include: {
-                        following: true,
+                        following: {
+                            include: {
+                                studySets: {
+                                    where: {
+                                        public: true,
+                                    }
+                                },
+                                attempts: true,
+                                favorites: {
+                                    where: {
+                                        public: true,
+                                    }
+                                },
+                            }
+                        },
                     }
                 },
             }
