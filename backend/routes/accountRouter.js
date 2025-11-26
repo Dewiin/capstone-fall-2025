@@ -9,3 +9,5 @@ accountRouter.post("/:userId/search/followers", accountController.followersSearc
 accountRouter.post("/:userId/search/following", accountController.followingSearch);
 accountRouter.put("/settings/displayName", accountController.editDisplayName);
 accountRouter.put("/settings/password", accountController.editPassword);
+accountRouter.post("/settings/resetAccount", accountController.resetAccount);
+accountRouter.post("/settings/deleteAccount", accountController.deleteAccount);

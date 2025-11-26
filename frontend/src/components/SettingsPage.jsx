@@ -19,6 +19,17 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input";
 
 // form 
@@ -195,6 +206,79 @@ export function SettingsPage() {
             });
             console.error("Error updating password: ", err);
         } finally { 
+            setLoading("");
+        }
+    }
+
+    // danger zone settings functions
+    async function handleReset() {
+        setLoading("resetAccount");
+
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/settings/resetAccount`, {
+                method: "POST",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                toast.warning("There was an error getting a reponse", {
+                    description: "Please try again later."
+                });
+                console.error("Error getting a response for resetting account: ", response.status);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                toast.info("Account successfully reset", {
+                    description: "Your study sets, attempts, and favorites have been removed."
+                });
+            } else {
+                toast.error("Error resetting account", {
+                    description: "Please try again later."
+                });
+            }
+        } catch (err) {
+            toast.warning("Error resetting account", {
+                description: "Please try again later."
+            });
+            console.error("Error resetting account: ", err);
+        } finally {
+            setLoading("");
+        }
+    }
+
+    async function handleDelete() {
+        setLoading("deleteAccount");
+
+        try {
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/settings/deleteAccount`, {
+                method: "POST",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                toast.warning("There was an error getting a reponse", {
+                    description: "Please try again later."
+                });
+                console.error("Error getting a response for deleting account: ", response.status);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                toast.info("Account successfully reset", {
+                    description: "Your study sets, attempts, and favorites have been removed."
+                });
+            } else {
+                toast.error("Error resetting account", {
+                    description: "Please try again later."
+                });
+            }
+        } catch (err) {
+            toast.warning("Error resetting account", {
+                description: "Please try again later."
+            });
+            console.error("Error resetting account: ", err);
+        } finally {
             setLoading("");
         }
     }
@@ -461,16 +545,46 @@ export function SettingsPage() {
                                         <span className="text-red-500">You can't undo this action!</span>
                                     </p>    
                                 </div>
-                                <button
-                                    className="py-2 rounded-lg text-slate-950 font-semibold 
-                                    dark:bg-red-500 bg-red-400
-                                    hover:dark:bg-red-200 hover:bg-red-100
-                                    active:dark:bg-gray-500 active:bg-gray-300 
-                                    duration-150"
-                                    onClick={() => handleResetAccount()}
-                                >
-                                    reset account
-                                </button>
+                                <AlertDialog open={isDialogOpen === "resetAccount"} onOpenChange={setIsDialogOpen}>
+                                    <button
+                                        className="py-2 rounded-lg text-slate-950 font-semibold 
+                                        dark:bg-red-500 bg-red-400
+                                        hover:dark:bg-red-200 hover:bg-red-100
+                                        active:dark:bg-gray-500 active:bg-gray-300 
+                                        duration-150"
+                                        onClick={() => {
+                                            if(loading === "resetAccount") {
+                                                return;
+                                            }
+                                            setIsDialogOpen("resetAccount");
+                                        }}
+                                        >
+                                        {loading === "resetAccount" ? 
+                                        <Spinner className="m-auto" />
+                                        : 
+                                        "reset account"
+                                        }
+                                    </button>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently reset your
+                                                study sets, quiz attempts, and favorites.
+                                                You will not be able to recover your data.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleReset()}
+                                            className="bg-red-500 text-white hover:bg-destructive/40"
+                                        >
+                                            Reset Account
+                                        </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
 
                             {/* Delete Account Section */}
@@ -487,16 +601,46 @@ export function SettingsPage() {
                                         <span className="text-red-500">You can't undo this action!</span>
                                     </p>    
                                 </div>
-                                <button
-                                    className="py-2 rounded-lg text-slate-950 font-semibold 
-                                    dark:bg-red-500 bg-red-400
-                                    hover:dark:bg-red-200 hover:bg-red-100
-                                    active:dark:bg-gray-500 active:bg-gray-300
-                                    duration-150"
-                                    onClick={() => handleDeleteAccount()}
-                                >
-                                    delete account
-                                </button>
+                                <AlertDialog open={isDialogOpen === "deleteAccount"} onOpenChange={setIsDialogOpen}>
+                                    <button
+                                        className="py-2 rounded-lg text-slate-950 font-semibold 
+                                        dark:bg-red-500 bg-red-400
+                                        hover:dark:bg-red-200 hover:bg-red-100
+                                        active:dark:bg-gray-500 active:bg-gray-300
+                                        duration-150"
+                                        onClick={() => {
+                                            if(loading === "deleteAccount") {
+                                                return;
+                                            }
+                                            setIsDialogOpen("deleteAccount");
+                                        }}
+                                        >
+                                        {loading === "deleteAccount" ? 
+                                        <Spinner className="m-auto" />
+                                        : 
+                                        "delete account"
+                                        }
+                                    </button>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete your
+                                                account and remove all of your data from our servers. You will not
+                                                be able to recover your account.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleDelete()}
+                                            className="bg-red-500 text-white hover:bg-destructive/40"
+                                        >
+                                            Delete Account
+                                        </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
                         </div>
                     }

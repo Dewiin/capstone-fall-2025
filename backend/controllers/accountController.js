@@ -338,6 +338,55 @@ async function editPassword(req, res) {
     }
 }
 
+async function resetAccount(req, res) {
+    try {
+        const user = req.user;
+
+        await prisma.$transaction([
+            // delete study sets
+            await prisma.studySet.deleteMany({
+                where: {
+                    userId: user.id,
+                }
+            }),
+            // delete quiz attempts
+            await prisma.quizAttempt.deleteMany({
+                where: {
+                    userId: user.id,
+                }
+            }),
+            // delete favorites 
+            await prisma.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    favorites: {
+                        set: [],
+                    }
+                }
+            })
+        ]);
+
+        return res.json({
+            status: 1,
+        });
+    } catch (err) {
+        return res.json({
+            status: 0,
+        });
+    }
+}
+
+async function deleteAccount(req, res) {
+    try {
+        const user = req.user;
+
+    } catch (err) {
+        
+    }
+}
+
 export const accountController = {
     accountGet,
     favoritePost,
@@ -345,5 +394,7 @@ export const accountController = {
     followersSearch,
     followingSearch,
     editDisplayName,
-    editPassword
+    editPassword,
+    resetAccount,
+    deleteAccount
 }
