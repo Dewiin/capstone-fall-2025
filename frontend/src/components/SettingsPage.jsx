@@ -285,6 +285,20 @@ export function SettingsPage() {
         }
     }
 
+    async function handleSubmit(method, data=null) {
+        const functions = {
+            "displayName": () => handleDisplayName(data),
+            "password": () => handlePassword(data),
+            "resetAccount": handleReset,
+            "deleteAccount": handleDelete, 
+        };
+        
+        const promise = functions[method]();
+        toast.promise(promise, {
+            loading: "Loading..."
+        });
+    }
+
     return (
         <div
             className="md:mt-16 mt-8 p-4 flex flex-col h-screen"
@@ -361,7 +375,7 @@ export function SettingsPage() {
                                         </DialogHeader>
                                         <Form {...displayNameForm}>
                                             <form 
-                                                onSubmit={displayNameForm.handleSubmit(data => handleDisplayName(data))}
+                                                onSubmit={displayNameForm.handleSubmit(data => handleSubmit("displayName", data))}
                                             >
                                                 <FormField
                                                     control={displayNameForm.control}
@@ -451,7 +465,7 @@ export function SettingsPage() {
                                         <Form {...passwordForm}>
                                             <form 
                                                 className="flex flex-col gap-4"
-                                                onSubmit={passwordForm.handleSubmit(data => handlePassword(data))}
+                                                onSubmit={passwordForm.handleSubmit(data => handleSubmit("password", data))}
                                             >
                                                 <FormField
                                                     control={passwordForm.control}
@@ -579,7 +593,7 @@ export function SettingsPage() {
                                         <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                                         <AlertDialogAction
-                                            onClick={() => handleReset()}
+                                            onClick={() => handleSubmit("resetAccount")}
                                             className="bg-red-500 text-white hover:bg-destructive/40"
                                         >
                                             Reset Account
@@ -635,7 +649,7 @@ export function SettingsPage() {
                                         <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                                         <AlertDialogAction
-                                            onClick={() => handleDelete()}
+                                            onClick={() => handleSubmit("deleteAccount")}
                                             className="bg-red-500 text-white hover:bg-destructive/40"
                                         >
                                             Delete Account
