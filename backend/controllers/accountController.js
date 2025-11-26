@@ -235,7 +235,21 @@ async function followersSearch(req, res) {
                 }
             },
             include: {
-                follower: true,
+                follower: {
+                    include: {
+                        studySets: {
+                            where: {
+                                public: true,
+                            }
+                        },
+                        attempts: true,
+                        favorites: {
+                            where: {
+                                public: true,
+                            }
+                        }
+                    }
+                },
             }
         });
 
@@ -272,7 +286,21 @@ async function followingSearch(req, res) {
                 }
             },
             include: {
-                following: true,
+                following: {
+                    include: {
+                        studySets: {
+                            where: {
+                                public: true,
+                            }
+                        },
+                        attempts: true,
+                        favorites: {
+                            where: {
+                                public: true,
+                            }
+                        }
+                    }
+                },
             }
         });
 
