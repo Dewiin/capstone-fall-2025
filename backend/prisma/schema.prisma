@@ -46,10 +46,10 @@ model User {
 
 model UserFollow {
   id          String   @id @default(uuid())
-  follower    User     @relation("UserFollows", fields: [followerId], references: [id])
+  follower    User     @relation("UserFollows", fields: [followerId], references: [id], onDelete: Cascade)
   followerId  String
 
-  following   User     @relation("UserFollowing", fields: [followingId], references: [id])
+  following   User     @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
   followingId String
 
   createdAt   DateTime @default(now())
@@ -87,7 +87,7 @@ model StudySet {
   category   Category[] @default([OTHER])
 
   // Relations
-  user        User   @relation(fields: [userId], references: [id])
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   favoritedBy User[] @relation("UserFavorites")
 
@@ -167,7 +167,7 @@ model QuizAttempt {
   createdAt DateTime @default(now())
 
   // Relations
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
   quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId Int

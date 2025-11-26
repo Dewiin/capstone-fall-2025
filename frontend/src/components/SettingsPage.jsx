@@ -34,7 +34,7 @@ import { Input } from "@/components/ui/input";
 
 // form 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { json, z } from "zod"
+import { z } from "zod"
 import { useForm } from "react-hook-form"
 
 // react
@@ -99,7 +99,7 @@ export function SettingsPage() {
     const [ currentTab, setCurrentTab ] = useState("account");
     const [ loading, setLoading ] = useState("");
     const [ isDialogOpen, setIsDialogOpen ] = useState("");
-    const { user, setUser, authLoading } = useAuth();
+    const { user, setUser, logout, authLoading } = useAuth();
 
     const navigate = useNavigate();
 
@@ -265,19 +265,21 @@ export function SettingsPage() {
 
             const result = await response.json();
             if(result.status === 1) {
-                toast.info("Account successfully reset", {
-                    description: "Your study sets, attempts, and favorites have been removed."
+                logout();
+                navigate("/");
+                toast.info("Account successfully deleted", {
+                    description: "All your data has been permanently removed."
                 });
             } else {
-                toast.error("Error resetting account", {
+                toast.error("Error deleting account", {
                     description: "Please try again later."
                 });
             }
         } catch (err) {
-            toast.warning("Error resetting account", {
+            toast.warning("Error deleting account", {
                 description: "Please try again later."
             });
-            console.error("Error resetting account: ", err);
+            console.error("Error deleting account: ", err);
         } finally {
             setLoading("");
         }

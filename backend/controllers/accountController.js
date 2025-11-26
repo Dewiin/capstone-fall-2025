@@ -344,19 +344,19 @@ async function resetAccount(req, res) {
 
         await prisma.$transaction([
             // delete study sets
-            await prisma.studySet.deleteMany({
+            prisma.studySet.deleteMany({
                 where: {
                     userId: user.id,
                 }
             }),
             // delete quiz attempts
-            await prisma.quizAttempt.deleteMany({
+            prisma.quizAttempt.deleteMany({
                 where: {
                     userId: user.id,
                 }
             }),
             // delete favorites 
-            await prisma.user.update({
+            prisma.user.update({
                 where: {
                     id: user.id,
                 },
@@ -372,6 +372,7 @@ async function resetAccount(req, res) {
             status: 1,
         });
     } catch (err) {
+        console.error(`Error resetting user's account: `, err);
         return res.json({
             status: 0,
         });
@@ -382,8 +383,53 @@ async function deleteAccount(req, res) {
     try {
         const user = req.user;
 
+        await prisma.$transaction([
+            // delete favorites
+            prisma.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    favorites: {
+                        set: []
+                    }
+                }
+            }),
+            // delete followers / following
+            prisma.userFollow.deleteMany({
+                where: {
+                    OR: [
+                        { followerId: user.id },
+                        { followingId: user.id },
+                    ],
+                },
+            }),
+            // delete account
+            prisma.user.delete({
+                where: {
+                    id: user.id,
+                }
+            }),
+        ]);
+
+        req.session.destroy(err => {
+            if (err) {
+                console.error("Failed to destroy session:", err);
+                return res.json({ 
+                    status: 0, 
+                });
+            }
+
+            res.clearCookie("connect.sid");
+            return res.json({ 
+                status: 1, 
+            });
+        });
     } catch (err) {
-        
+        console.error(`Error deleting user's account: `, err);
+        return res.json({
+            status: 0,
+        });
     }
 }
 
