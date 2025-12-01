@@ -436,8 +436,11 @@ export function SettingsPage() {
                                     <button
                                         disabled={user?.provider === "google"}
                                         className={`py-2 rounded-lg font-semibold 
-                                        text-zinc-300
+                                        text-zinc-300 hover:text-zinc-900
                                         dark:bg-zinc-900 bg-zinc-700
+                                        hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                        active:dark:bg-zinc-700 active:bg-zinc-400
+                                        duration-150"
                                         ${user?.provider === "local" ? 
                                         "hover:dark:bg-zinc-300 hover:bg-zinc-200 active:dark:bg-zinc-700 active:bg-zinc-400 hover:text-zinc-900 duration-150"
                                         :
