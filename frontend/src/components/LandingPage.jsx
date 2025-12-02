@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
   AccordionContent
 } from "@/components/ui/accordion";
+import landingPageImage from "@/assets/landingPageImage.png";
 
 
 export function LandingPage() {
@@ -163,7 +164,16 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Separator className="max-w-1/2" /> 
+
+    {/* Landing Page Banner Image */}
+    <section className="w-full my-12">
+      <img 
+        src={landingPageImage} 
+        alt="Brainstorm banner"
+        className="w-full h-auto object-cover"
+      />
+    </section>
+
 
       {/* Team Section */}
       <section 
