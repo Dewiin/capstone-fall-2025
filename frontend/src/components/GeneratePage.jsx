@@ -37,6 +37,8 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/components/contexts/Contexts"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
 import { useState, useEffect } from "react"
+import { RiGeminiFill } from "react-icons/ri";
+import { IoSend } from "react-icons/io5";
 
 // zod validator
 const generateSchema = z.object({
@@ -55,6 +57,8 @@ const generateSchema = z.object({
     fileInput: z.array(z.instanceof(File)).max(1, {
         message: "You can only upload one file."
     }).optional(),
+
+    promptInput: z.string()
 });
 
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
@@ -69,6 +73,12 @@ export function GeneratePage() {
     const [ uploadType, setUploadType ] = useState("pdf");
     const [ difficulty, setDifficulty ] = useState("beginner");
     const [ visibility, setVisibility ] = useState("public");
+
+    // ai prompt
+    const [ chatHistory, setChatHistory ] = useState([
+        {role: "model", text: "How can I help you?"},
+    ]);
+    const [ promptSubmitted, setPromptSubmitted ] = useState(false);
 
     useEffect(() => {
         if(!authLoading && !user) {
@@ -156,6 +166,25 @@ export function GeneratePage() {
         })
     }
 
+    async function handlePromptSubmit(data) {
+        setPromptSubmitted(true);
+
+        setChatHistory((prev) => ([
+            ...prev,
+            {
+                role: "user",
+                text: data.promptInput
+            }
+        ]));
+        try {
+            await new Promise(resolve => setTimeout(resolve, 3000));
+        } catch (err) {
+
+        } finally {
+            setPromptSubmitted(false);
+        }
+    }
+
     return (
         <div className="flex flex-col gap-8 h-full w-full items-center mt-24">
             { loading && <LoadingOverlay className="fixed" /> }
@@ -215,6 +244,15 @@ export function GeneratePage() {
                         className="data-[state=active]:bg-[rgba(255,255,255,0.5)]"    
                     >
                         PDF Upload
+                    </TabsTrigger>
+                    <TabsTrigger 
+                        value="prompt"
+                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] gap-1"    
+                    >
+                        <RiGeminiFill/> 
+                        <p>
+                            AI Prompt
+                        </p>
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="text">
@@ -339,7 +377,7 @@ export function GeneratePage() {
                                     Text Input
                                 </CardTitle>
                                 <CardDescription>
-                                    Create a Study Set With Raw Text
+                                    Create a study set with raw text
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -356,7 +394,7 @@ export function GeneratePage() {
                                                     <FormLabel> Study Set Name </FormLabel>
                                                     <FormControl>
                                                         <Input
-                                                            className="dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.3)]" 
+                                                            className="bg-[rgba(255,255,255,0.3)]" 
                                                             id="studySetName" 
                                                             type="text" 
                                                             placeholder="My Study Set..."
@@ -376,7 +414,7 @@ export function GeneratePage() {
                                                     <FormLabel> Text </FormLabel>
                                                     <FormControl>
                                                         <Textarea
-                                                            className="resize-none dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.3)]"
+                                                            className="resize-none bg-[rgba(255,255,255,0.3)]"
                                                             placeholder="Here goes my notes..."
                                                             rows={20}
                                                             required
@@ -516,7 +554,7 @@ export function GeneratePage() {
                                     PDF Upload
                                 </CardTitle>
                                 <CardDescription>
-                                    Create a Study Set With PDF
+                                    Create a study set with a PDF file
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -533,7 +571,7 @@ export function GeneratePage() {
                                                     <FormLabel> Study Set Name </FormLabel>
                                                     <FormControl>
                                                         <Input
-                                                            className="dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.3)]"  
+                                                            className="bg-[rgba(255,255,255,0.3)]"  
                                                             id="studySetName" 
                                                             type="text" 
                                                             placeholder="My Study Set..."
@@ -559,7 +597,7 @@ export function GeneratePage() {
                                                             onDrop={(files) => handleDrop(files, field.onChange)}
                                                             onError={console.error}
                                                             src={file}
-                                                            className="h-100 dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.3)]"
+                                                            className="h-100 bg-[rgba(255,255,255,0.3)]"
                                                         >
                                                             <DropzoneEmptyState 
                                                                 className="bg-transparent"
@@ -574,6 +612,212 @@ export function GeneratePage() {
                                             )}
                                         />
                                         <Button type="submit" className="w-fit">Generate</Button>
+                                    </form>
+                                </Form>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </TabsContent>
+                <TabsContent value="prompt">
+                    <div className="flex md:flex-row flex-col gap-2">
+                        <Card
+                            className="md:w-2xs h-fit px-2 box-content
+                            dark:bg-slate-950 bg-indigo-200
+                            border-1 dark:border-indigo-200 border-indigo-900"
+                        >
+                            <CardHeader>
+                                <CardTitle>
+                                    Study Set Options
+                                </CardTitle>
+                                <CardDescription>
+                                    Configurate your study set
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent
+                                className="flex flex-col md:gap-6 gap-4"
+                            >
+                                <div className="flex flex-col gap-2">
+                                    <Label className="font-semibold">
+                                        Difficulty
+                                    </Label>
+                                    <Tabs
+                                        defaultValue={difficulty}
+                                        onValueChange={
+                                            (val) => {
+                                                setDifficulty(val);
+                                            }
+                                        }
+                                    >
+                                        <TabsList
+                                            className="dark:bg-[rgba(255,255,255,0.05)]"
+                                        >
+                                            <TabsTrigger 
+                                                value="beginner"
+                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                            >
+                                                Beginner
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="intermediate"
+                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                            >
+                                                Intermediate
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="advanced"
+                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                            >
+                                                Advanced
+                                            </TabsTrigger>
+                                        </TabsList>
+                                        <TabsContent value="beginner">
+                                            <p className="text-xs">
+                                                Beginner difficulty will generate around 50% of flash cards as questions.
+                                            </p>
+                                        </TabsContent>
+                                        <TabsContent value="intermediate">
+                                            <p className="text-xs">
+                                                Intermediate difficulty will generate around 75% of flash cards as questions.
+                                            </p>
+                                        </TabsContent>
+                                        <TabsContent value="advanced">
+                                            <p className="text-xs">
+                                                Advanced difficulty will generate around 99% of flash cards as questions.
+                                            </p>
+                                        </TabsContent>
+                                    </Tabs>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <Label className="font-semibold">
+                                        Visibility
+                                    </Label>
+                                    <Tabs
+                                        defaultValue={visibility}
+                                        onValueChange={
+                                            (val) => {
+                                                setVisibility(val);
+                                            }
+                                        }
+                                    >
+                                        <TabsList
+                                            className="dark:bg-[rgba(255,255,255,0.05)]"
+                                        >
+                                            <TabsTrigger
+                                                value="public"
+                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                            >
+                                                Public    
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="private"
+                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                            >
+                                                Private
+                                            </TabsTrigger>
+                                        </TabsList>
+                                        <TabsContent value="public">
+                                            <p className="text-xs">
+                                                Public visibility allows other users to see your study set.
+                                            </p>
+                                        </TabsContent>
+                                        <TabsContent value="private">
+                                            <p className="text-xs">
+                                                Private visibility hides your study set from other users.
+                                            </p>
+                                        </TabsContent>
+                                    </Tabs>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card 
+                            className="flex-1 border-1
+                                dark:border-indigo-200 border-indigo-900
+                                dark:bg-slate-950 bg-indigo-200
+                                dark:text-indigo-100"
+                        >
+                            <CardHeader>
+                                <CardTitle>
+                                    AI Prompt
+                                </CardTitle>
+                                <CardDescription>
+                                    Create a study set with an AI prompt
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Form {...form}>
+                                    <form 
+                                        onSubmit={form.handleSubmit((data) => {
+                                            form.resetField("promptInput", {
+                                                defaultValue: "",
+                                            });
+                                            handlePromptSubmit(data);
+                                        })} 
+                                        className="flex flex-col gap-6"
+                                    >
+                                        <FormField 
+                                            control={form.control}
+                                            name="studySetName"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel> Study Set Name </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            className="bg-[rgba(255,255,255,0.3)]" 
+                                                            id="studySetName" 
+                                                            type="text" 
+                                                            placeholder="My Study Set..."
+                                                            required 
+                                                            {...field} 
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <div className="h-fit min-h-20 overflow-y-scroll flex flex-col gap-1 py-4 pt-8 px-2">
+                                            { chatHistory.length === 0 && 
+                                            <p className="text-sm text-center mt-auto">
+                                                Chat history is empty.
+                                            </p> }
+                                            { chatHistory.length > 0 &&
+                                                chatHistory.map((message) => (
+                                                    <div
+                                                        className={`${message.role === "user" ? "self-end" : "self-start"} 
+                                                        max-w-75 border-1 rounded-lg px-4 py-2 text-sm`}
+                                                    >   
+                                                        {message.text}
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                        <FormField
+                                            control={form.control}
+                                            name="promptInput"
+                                            render={({ field }) => (
+                                                <FormItem
+                                                    className={`${promptSubmitted && "cursor-not-allowed"}`}
+                                                >
+                                                    <FormControl>
+                                                        <div className="relative">
+                                                            <Input
+                                                                className="resize-none bg-[rgba(255,255,255,0.3)]"
+                                                                placeholder="What topics would you like to study?"
+                                                                disabled={promptSubmitted}
+                                                                required
+                                                                {...field}
+                                                            />
+                                                            <button
+                                                                type="submit"
+                                                                className="absolute right-3 top-1/2 -translate-y-1/2"
+                                                            >
+                                                                <IoSend className={`${promptSubmitted ? "cursor-not-allowed text-neutral-700" : "cursor-pointer"}`} />
+                                                            </button>
+                                                        </div>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                     </form>
                                 </Form>
                             </CardContent>
