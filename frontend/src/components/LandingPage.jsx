@@ -11,6 +11,8 @@ import {
   AccordionTrigger,
   AccordionContent
 } from "@/components/ui/accordion";
+import landingPageImage from "@/assets/landingPageImage.png";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 
 export function LandingPage() {
@@ -163,7 +165,16 @@ export function LandingPage() {
         </div>
       </section>
 
-      <Separator className="max-w-1/2" /> 
+
+    {/* Landing Page Banner Image */}
+    <section className="w-full my-12">
+      <img 
+        src={landingPageImage} 
+        alt="Brainstorm banner"
+        className="w-full h-auto object-cover"
+      />
+    </section>
+
 
       {/* Team Section */}
       <section 
@@ -182,11 +193,11 @@ export function LandingPage() {
           {/* Team Cards */}
           <div className="lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { name: "Fatima", role: "Frontend Developer", github: "https://github.com/fatimasif", handle: "@fatimasif" },
-              { name: "Alex", role: "Frontend Developer", github: "https://github.com/alexdoesnotexist1", handle: "@alexdoesnotexist1" },
-              { name: "Christopher", role: "Frontend Developer", github: "https://github.com/ChristopherZanabria", handle: "@ChristopherZanabria" },
-              { name: "Moshe", role: "Backend Developer", github: "https://github.com/mokills", handle: "@MosheLevinson770" },
-              { name: "Devin", role: "Backend Developer", github: "https://github.com/dewiin", handle: "@dewiin" },
+              { name: "Fatima", role: "Frontend Developer", github: "https://github.com/fatimasif", linkedin: null },
+              { name: "Alex", role: "Frontend Developer", github: "https://github.com/alexdoesnotexist1", linkedin: null },
+              { name: "Christopher", role: "Frontend Developer", github: "https://github.com/ChristopherZanabria", linkedin: "https://www.linkedin.com/in/christopher-zanabria/" },
+              { name: "Moshe", role: "Backend Developer", github: "https://github.com/mokills", linkedin: null },
+              { name: "Devin", role: "Backend Developer", github: "https://github.com/dewiin", linkedin: "https://www.linkedin.com/in/devin-xie-a74a45257/" },
             ].map((member) => (
               <div 
                 key={member.name} 
@@ -194,19 +205,36 @@ export function LandingPage() {
               >
                 <h3 className="text-2xl font-semibold dark:text-gray-100">{member.name}</h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">{member.role}</p>
-                <a 
-                  href={member.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400 font-medium"
-                >
-                  {member.handle}
-                </a>
+                
+              <div className="flex gap-4 mt-3">
+              {/* GitHub Icon */}
+              <a 
+                href={member.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400"
+              >
+              <FaGithub className="text-2xl" />
+            </a>
+
+            {/* LinkedIn Icon (only if provided) */}
+            {member.linkedin && (
+              <a 
+                href={member.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400"
+              >
+              <FaLinkedin className="text-2xl" />
+            </a>
+            )}
+        </div>
+  
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </section> 
 
       <Separator className="max-w-1/2 mx-auto" />
 

@@ -2,7 +2,7 @@
 <a name="readme-top"></a>
 
 <div align="center">
-  <img src="./frontend/src/assets/brainstorm_logo_white.png" alt='logo' width=150>
+  <a href="https://app.brainstorm-app.com/"><img src="./frontend/src/assets/brainstorm_logo_white.png" alt="logo" width=150></a>
   <h1>Brainstorm</h1>
 </div> <br>
 
@@ -64,9 +64,31 @@ Brainstorm is an intelligent study web application that transforms user-provided
 
 ## Preview
 
-<div align="center">
-  <img src="./public/assets/preview.png" alt="demo video">
-</div>
+<details>
+<summary>Images</summary>
+
+### Landing Page
+![Landing Page Dark Mode](./frontend/src/assets/landingpagedark.png)
+
+### Generate Page
+![Generate Page Dark Mode](./frontend/src/assets/generatepagedark.png)
+
+### Explore Page
+![Explore Page Dark Mode](./frontend/src/assets/explorepagedark.png)
+
+### Study Set (Cards)
+![Study Set (Cards) Dark Mode](./frontend/src/assets/studysetcardsdark.png)
+
+### Study Set (Quiz)
+![Study Set (Quiz) Dark Mode](./frontend/src/assets/studysetquizdark.png)
+
+### Account Page
+![Account Page Dark Mode](./frontend/src/assets/accountpagedark.png)
+
+### Settings Page
+![Settings Page Dark Mode](./frontend/src/assets/settingspagedark.png)
+
+</details>
 
 <p align="right"><a href="#readme-top">Back to top</a></p>
 
