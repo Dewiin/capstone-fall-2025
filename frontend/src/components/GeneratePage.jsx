@@ -29,14 +29,15 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { useNavigate } from "react-router-dom"
+import { Spinner } from "@/components/ui/shadcn-io/spinner"
 import { useAuth } from "@/components/contexts/Contexts"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
+import { toast } from "sonner"
+import { useNavigate } from "react-router-dom"
 import { RiGeminiFill } from "react-icons/ri";
 import { IoSend } from "react-icons/io5";
 
@@ -916,6 +917,13 @@ export function GeneratePage() {
                                                                 {message.text}
                                                             </div>
                                                         ))
+                                                    }
+                                                    { promptSubmitted && 
+                                                    <div
+                                                        className="self-start max-w-75 border-1 rounded-lg px-4 py-2 text-sm"
+                                                    >   
+                                                        <Spinner variant="ellipsis" size={16} />
+                                                    </div>
                                                     }
                                                 </div>
                                                 <FormField
