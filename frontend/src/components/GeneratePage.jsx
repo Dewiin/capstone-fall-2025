@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useState, useEffect, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Footer } from "@/components/Footer"
@@ -36,7 +37,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/components/contexts/Contexts"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
-import { useState, useEffect } from "react"
 import { RiGeminiFill } from "react-icons/ri";
 import { IoSend } from "react-icons/io5";
 
@@ -75,21 +75,30 @@ export function GeneratePage() {
     const [ visibility, setVisibility ] = useState("public");
 
     // ai prompt
-    const [ chatHistory, setChatHistory ] = useState([
-        {role: "model", text: "How can I help you?"},
-    ]);
+    const [ chatHistory, setChatHistory ] = useState([]);
     const [ promptSubmitted, setPromptSubmitted ] = useState(false);
+    const chatRef = useRef(null);
+
+    const form = useForm({
+        resolver: zodResolver(generateSchema),
+        mode: "onChange",
+        defaultValues: {
+            studySetName: "",
+            promptInput: "",
+        }
+    });
 
     useEffect(() => {
         if(!authLoading && !user) {
             navigate("/unauthorized");
         }
     }, [authLoading]);
-
-    const form = useForm({
-        resolver: zodResolver(generateSchema),
-        mode: "onChange",
-    });
+    
+    useEffect(() => {
+        if (chatRef.current) {
+            chatRef.current.scrollTop = chatRef.current.scrollHeight;
+        }
+    }, [chatHistory]);
 
     function handleDrop(files, onChange) {
         if (files && files.length == 1) {
@@ -97,6 +106,14 @@ export function GeneratePage() {
         }
         
         onChange(files);
+    }
+    
+    async function handleSubmit(data) {
+        const promise = onSubmit(data);
+
+        toast.promise(promise, {
+            loading: "Generating your study set...",
+        });
     }
 
     async function onSubmit(data) {
@@ -152,18 +169,10 @@ export function GeneratePage() {
 
         } catch (err) {
             toast.warning("Please try again later.", {
-                description: "There was an error getting a response from the server."
+                description: "There was an error submitting your request to the server."
             });
             console.error(`Error submitting data for generation: `, err);
         }
-    }
-
-    async function handleSubmit(data) {
-        const promise = onSubmit(data);
-
-        toast.promise(promise, {
-            loading: "Generating your study set...",
-        })
     }
 
     async function handlePromptSubmit(data) {
@@ -176,10 +185,113 @@ export function GeneratePage() {
                 text: data.promptInput
             }
         ]));
-        try {
-            await new Promise(resolve => setTimeout(resolve, 3000));
-        } catch (err) {
 
+        try {
+            const body = JSON.stringify({
+                ...data,
+                chatHistory,
+            });
+
+            const response = await fetch(`${API_URL_DOMAIN}/api/generate/${uploadType}`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body,
+                credentials: "include",
+            });
+            if(!response.ok) {
+                toast.warning("Please try again later.", {
+                    description: "There was an error getting a response from the server."
+                });
+                console.error("There was an error handling prompt submission: ", response.status);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                setChatHistory((prev) => ([
+                    ...prev,
+                    {
+                        role: "model",
+                        text: result.output,
+                    }
+                ]));
+                setPromptSubmitted(false);
+            } else if(result.status === 2) {
+                setChatHistory((prev) => ([
+                    ...prev,
+                    {
+                        role: "model",
+                        text: "Generating a study set for you now...",
+                    }
+                ]));
+                const promise = onPromptSubmit({
+                    ...data,
+                    output: result.output,
+                });
+
+                toast.promise(promise, {
+                    loading: "Generating your study set...",
+                });
+            } else {
+                toast.warning("Please try again later.", {
+                    description: "There was an error submitting your request to the server."
+                });
+                console.error(`Error submitting data for generation: `, err);
+            }
+
+        } catch (err) {
+            toast.warning("Please try again later.", {
+                description: "There was an error submitting your request to the server."
+            });
+            console.error(`Error submitting data for generation: `, err);
+        } finally {
+            setChatHistory((prev) => (
+                prev.slice(-10)
+            ));
+        }
+    }
+
+    async function onPromptSubmit(data) {
+        try {
+            const body = JSON.stringify({
+                ...data,
+                difficulty,
+                visibility,
+            });
+            const response = await fetch(`${API_URL_DOMAIN}/api/generate/${uploadType}/create`, {
+                method: "POST",
+                body,
+                headers: {"Content-Type": "application/json"},
+                credentials: "include",
+            }); 
+            if(!response.ok) {
+                toast.warning("Please try again later.", {
+                    description: "There was an error getting a response from the server."
+                });
+                console.error("There was an error handling prompt submission: ", response.status);
+                return;
+            }
+
+            const result = await response.json();
+            if(result.status === 1) {
+                toast.success("Study set created successfully!", {
+                    description: "Your new study set is in your account page.",
+                    action: {
+                        label: "View",
+                        onClick: () => navigate(`/study-set/${result.studySetId}`)
+                    }
+                });
+            } else {
+                toast.warning("Failed to create the study set", {
+                    description: "Try again and add more details to your prompt.",
+                });
+                console.error(`Error submitting data for generation.`);
+            }
+        } catch (err) {
+            toast.warning("Please try again later.", {
+                description: "There was an error submitting your request to the server."
+            });
+            console.error(`Error submitting data for generation: `, err);
         } finally {
             setPromptSubmitted(false);
         }
@@ -774,50 +886,69 @@ export function GeneratePage() {
                                                 </FormItem>
                                             )}
                                         />
-                                        <div className="h-fit min-h-20 overflow-y-scroll flex flex-col gap-1 py-4 pt-8 px-2">
-                                            { chatHistory.length === 0 && 
-                                            <p className="text-sm text-center mt-auto">
-                                                Chat history is empty.
-                                            </p> }
-                                            { chatHistory.length > 0 &&
-                                                chatHistory.map((message) => (
-                                                    <div
-                                                        className={`${message.role === "user" ? "self-end" : "self-start"} 
-                                                        max-w-75 border-1 rounded-lg px-4 py-2 text-sm`}
-                                                    >   
-                                                        {message.text}
-                                                    </div>
-                                                ))
-                                            }
+                                        <div
+                                            className="flex flex-col gap-2"
+                                        >
+                                            <FormLabel>
+                                                Chat Prompt History
+                                            </FormLabel>
+                                            <div
+                                                className="border-1 border-input p-2 rounded-lg 
+                                                bg-[rgba(255,255,255,0.03)]"
+                                            >
+                                                <div 
+                                                    ref={chatRef}
+                                                    className="max-h-50 min-h-20 overflow-y-scroll flex flex-col gap-1 pb-2"
+                                                    >
+                                                    { chatHistory.length === 0 && 
+                                                    <p className="text-sm m-auto">
+                                                        <i>
+                                                            Chat history is empty.
+                                                        </i>
+                                                    </p> }
+                                                    { chatHistory.length > 0 &&
+                                                        chatHistory.map((message, index) => (
+                                                            <div
+                                                                key={index}
+                                                                className={`${message.role === "user" ? "self-end dark:bg-slate-900 bg-indigo-100" : "self-start"} 
+                                                                max-w-75 border-1 rounded-lg px-4 py-2 text-sm`}
+                                                            >   
+                                                                {message.text}
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </div>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="promptInput"
+                                                    render={({ field }) => (
+                                                        <FormItem
+                                                        className={`${promptSubmitted && "cursor-not-allowed"}`}
+                                                        >
+                                                            <FormControl>
+                                                                <div className="relative">
+                                                                    <Input
+                                                                        className="bg-[rgba(255,255,255,0.3)]"
+                                                                        placeholder="What topics would you like to study?"
+                                                                        autocomplete="off"
+                                                                        disabled={promptSubmitted}
+                                                                        required
+                                                                        {...field}
+                                                                        />
+                                                                    <button
+                                                                        type="submit"
+                                                                        className="absolute right-3 top-1/2 -translate-y-1/2"
+                                                                        >
+                                                                        <IoSend className={`${promptSubmitted ? "cursor-not-allowed text-neutral-700" : "cursor-pointer"}`} />
+                                                                    </button>
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
                                         </div>
-                                        <FormField
-                                            control={form.control}
-                                            name="promptInput"
-                                            render={({ field }) => (
-                                                <FormItem
-                                                    className={`${promptSubmitted && "cursor-not-allowed"}`}
-                                                >
-                                                    <FormControl>
-                                                        <div className="relative">
-                                                            <Input
-                                                                className="resize-none bg-[rgba(255,255,255,0.3)]"
-                                                                placeholder="What topics would you like to study?"
-                                                                disabled={promptSubmitted}
-                                                                required
-                                                                {...field}
-                                                            />
-                                                            <button
-                                                                type="submit"
-                                                                className="absolute right-3 top-1/2 -translate-y-1/2"
-                                                            >
-                                                                <IoSend className={`${promptSubmitted ? "cursor-not-allowed text-neutral-700" : "cursor-pointer"}`} />
-                                                            </button>
-                                                        </div>
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
                                     </form>
                                 </Form>
                             </CardContent>

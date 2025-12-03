@@ -5,6 +5,22 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
 });
 
+const promptConfig = {
+    responseMimeType: "application/json",
+    responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+            status: {
+                type: Type.INTEGER,
+            },
+            output: {
+                type: Type.STRING,
+            }
+        },
+        required: ["status", "output"],
+    }
+}
+
 const deckConfig = {
     responseMimeType: "application/json",
     responseSchema: {
@@ -102,6 +118,50 @@ const quizConfig = {
         required: ["status"],
         propertyOrdering: ["status", "quiz"],
     }
+}
+
+async function promptText(text, chatHistory) {
+    const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `
+        You are an AI assistant whose only purpose is to help with studying, learning, brainstorming topics, and generating educational content.
+        Ignore and refuse to answer anything unrelated to education, study habits, knowledge, academic content, or learning. 
+        However, you can engage in friendly and formal small-talk and greetings.
+
+        Guidelines:
+        1. If the user asks you to generate a study set, or anything similar such as:
+            - “make me a study set”
+            - “generate flashcards”
+            - “make notes”
+            - “help me study this topic”
+            - “explain this concept for a study set”
+            - “create questions & answers”
+            - “summaries or bullet points for learning”
+            Then, set:
+            "status": 2
+            Return a long, thorough, structured set of study notes, definitions, examples, or flashcards.
+        2. If the user gives a  asks a normal question related to studying or knowledge, not specifically requesting a study set:
+            Then, set:
+            "status": 1
+            Return a short and normal response.
+        3. If the user asks anything unrelated to studying, politely decline:
+            Then, set:
+            "status": 1
+            Return a short and brief response that you can only help with studying.
+        4. Consider the entire chat history when deciding whether the user wants a study set or is continuing a study-related conversation.
+        
+        Here is the user's text:
+        ${text}
+
+        Here is the chat history:
+        ${chatHistory}
+        `,
+        config: promptConfig,
+    });
+    
+    const result = JSON.parse(response.text);
+    return result;
+
 }
 
 async function textInputDeck(text) {
@@ -215,6 +275,7 @@ async function pdfInputDeck(pdfData) {
 }
 
 export const gemini = {
+    promptText,
     textInputDeck,
     generateQuiz,
     pdfInputDeck,
