@@ -13,6 +13,9 @@ const promptConfig = {
             status: {
                 type: Type.INTEGER,
             },
+            studySetName: {
+                type: Type.STRING,
+            },
             output: {
                 type: Type.STRING,
             }
@@ -139,6 +142,7 @@ async function promptText(text, chatHistory) {
             - “summaries or bullet points for learning”
             Then, set:
             "status": 2
+            Return a clear studySetName that is under 50 characters that contains only alphanumerics and whitespace.
             Return a long, thorough, structured set of study notes, definitions, examples, or flashcards.
         2. If the user gives a  asks a normal question related to studying or knowledge, not specifically requesting a study set:
             Then, set:

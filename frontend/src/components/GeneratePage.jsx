@@ -41,27 +41,6 @@ import { useNavigate } from "react-router-dom"
 import { RiGeminiFill } from "react-icons/ri";
 import { IoSend } from "react-icons/io5";
 
-// zod validator
-const generateSchema = z.object({
-    studySetName: z.string().trim().min(1, {
-        message: "Name must be at least a character."
-    }).max(50, {
-        message: "Name must be less than 50 characters"
-    }).regex(/^[a-zA-Z0-9 ]+$/, {
-        message: "Name can only contain alphanumeric characters (and space)."
-    }),
-
-    textInput: z.string().trim().max(30000, {
-        message: "Text must be less than 30,000 characters."
-    }).optional(),
-
-    fileInput: z.array(z.instanceof(File)).max(1, {
-        message: "You can only upload one file."
-    }).optional(),
-
-    promptInput: z.string()
-});
-
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function GeneratePage() {    
@@ -74,17 +53,51 @@ export function GeneratePage() {
     const [ uploadType, setUploadType ] = useState("pdf");
     const [ difficulty, setDifficulty ] = useState("beginner");
     const [ visibility, setVisibility ] = useState("public");
-
+    
     // ai prompt
     const [ chatHistory, setChatHistory ] = useState([]);
     const [ promptSubmitted, setPromptSubmitted ] = useState(false);
     const chatRef = useRef(null);
+    
+    // zod schemas
+    const generateSchema = z.object({
+        studySetName: z.string().trim().min(1, {
+            message: "Name must be at least a character."
+        }).max(50, {
+            message: "Name must be less than 50 characters"
+        }).regex(/^[a-zA-Z0-9 ]+$/, {
+            message: "Name can only contain alphanumeric characters (and space)."
+        }).optional(),
+    
+        textInput: z.string().trim().max(30000, {
+            message: "Text must be less than 30,000 characters."
+        }).optional(),
+    
+        fileInput: z.array(z.instanceof(File)).max(1, {
+            message: "You can only upload one file."
+        }).optional(),
+    
+        promptInput: z.string()
+    });
 
+    const promptSchema = z.object({
+        promptInput: z.string(),
+    });
+
+    // forms
     const form = useForm({
         resolver: zodResolver(generateSchema),
         mode: "onChange",
         defaultValues: {
             studySetName: "",
+            textInput: "",
+        }
+    });
+
+    const promptForm = useForm({
+        resolver: zodResolver(promptSchema),
+        mode: "onChange",
+        defaultValues: {
             promptInput: "",
         }
     });
@@ -227,7 +240,7 @@ export function GeneratePage() {
                 ]));
                 const promise = onPromptSubmit({
                     ...data,
-                    output: result.output,
+                    ...result,
                 });
 
                 toast.promise(promise, {
@@ -511,6 +524,7 @@ export function GeneratePage() {
                                                             id="studySetName" 
                                                             type="text" 
                                                             placeholder="My Study Set..."
+                                                            autocomplete="off"
                                                             required 
                                                             {...field} 
                                                         />
@@ -688,6 +702,7 @@ export function GeneratePage() {
                                                             id="studySetName" 
                                                             type="text" 
                                                             placeholder="My Study Set..."
+                                                            autocomplete="off"
                                                             required {...field} 
                                                         />
                                                     </FormControl>
@@ -857,17 +872,17 @@ export function GeneratePage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Form {...form}>
+                                <Form {...promptForm}>
                                     <form 
-                                        onSubmit={form.handleSubmit((data) => {
-                                            form.resetField("promptInput", {
+                                        onSubmit={promptForm.handleSubmit((data) => {
+                                            promptForm.resetField("promptInput", {
                                                 defaultValue: "",
                                             });
                                             handlePromptSubmit(data);
                                         })} 
                                         className="flex flex-col gap-6"
                                     >
-                                        <FormField 
+                                        {/* <FormField 
                                             control={form.control}
                                             name="studySetName"
                                             render={({ field }) => (
@@ -886,7 +901,7 @@ export function GeneratePage() {
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
-                                        />
+                                        /> */}
                                         <div
                                             className="flex flex-col gap-2"
                                         >
@@ -899,7 +914,7 @@ export function GeneratePage() {
                                             >
                                                 <div 
                                                     ref={chatRef}
-                                                    className="max-h-50 min-h-20 overflow-y-scroll flex flex-col gap-1 pb-2"
+                                                    className="max-h-50 min-h-35 overflow-y-scroll flex flex-col gap-1 pb-2"
                                                     >
                                                     { chatHistory.length === 0 && 
                                                     <p className="text-sm m-auto">
@@ -927,7 +942,7 @@ export function GeneratePage() {
                                                     }
                                                 </div>
                                                 <FormField
-                                                    control={form.control}
+                                                    control={promptForm.control}
                                                     name="promptInput"
                                                     render={({ field }) => (
                                                         <FormItem
@@ -936,7 +951,7 @@ export function GeneratePage() {
                                                             <FormControl>
                                                                 <div className="relative">
                                                                     <Input
-                                                                        className="bg-[rgba(255,255,255,0.3)]"
+                                                                        className="bg-[rgba(255,255,255,0.3)] pr-10"
                                                                         placeholder="What topics would you like to study?"
                                                                         autocomplete="off"
                                                                         disabled={promptSubmitted}
