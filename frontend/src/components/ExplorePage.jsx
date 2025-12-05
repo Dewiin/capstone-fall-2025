@@ -203,6 +203,7 @@ export function ExplorePage() {
     <div className="flex flex-col gap-8 max-w-3xl min-h-screen mx-auto md:mt-24 md:p-0 p-8">
       <p 
         className="font-bold text-2xl w-fit m-auto cursor-pointer"
+        id="explore"
         onClick={() => {
           setContentTitle("Popular Study Sets")
           getCategories();
