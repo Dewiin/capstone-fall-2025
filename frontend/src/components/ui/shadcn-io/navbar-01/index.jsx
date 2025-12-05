@@ -81,7 +81,6 @@ export const Navbar01 = React.forwardRef((
     className,
     logo = <Logo />,
     logoHref = '/',
-    navigationLinks = defaultNavigationLinks,
     signInText = 'Log In',
     signInHref = '/form/login',
     ctaText = 'Sign Up',
@@ -94,6 +93,7 @@ export const Navbar01 = React.forwardRef((
   const [isMobile, setIsMobile] = useState(false);
   const [darkMode, setDarkMode]= useState(localStorage.theme === "dark" ? true : false);
   const [loading, setLoading] = useState(false);
+  const [navigationLinks, setNavigationLinks] = useState([]);
   const containerRef = useRef(null);
   const { fetchUser, user, logout } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -144,18 +144,18 @@ export const Navbar01 = React.forwardRef((
 
   useEffect(() => {
     if (!user) {
-      defaultNavigationLinks = [
+      setNavigationLinks([
         { href: '#hero', label: 'Home' },
         { href: '#features', label: 'Features' },
         { href: '#about', label: 'About' },
         { href: '#team', label: 'Team' },
-      ];
+      ]);
     } else {
-      defaultNavigationLinks = [
+      setNavigationLinks([
         { href: '#hero', label: 'Home', active: false },
         { href: '/explore', label: 'Explore' },
         { href: '/generate', label: 'Generate' },
-      ];
+      ]);
     }
   }, [user, navigate]);
 
@@ -261,15 +261,16 @@ export const Navbar01 = React.forwardRef((
                     <NavigationMenuItem key={index}>
                       <button
                         onClick={() =>{
-                          if(link.href.charAt(0) === "/") {
-                            navigate(link.href);
-                          } else {
-                            navigate(`/${link.href}`);
+                            if(link.href.charAt(0) === '/') {
+                              navigate(`${link.href}`);
+                            } else if(link.href.charAt(0) === '#') {
+                              navigate(`/${link.href}`);
+                            }
                             setTimeout(() => {
                               document.getElementById(link.href.slice(1))?.scrollIntoView({ behavior: "smooth" });
                             }, 50);
                           }
-                        }}
+                        }
                         className={cn(
                           "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer no-underline",
                           link.active 

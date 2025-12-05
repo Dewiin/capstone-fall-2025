@@ -524,7 +524,7 @@ export function GeneratePage() {
                                                             id="studySetName" 
                                                             type="text" 
                                                             placeholder="My Study Set..."
-                                                            autocomplete="off"
+                                                            autoComplete="off"
                                                             required 
                                                             {...field} 
                                                         />
@@ -702,8 +702,9 @@ export function GeneratePage() {
                                                             id="studySetName" 
                                                             type="text" 
                                                             placeholder="My Study Set..."
-                                                            autocomplete="off"
-                                                            required {...field} 
+                                                            autoComplete="off"
+                                                            required 
+                                                            {...field} 
                                                         />
                                                     </FormControl>
                                                     <FormMessage />
@@ -882,26 +883,6 @@ export function GeneratePage() {
                                         })} 
                                         className="flex flex-col gap-6"
                                     >
-                                        {/* <FormField 
-                                            control={form.control}
-                                            name="studySetName"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel> Study Set Name </FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            className="bg-[rgba(255,255,255,0.3)]" 
-                                                            id="studySetName" 
-                                                            type="text" 
-                                                            placeholder="My Study Set..."
-                                                            required 
-                                                            {...field} 
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        /> */}
                                         <div
                                             className="flex flex-col gap-2"
                                         >
@@ -953,7 +934,7 @@ export function GeneratePage() {
                                                                     <Input
                                                                         className="bg-[rgba(255,255,255,0.3)] pr-10"
                                                                         placeholder="What topics would you like to study?"
-                                                                        autocomplete="off"
+                                                                        autoComplete="off"
                                                                         disabled={promptSubmitted}
                                                                         required
                                                                         {...field}
