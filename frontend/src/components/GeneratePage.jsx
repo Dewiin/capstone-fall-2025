@@ -29,6 +29,12 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -312,42 +318,47 @@ export function GeneratePage() {
     }
 
     return (
-        <div className="flex flex-col gap-8 h-full w-full items-center mt-24">
+        <div className="flex flex-col gap-8 h-full w-full items-center mt-24 p-2">
             { loading && <LoadingOverlay className="fixed" /> }
             <p className="font-bold text-2xl text-center">Generate.</p>
 
             {/* Disclaimer Section */}
-            <section 
-            className="w-full max-w-4xl mx-auto p-6 bg-indigo-50 dark:bg-indigo-950 rounded-3xl shadow-sm"
-            id="disclaimer"
+            <Accordion 
+                type="single"
+                collapsible
+                className="w-full max-w-4xl py-3 px-6 bg-indigo-100 dark:bg-indigo-950 rounded-3xl shadow-sm"
+                defaultValue="default"
             >
-            <h2 className="text-xl font-bold mb-6 text-center dark:text-gray-100">Powered by Gemini</h2>
+                <AccordionItem value="default">
+                    <AccordionTrigger className="p-0 items-center hover:no-underline">
+                        <h2 className="text-xl font-bold m-auto text-center dark:text-gray-100">Powered by Gemini</h2>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-left text-sm mt-3">         
+                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                        Brainstorm uses <strong>Google’s Gemini AI</strong> to enhance your studying experience. 
+                        Please use this tool responsibly. It is designed to help you learn and study more effectively.
+                        </p>
 
-            <div className="text-left text-sm">
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                Brainstorm uses <strong>Google’s Gemini AI</strong> to enhance your studying experience. 
-                Please use this tool responsibly. It is designed to help you learn and study more effectively.
-                </p>
+                        <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <li>Don’t use Brainstorm or Gemini for harmful, offensive, or abusive content.</li>
+                        <li>Use this platform for studying, learning, and educational purposes only.</li>
+                        <li>Be mindful that AI responses may not always be 100% accurate.</li>
+                        </ul>
 
-                <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                <li>Don’t use Brainstorm or Gemini for harmful, offensive, or abusive content.</li>
-                <li>Use this platform for studying, learning, and educational purposes only.</li>
-                <li>Be mindful that AI responses may not always be 100% accurate.</li>
-                </ul>
-
-                <p className="text-gray-700 dark:text-gray-300">
-                To learn more about Gemini, visit{" "}
-                <a 
-                    href="https://gemini.google/about/" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-indigo-500 hover:underline"
-                >
-                    Google Gemini
-                </a>.
-                </p>
-            </div>
-            </section>
+                        <p className="text-gray-700 dark:text-gray-300">
+                        To learn more about Gemini, visit{" "}
+                        <a 
+                            href="https://gemini.google/about/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-indigo-500 hover:underline"
+                            >
+                            Google Gemini
+                        </a>.
+                        </p>
+                    </AccordionContent>
+                </AccordionItem>
+            </Accordion>
 
             <Tabs 
                 defaultValue={uploadType} 
