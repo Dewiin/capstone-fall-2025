@@ -116,6 +116,7 @@ export function LoginForm({
                           className="dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.5)]" 
                           id="username" 
                           type="text" 
+                          autoComplete="off"
                           required {...field} />
                       </FormControl>
                       <FormMessage />
@@ -134,7 +135,8 @@ export function LoginForm({
                           className="dark:border-indigo-200 border-indigo-900 bg-[rgba(255,255,255,0.5)]" 
                           id="password" 
                           type="password" 
-                          placeholder="●●●●●●" 
+                          autoComplete="off"
+                          placeholder="●●●●●●●●●●" 
                           required 
                           {...field} 
                         />

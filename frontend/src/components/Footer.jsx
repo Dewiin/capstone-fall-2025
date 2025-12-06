@@ -1,11 +1,9 @@
-import { LuFacebook, LuInstagram, LuYoutube, LuLinkedin } from "react-icons/lu";
-import { GiBrainstorm } from "react-icons/gi";
 import { FaGithub } from "react-icons/fa";
 import { Separator } from '@/components/ui/separator'
 
 export function Footer() {
     return (
-        <footer className="w-full mt-12">
+        <footer className="w-full mt-auto">
             <Separator />
 
             <div className='mx-auto flex flex-col max-w-7xl justify-center px-4 py-6 sm:px-6 gap-2'>

@@ -44,9 +44,11 @@ import { useAuth } from "@/components/contexts/Contexts"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
 import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
+
+// icons
 import { RiGeminiFill } from "react-icons/ri";
 import { IoSend } from "react-icons/io5";
-
+import { VscChromeMaximize, VscChromeMinimize } from "react-icons/vsc";
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function GeneratePage() {    
@@ -59,6 +61,7 @@ export function GeneratePage() {
     const [ uploadType, setUploadType ] = useState("pdf");
     const [ difficulty, setDifficulty ] = useState("beginner");
     const [ visibility, setVisibility ] = useState("public");
+    const [ configMinimized, setConfigMinimized ] = useState(false);
     
     // ai prompt
     const [ chatHistory, setChatHistory ] = useState([]);
@@ -318,7 +321,7 @@ export function GeneratePage() {
     }
 
     return (
-        <div className="flex flex-col gap-8 h-full w-full items-center mt-24 p-2">
+        <div className="flex flex-col gap-8 min-h-screen h-full w-full items-center mt-24 p-2">
             { loading && <LoadingOverlay className="fixed" /> }
             <p className="font-bold text-2xl text-center">Generate.</p>
 
@@ -395,120 +398,136 @@ export function GeneratePage() {
                 <TabsContent value="text">
                     <div className="flex md:flex-row flex-col gap-2">
                         <Card
-                            className="md:w-2xs h-fit px-2 box-content
+                            className={`${configMinimized ? "md:w-fit p-6" : "md:w-2xs px-2"} h-fit box-content relative 
                             dark:bg-slate-950 bg-indigo-200
-                            border-1 dark:border-indigo-200 border-indigo-900"
-                        >
-                            <CardHeader>
-                                <CardTitle>
-                                    Study Set Options
-                                </CardTitle>
-                                <CardDescription>
-                                    Configurate your study set
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent
-                                className="flex flex-col md:gap-6 gap-4"
-                            >
-                                <div className="flex flex-col gap-2">
-                                    <Label className="font-semibold">
-                                        Difficulty
-                                    </Label>
-                                    <Tabs
-                                        defaultValue={difficulty}
-                                        onValueChange={
-                                            (val) => {
-                                                setDifficulty(val);
-                                            }
-                                        }
-                                    >
-                                        <TabsList
-                                            className="dark:bg-[rgba(255,255,255,0.05)]"
+                            border-1 dark:border-indigo-200 border-indigo-900`}
+                        >   
+                            {configMinimized && 
+                                <VscChromeMaximize
+                                    className="cursor-pointer active:scale-90"
+                                    onClick={() => setConfigMinimized((prev) => !prev)}
+                                />
+                            }
+                            {!configMinimized && 
+                                <>
+                                    <CardHeader className="flex justify-between">
+                                        <div>
+                                            <CardTitle>
+                                                Study Set Options
+                                            </CardTitle>
+                                            <CardDescription>
+                                                Configurate your study set
+                                            </CardDescription>
+                                        </div>
+                                        <VscChromeMinimize 
+                                            className="cursor-pointer active:scale-90"
+                                            onClick={() => setConfigMinimized((prev) => !prev)}
+                                        />
+                                    </CardHeader>
+                                    <CardContent
+                                        className="flex flex-col md:gap-6 gap-4"
                                         >
-                                            <TabsTrigger 
-                                                value="beginner"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Beginner
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="intermediate"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Intermediate
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="advanced"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Advanced
-                                            </TabsTrigger>
-                                        </TabsList>
-                                        <TabsContent value="beginner">
-                                            <p className="text-xs">
-                                                Beginner difficulty will generate around 50% of flash cards as questions.
-                                            </p>
-                                        </TabsContent>
-                                        <TabsContent value="intermediate">
-                                            <p className="text-xs">
-                                                Intermediate difficulty will generate around 75% of flash cards as questions.
-                                            </p>
-                                        </TabsContent>
-                                        <TabsContent value="advanced">
-                                            <p className="text-xs">
-                                                Advanced difficulty will generate around 99% of flash cards as questions.
-                                            </p>
-                                        </TabsContent>
-                                    </Tabs>
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label className="font-semibold">
-                                        Visibility
-                                    </Label>
-                                    <Tabs
-                                        defaultValue={visibility}
-                                        onValueChange={
-                                            (val) => {
-                                                setVisibility(val);
-                                            }
-                                        }
-                                    >
-                                        <TabsList
-                                            className="dark:bg-[rgba(255,255,255,0.05)]"
-                                        >
-                                            <TabsTrigger
-                                                value="public"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Public    
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="private"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Private
-                                            </TabsTrigger>
-                                        </TabsList>
-                                        <TabsContent value="public">
-                                            <p className="text-xs">
-                                                Public visibility allows other users to see your study set.
-                                            </p>
-                                        </TabsContent>
-                                        <TabsContent value="private">
-                                            <p className="text-xs">
-                                                Private visibility hides your study set from other users.
-                                            </p>
-                                        </TabsContent>
-                                    </Tabs>
-                                </div>
-                            </CardContent>
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="font-semibold">
+                                                Difficulty
+                                            </Label>
+                                            <Tabs
+                                                defaultValue={difficulty}
+                                                onValueChange={
+                                                    (val) => {
+                                                        setDifficulty(val);
+                                                    }
+                                                }
+                                                >
+                                                <TabsList
+                                                    className="dark:bg-[rgba(255,255,255,0.05)]"
+                                                    >
+                                                    <TabsTrigger 
+                                                        value="beginner"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Beginner
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="intermediate"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Intermediate
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="advanced"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Advanced
+                                                    </TabsTrigger>
+                                                </TabsList>
+                                                <TabsContent value="beginner">
+                                                    <p className="text-xs">
+                                                        Beginner difficulty will generate around 50% of flash cards as questions.
+                                                    </p>
+                                                </TabsContent>
+                                                <TabsContent value="intermediate">
+                                                    <p className="text-xs">
+                                                        Intermediate difficulty will generate around 75% of flash cards as questions.
+                                                    </p>
+                                                </TabsContent>
+                                                <TabsContent value="advanced">
+                                                    <p className="text-xs">
+                                                        Advanced difficulty will generate around 99% of flash cards as questions.
+                                                    </p>
+                                                </TabsContent>
+                                            </Tabs>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="font-semibold">
+                                                Visibility
+                                            </Label>
+                                            <Tabs
+                                                defaultValue={visibility}
+                                                onValueChange={
+                                                    (val) => {
+                                                        setVisibility(val);
+                                                    }
+                                                }
+                                                >
+                                                <TabsList
+                                                    className="dark:bg-[rgba(255,255,255,0.05)]"
+                                                    >
+                                                    <TabsTrigger
+                                                        value="public"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Public    
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="private"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Private
+                                                    </TabsTrigger>
+                                                </TabsList>
+                                                <TabsContent value="public">
+                                                    <p className="text-xs">
+                                                        Public visibility allows other users to see your study set.
+                                                    </p>
+                                                </TabsContent>
+                                                <TabsContent value="private">
+                                                    <p className="text-xs">
+                                                        Private visibility hides your study set from other users.
+                                                    </p>
+                                                </TabsContent>
+                                            </Tabs>
+                                        </div>
+                                    </CardContent>
+                                </>
+                            }
                         </Card>
                         <Card 
                             className="flex-1 border-1
-                                dark:border-indigo-200 border-indigo-900
-                                dark:bg-slate-950 bg-indigo-200
-                                dark:text-indigo-100"
-                        >
+                            dark:border-indigo-200 border-indigo-900
+                            dark:bg-slate-950 bg-indigo-200
+                            dark:text-indigo-100"
+                            >
                             <CardHeader>
                                 <CardTitle>
                                     Text Input
@@ -573,113 +592,129 @@ export function GeneratePage() {
                 <TabsContent value="pdf">
                     <div className="flex md:flex-row flex-col gap-2">
                         <Card
-                            className="md:w-2xs h-fit px-2 box-content
+                            className={`${configMinimized ? "md:w-fit p-6" : "md:w-2xs px-2"} h-fit box-content relative 
                             dark:bg-slate-950 bg-indigo-200
-                            border-1 dark:border-indigo-200 border-indigo-900"
-                        >
-                            <CardHeader>
-                                <CardTitle>
-                                    Study Set Options
-                                </CardTitle>
-                                <CardDescription>
-                                    Configurate your study set
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent
-                                className="flex flex-col md:gap-6 gap-4"
-                            >
-                                <div className="flex flex-col gap-2">
-                                    <Label className="font-semibold">
-                                        Difficulty
-                                    </Label>
-                                    <Tabs
-                                        defaultValue={difficulty}
-                                        onValueChange={
-                                            (val) => {
-                                                setDifficulty(val);
-                                            }
-                                        }
-                                    >
-                                        <TabsList
-                                            className="dark:bg-[rgba(255,255,255,0.05)]"
+                            border-1 dark:border-indigo-200 border-indigo-900`}
+                        >   
+                            {configMinimized && 
+                                <VscChromeMaximize
+                                    className="cursor-pointer active:scale-90"
+                                    onClick={() => setConfigMinimized((prev) => !prev)}
+                                />
+                            }
+                            {!configMinimized && 
+                                <>
+                                    <CardHeader className="flex justify-between">
+                                        <div>
+                                            <CardTitle>
+                                                Study Set Options
+                                            </CardTitle>
+                                            <CardDescription>
+                                                Configurate your study set
+                                            </CardDescription>
+                                        </div>
+                                        <VscChromeMinimize 
+                                            className="cursor-pointer active:scale-90"
+                                            onClick={() => setConfigMinimized((prev) => !prev)}
+                                        />
+                                    </CardHeader>
+                                    <CardContent
+                                        className="flex flex-col md:gap-6 gap-4"
                                         >
-                                            <TabsTrigger 
-                                                value="beginner"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Beginner
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="intermediate"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Intermediate
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="advanced"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Advanced
-                                            </TabsTrigger>
-                                        </TabsList>
-                                        <TabsContent value="beginner">
-                                            <p className="text-xs">
-                                                Beginner difficulty will generate around 50% of flash cards as questions.
-                                            </p>
-                                        </TabsContent>
-                                        <TabsContent value="intermediate">
-                                            <p className="text-xs">
-                                                Intermediate difficulty will generate around 75% of flash cards as questions.
-                                            </p>
-                                        </TabsContent>
-                                        <TabsContent value="advanced">
-                                            <p className="text-xs">
-                                                Advanced difficulty will generate around 99% of flash cards as questions.
-                                            </p>
-                                        </TabsContent>
-                                    </Tabs>
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label className="font-semibold">
-                                        Visibility
-                                    </Label>
-                                    <Tabs
-                                        defaultValue={visibility}
-                                        onValueChange={
-                                            (val) => {
-                                                setVisibility(val);
-                                            }
-                                        }
-                                    >
-                                        <TabsList
-                                            className="dark:bg-[rgba(255,255,255,0.05)]"
-                                        >
-                                            <TabsTrigger
-                                                value="public"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Public    
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="private"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Private
-                                            </TabsTrigger>
-                                        </TabsList>
-                                        <TabsContent value="public">
-                                            <p className="text-xs">
-                                                Public visibility allows other users to see your study set.
-                                            </p>
-                                        </TabsContent>
-                                        <TabsContent value="private">
-                                            <p className="text-xs">
-                                                Private visibility hides your study set from other users.
-                                            </p>
-                                        </TabsContent>
-                                    </Tabs>
-                                </div>
-                            </CardContent>
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="font-semibold">
+                                                Difficulty
+                                            </Label>
+                                            <Tabs
+                                                defaultValue={difficulty}
+                                                onValueChange={
+                                                    (val) => {
+                                                        setDifficulty(val);
+                                                    }
+                                                }
+                                                >
+                                                <TabsList
+                                                    className="dark:bg-[rgba(255,255,255,0.05)]"
+                                                    >
+                                                    <TabsTrigger 
+                                                        value="beginner"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Beginner
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="intermediate"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Intermediate
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="advanced"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Advanced
+                                                    </TabsTrigger>
+                                                </TabsList>
+                                                <TabsContent value="beginner">
+                                                    <p className="text-xs">
+                                                        Beginner difficulty will generate around 50% of flash cards as questions.
+                                                    </p>
+                                                </TabsContent>
+                                                <TabsContent value="intermediate">
+                                                    <p className="text-xs">
+                                                        Intermediate difficulty will generate around 75% of flash cards as questions.
+                                                    </p>
+                                                </TabsContent>
+                                                <TabsContent value="advanced">
+                                                    <p className="text-xs">
+                                                        Advanced difficulty will generate around 99% of flash cards as questions.
+                                                    </p>
+                                                </TabsContent>
+                                            </Tabs>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="font-semibold">
+                                                Visibility
+                                            </Label>
+                                            <Tabs
+                                                defaultValue={visibility}
+                                                onValueChange={
+                                                    (val) => {
+                                                        setVisibility(val);
+                                                    }
+                                                }
+                                                >
+                                                <TabsList
+                                                    className="dark:bg-[rgba(255,255,255,0.05)]"
+                                                    >
+                                                    <TabsTrigger
+                                                        value="public"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Public    
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="private"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Private
+                                                    </TabsTrigger>
+                                                </TabsList>
+                                                <TabsContent value="public">
+                                                    <p className="text-xs">
+                                                        Public visibility allows other users to see your study set.
+                                                    </p>
+                                                </TabsContent>
+                                                <TabsContent value="private">
+                                                    <p className="text-xs">
+                                                        Private visibility hides your study set from other users.
+                                                    </p>
+                                                </TabsContent>
+                                            </Tabs>
+                                        </div>
+                                    </CardContent>
+                                </>
+                            }
                         </Card>
                         <Card 
                             className="flex-1 border-1
@@ -761,113 +796,129 @@ export function GeneratePage() {
                 <TabsContent value="prompt">
                     <div className="flex md:flex-row flex-col gap-2">
                         <Card
-                            className="md:w-2xs h-fit px-2 box-content
+                            className={`${configMinimized ? "md:w-fit p-6" : "md:w-2xs px-2"} h-fit box-content relative 
                             dark:bg-slate-950 bg-indigo-200
-                            border-1 dark:border-indigo-200 border-indigo-900"
-                        >
-                            <CardHeader>
-                                <CardTitle>
-                                    Study Set Options
-                                </CardTitle>
-                                <CardDescription>
-                                    Configurate your study set
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent
-                                className="flex flex-col md:gap-6 gap-4"
-                            >
-                                <div className="flex flex-col gap-2">
-                                    <Label className="font-semibold">
-                                        Difficulty
-                                    </Label>
-                                    <Tabs
-                                        defaultValue={difficulty}
-                                        onValueChange={
-                                            (val) => {
-                                                setDifficulty(val);
-                                            }
-                                        }
-                                    >
-                                        <TabsList
-                                            className="dark:bg-[rgba(255,255,255,0.05)]"
+                            border-1 dark:border-indigo-200 border-indigo-900`}
+                        >   
+                            {configMinimized && 
+                                <VscChromeMaximize
+                                    className="cursor-pointer active:scale-90"
+                                    onClick={() => setConfigMinimized((prev) => !prev)}
+                                />
+                            }
+                            {!configMinimized && 
+                                <>
+                                    <CardHeader className="flex justify-between">
+                                        <div>
+                                            <CardTitle>
+                                                Study Set Options
+                                            </CardTitle>
+                                            <CardDescription>
+                                                Configurate your study set
+                                            </CardDescription>
+                                        </div>
+                                        <VscChromeMinimize 
+                                            className="cursor-pointer active:scale-90"
+                                            onClick={() => setConfigMinimized((prev) => !prev)}
+                                        />
+                                    </CardHeader>
+                                    <CardContent
+                                        className="flex flex-col md:gap-6 gap-4"
                                         >
-                                            <TabsTrigger 
-                                                value="beginner"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Beginner
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="intermediate"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Intermediate
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="advanced"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Advanced
-                                            </TabsTrigger>
-                                        </TabsList>
-                                        <TabsContent value="beginner">
-                                            <p className="text-xs">
-                                                Beginner difficulty will generate around 50% of flash cards as questions.
-                                            </p>
-                                        </TabsContent>
-                                        <TabsContent value="intermediate">
-                                            <p className="text-xs">
-                                                Intermediate difficulty will generate around 75% of flash cards as questions.
-                                            </p>
-                                        </TabsContent>
-                                        <TabsContent value="advanced">
-                                            <p className="text-xs">
-                                                Advanced difficulty will generate around 99% of flash cards as questions.
-                                            </p>
-                                        </TabsContent>
-                                    </Tabs>
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label className="font-semibold">
-                                        Visibility
-                                    </Label>
-                                    <Tabs
-                                        defaultValue={visibility}
-                                        onValueChange={
-                                            (val) => {
-                                                setVisibility(val);
-                                            }
-                                        }
-                                    >
-                                        <TabsList
-                                            className="dark:bg-[rgba(255,255,255,0.05)]"
-                                        >
-                                            <TabsTrigger
-                                                value="public"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Public    
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="private"
-                                                className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
-                                            >
-                                                Private
-                                            </TabsTrigger>
-                                        </TabsList>
-                                        <TabsContent value="public">
-                                            <p className="text-xs">
-                                                Public visibility allows other users to see your study set.
-                                            </p>
-                                        </TabsContent>
-                                        <TabsContent value="private">
-                                            <p className="text-xs">
-                                                Private visibility hides your study set from other users.
-                                            </p>
-                                        </TabsContent>
-                                    </Tabs>
-                                </div>
-                            </CardContent>
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="font-semibold">
+                                                Difficulty
+                                            </Label>
+                                            <Tabs
+                                                defaultValue={difficulty}
+                                                onValueChange={
+                                                    (val) => {
+                                                        setDifficulty(val);
+                                                    }
+                                                }
+                                                >
+                                                <TabsList
+                                                    className="dark:bg-[rgba(255,255,255,0.05)]"
+                                                    >
+                                                    <TabsTrigger 
+                                                        value="beginner"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Beginner
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="intermediate"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Intermediate
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="advanced"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Advanced
+                                                    </TabsTrigger>
+                                                </TabsList>
+                                                <TabsContent value="beginner">
+                                                    <p className="text-xs">
+                                                        Beginner difficulty will generate around 50% of flash cards as questions.
+                                                    </p>
+                                                </TabsContent>
+                                                <TabsContent value="intermediate">
+                                                    <p className="text-xs">
+                                                        Intermediate difficulty will generate around 75% of flash cards as questions.
+                                                    </p>
+                                                </TabsContent>
+                                                <TabsContent value="advanced">
+                                                    <p className="text-xs">
+                                                        Advanced difficulty will generate around 99% of flash cards as questions.
+                                                    </p>
+                                                </TabsContent>
+                                            </Tabs>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="font-semibold">
+                                                Visibility
+                                            </Label>
+                                            <Tabs
+                                                defaultValue={visibility}
+                                                onValueChange={
+                                                    (val) => {
+                                                        setVisibility(val);
+                                                    }
+                                                }
+                                                >
+                                                <TabsList
+                                                    className="dark:bg-[rgba(255,255,255,0.05)]"
+                                                    >
+                                                    <TabsTrigger
+                                                        value="public"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Public    
+                                                    </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="private"
+                                                        className="data-[state=active]:bg-[rgba(255,255,255,0.5)] text-xs"
+                                                        >
+                                                        Private
+                                                    </TabsTrigger>
+                                                </TabsList>
+                                                <TabsContent value="public">
+                                                    <p className="text-xs">
+                                                        Public visibility allows other users to see your study set.
+                                                    </p>
+                                                </TabsContent>
+                                                <TabsContent value="private">
+                                                    <p className="text-xs">
+                                                        Private visibility hides your study set from other users.
+                                                    </p>
+                                                </TabsContent>
+                                            </Tabs>
+                                        </div>
+                                    </CardContent>
+                                </>
+                            }
                         </Card>
                         <Card 
                             className="flex-1 border-1
