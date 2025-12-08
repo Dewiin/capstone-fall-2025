@@ -265,16 +265,15 @@ export function StudySetPage() {
     }
 
     return (
-        <div className="select-none"> 
+        <div> 
             <div 
                 className="md:p-24 p-8 h-full min-w-sm"
                 ref={smoothScroll}
             >
-                <Breadcrumb className="py-6 md:px-12">
+                <Breadcrumb className="py-6 md:px-12 select-none">
                     <BreadcrumbList className="text-muted-foreground">
                         <BreadcrumbItem>
                             <BreadcrumbLink
-                                className="select-none"
                                 onClick={() => {
                                     if(searchParams.get("explore")) {
                                         navigate(`/explore`);
@@ -337,7 +336,7 @@ export function StudySetPage() {
                         { !loading && 
                         <>
                             <Carousel
-                                className="w-full md:w-2xl md:aspect-video w-2xs mb-5"
+                                className="w-full md:w-2xl md:aspect-video w-2xs mb-5 select-none"
                                 setApi={setApi}
                                 opts={{
                                     loop: true,
@@ -358,7 +357,7 @@ export function StudySetPage() {
                                                     }
                                                 })}
                                             >
-                                                <CardContent className="flex overflow-scroll no-scrollbar">
+                                                <CardContent className="flex overflow-scroll">
                                                     { flipped[card.id] ? (
                                                         <div className="flex flex-col h-full gap-2">
                                                             <span className="md:text-sm text-xs text-gray-500">
@@ -397,7 +396,7 @@ export function StudySetPage() {
                                 >
                                     <CardContent className="flex justify-between h-full">
                                         {/* Question */}
-                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll no-scrollbar text-sm md:mx-auto mx-4">
+                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll text-sm md:mx-auto mx-4">
                                             <p className="whitespace-pre-wrap">{card.question}</p>
                                         </div>
 
@@ -405,7 +404,7 @@ export function StudySetPage() {
                                         <Separator orientation="vertical" className="border-1 border-indigo-300" />
 
                                         {/* Answer */}
-                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll no-scrollbar text-sm md:mx-auto mx-4">
+                                        <div className="md:w-3xs w-1/2 max-h-full overflow-scroll text-sm md:mx-auto mx-4">
                                             <p className="whitespace-pre-wrap">{card.answer}</p>
                                         </div>
                                     </CardContent>
