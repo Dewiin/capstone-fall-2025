@@ -314,7 +314,7 @@ export function ExplorePage() {
             >
               { singleLoading === studySet.id && <LoadingOverlay /> }
               <CardHeader className="gap-1">
-                <CardTitle className="font-bold dark:text-indigo-100 text-slate-950 text-nowrap">
+                <CardTitle className="font-bold dark:text-indigo-100 text-slate-950">
                   {studySet.name}
                 </CardTitle>
                 <CardDescription

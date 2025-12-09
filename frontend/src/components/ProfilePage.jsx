@@ -418,7 +418,10 @@ export function ProfilePage() {
                                                 key={f.follower.id}
                                                 className="flex justify-between items-center font-semibold text-sm"
                                             >
-                                                <HoverCard>
+                                                <HoverCard
+                                                    openDelay={150}
+                                                    closeDelay={100}
+                                                >
                                                     <HoverCardTrigger asChild>
                                                         <div className="flex items-center gap-2 select-none">
                                                             <Avatar className="size-9 rounded-2xl border-1">
@@ -541,7 +544,10 @@ export function ProfilePage() {
                                                 key={f.following.id}
                                                 className="flex justify-between items-center font-semibold text-sm"
                                             >
-                                                <HoverCard>
+                                                <HoverCard
+                                                    openDelay={150}
+                                                    closeDelay={100}
+                                                >
                                                     <HoverCardTrigger asChild>
                                                         <div className="flex items-center gap-2 select-none">
                                                             <Avatar className="size-9 rounded-2xl border-1">
@@ -797,8 +803,8 @@ export function ProfilePage() {
                                     >
                                         { singleLoading === studySet.id && <LoadingOverlay /> }
                                         <CardHeader className="gap-1">
-                                            <CardTitle className="font-bold dark:text-indigo-100 text-slate-950 text-nowrap">
-                                            {studySet.name}
+                                            <CardTitle className="font-bold dark:text-indigo-100 text-slate-950">
+                                                {studySet.name}
                                             </CardTitle>
                                             <CardDescription
                                             className="dark:text-indigo-300 text-slate-900 flex flex-col gap-1"
