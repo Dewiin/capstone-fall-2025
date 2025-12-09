@@ -30,6 +30,11 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input";
 
 // form 
@@ -433,113 +438,140 @@ export function SettingsPage() {
                                     </p>    
                                 </div>
                                 <Dialog open={isDialogOpen === "password"} onOpenChange={setIsDialogOpen}>
-                                    <button
-                                        disabled={user?.provider === "google"}
-                                        className={`py-2 rounded-lg font-semibold 
-                                        text-zinc-300
-                                        dark:bg-zinc-900 bg-zinc-700
-                                        ${user?.provider === "local" ? 
-                                        "hover:dark:bg-zinc-300 hover:bg-zinc-200 active:dark:bg-zinc-700 active:bg-zinc-400 hover:text-zinc-900 duration-150"
-                                        :
-                                        "cursor-not-allowed"
-                                        }`}
-                                        onClick={() => {
-                                            if(loading === "password") {
-                                                return;
-                                            }
-                                            setIsDialogOpen("password");
-                                        }}
+                                    {user.provider === "google" ? (
+                                        <HoverCard
+                                            openDelay={150}
+                                            closeDelay={100}
                                         >
-                                        {loading === "password" ? 
-                                        <Spinner className="m-auto" />
-                                        : 
-                                        "update password"
-                                        }
-                                    </button>
-                                    <DialogContent className="sm:max-w-[425px] gap-6">
-                                        <DialogHeader>
-                                            <DialogTitle>
-                                                Update password
-                                            </DialogTitle>
-                                        </DialogHeader>
-                                        <Form {...passwordForm}>
-                                            <form 
-                                                className="flex flex-col gap-4"
-                                                onSubmit={passwordForm.handleSubmit(data => handleSubmit("password", data))}
+                                            <HoverCardTrigger asChild>
+                                                <button
+                                                    disabled
+                                                    className="py-2 rounded-lg font-semibold 
+                                                    text-zinc-300
+                                                    dark:bg-zinc-900 bg-zinc-700
+                                                    cursor-not-allowed"
+                                                >
+                                                    update password
+                                                </button>
+                                            </HoverCardTrigger>
+                                            <HoverCardContent
+                                                className="text-sm w-full"
+                                                side="top"
                                             >
-                                                <FormField
-                                                    control={passwordForm.control}
-                                                    name="currentPassword"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input
-                                                                    className="bg-[rgba(255,255,255,0.3)]" 
-                                                                    id="currentPassword" 
-                                                                    type="password" 
-                                                                    placeholder="current password"
-                                                                    autoComplete="off"
-                                                                    {...field} 
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={passwordForm.control}
-                                                    name="newPassword"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input
-                                                                    className="bg-[rgba(255,255,255,0.3)]" 
-                                                                    id="newPassword" 
-                                                                    type="password" 
-                                                                    placeholder="new password"
-                                                                    autoComplete="off"
-                                                                    {...field} 
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={passwordForm.control}
-                                                    name="confirmNewPassword"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input
-                                                                    className="bg-[rgba(255,255,255,0.3)]" 
-                                                                    id="confirmNewPassword" 
-                                                                    type="password" 
-                                                                    placeholder="confirm new password"
-                                                                    autoComplete="off"
-                                                                    {...field} 
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <DialogClose asChild>
-                                                    <button
-                                                        type="submit"
-                                                        className="py-1.5 w-full text-sm rounded-sm font-semibold 
-                                                        text-zinc-300 hover:text-zinc-900
-                                                        dark:bg-zinc-900 bg-zinc-700
-                                                        hover:dark:bg-zinc-300 hover:bg-zinc-200
-                                                        active:dark:bg-zinc-700 active:bg-zinc-400
-                                                        duration-150"
-                                                    >
-                                                        Confirm
-                                                    </button>
-                                                </DialogClose>
-                                            </form>
-                                        </Form>
-                                    </DialogContent>
+                                                Google accounts can not update password
+                                            </HoverCardContent>
+                                        </HoverCard>
+                                    ) : (
+                                    <>
+                                        <button
+                                            disabled={user?.provider === "google"}
+                                            className={`py-2 rounded-lg font-semibold 
+                                            text-zinc-300
+                                            dark:bg-zinc-900 bg-zinc-700
+                                            ${user?.provider === "local" ? 
+                                            "hover:dark:bg-zinc-300 hover:bg-zinc-200 active:dark:bg-zinc-700 active:bg-zinc-400 hover:text-zinc-900 duration-150"
+                                            :
+                                            "cursor-not-allowed"
+                                            }`}
+                                            onClick={() => {
+                                                if(loading === "password") {
+                                                    return;
+                                                }
+                                                setIsDialogOpen("password");
+                                            }}
+                                            >
+                                            {loading === "password" ? 
+                                            <Spinner className="m-auto" />
+                                            : 
+                                            "update password"
+                                            }
+                                        </button>
+                                        <DialogContent className="sm:max-w-[425px] gap-6">
+                                            <DialogHeader>
+                                                <DialogTitle>
+                                                    Update password
+                                                </DialogTitle>
+                                            </DialogHeader>
+                                            <Form {...passwordForm}>
+                                                <form 
+                                                    className="flex flex-col gap-4"
+                                                    onSubmit={passwordForm.handleSubmit(data => handleSubmit("password", data))}
+                                                >
+                                                    <FormField
+                                                        control={passwordForm.control}
+                                                        name="currentPassword"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormControl>
+                                                                    <Input
+                                                                        className="bg-[rgba(255,255,255,0.3)]" 
+                                                                        id="currentPassword" 
+                                                                        type="password" 
+                                                                        placeholder="current password"
+                                                                        autoComplete="off"
+                                                                        {...field} 
+                                                                    />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={passwordForm.control}
+                                                        name="newPassword"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormControl>
+                                                                    <Input
+                                                                        className="bg-[rgba(255,255,255,0.3)]" 
+                                                                        id="newPassword" 
+                                                                        type="password" 
+                                                                        placeholder="new password"
+                                                                        autoComplete="off"
+                                                                        {...field} 
+                                                                    />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={passwordForm.control}
+                                                        name="confirmNewPassword"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormControl>
+                                                                    <Input
+                                                                        className="bg-[rgba(255,255,255,0.3)]" 
+                                                                        id="confirmNewPassword" 
+                                                                        type="password" 
+                                                                        placeholder="confirm new password"
+                                                                        autoComplete="off"
+                                                                        {...field} 
+                                                                    />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <DialogClose asChild>
+                                                        <button
+                                                            type="submit"
+                                                            className="py-1.5 w-full text-sm rounded-sm font-semibold 
+                                                            text-zinc-300 hover:text-zinc-900
+                                                            dark:bg-zinc-900 bg-zinc-700
+                                                            hover:dark:bg-zinc-300 hover:bg-zinc-200
+                                                            active:dark:bg-zinc-700 active:bg-zinc-400
+                                                            duration-150"
+                                                        >
+                                                            Confirm
+                                                        </button>
+                                                    </DialogClose>
+                                                </form>
+                                            </Form>
+                                        </DialogContent>
+                                    </>
+                                    )}
                                 </Dialog>
                             </div>
                         </div>
