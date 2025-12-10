@@ -11,6 +11,8 @@ async function studySetGet(req, res) {
                 id: parseInt(studySetId),
             },
             include: {
+                user: true,
+                favoritedBy: true,
                 deck: {
                     include: {
                         cards: true,
@@ -25,7 +27,7 @@ async function studySetGet(req, res) {
                             }
                         }
                     }
-                }
+                },
             }
         });
 

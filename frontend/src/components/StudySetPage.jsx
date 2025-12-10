@@ -27,6 +27,11 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
+import { 
+    Avatar,
+    AvatarFallback,
+    AvatarImage
+} from '@/components/ui/avatar';
 
 // chart
 import { 
@@ -48,12 +53,16 @@ import { useAuth } from "./contexts/Contexts";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
+// icons
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+
 const API_URL_DOMAIN = import.meta.env.VITE_API_URL_DOMAIN;
 
 export function StudySetPage() {
     const { user, authLoading } = useAuth();
     const [ notesType, setNotesType ] = useState("deck");
     const [ loading, setLoading ] = useState(false);
+    const [ favoriteLoading, setFavoriteLoading ] = useState(false);
     const [ submissionLoading, setSubmissionLoading ] = useState(false);
     const { studySetId } = useParams();
     const [ searchParams, setSearchParams ] = useSearchParams();
@@ -143,6 +152,62 @@ export function StudySetPage() {
             console.error(`Error fetching study set: `, err);
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function handleFavorite(studySet) {
+        setFavoriteLoading(true);
+        try {
+            const alreadyFavorited = studySet.favoritedBy.some((userInfo) => userInfo.id === user.id);
+            const query = alreadyFavorited ? "favorited=true" : "favorited=false"
+
+            const response = await fetch(`${API_URL_DOMAIN}/api/account/${user.id}/favorite/${studySet.id}?${query}`, {
+                method: "POST",
+                credentials: "include",
+            });
+            if(!response.ok) {
+                console.error(`Error getting a response for favoriting: `, response.status);
+            }
+
+            const result = await response.json();
+            if(result.status == 1) {
+                setStudySet(prev => (
+                    {
+                        ...prev,
+                        favoritedBy: !alreadyFavorited
+                        ? [...prev.favoritedBy, user]
+                        : prev.favoritedBy.filter(u => u.id !== user.id),
+                    }
+                ));
+                {
+                alreadyFavorited && toast.error("Removed from favorites!", {
+                    description: (
+                    <>
+                        Successfully unfavorited <i>{studySet.name}</i>
+                    </>
+                    ),
+                });
+                }
+                {
+                !alreadyFavorited && toast.success("Added to favorites!", {
+                    description: (
+                    <>
+                        Successfully favorited <i>{studySet.name}</i>
+                    </>
+                    ),
+                });
+                }
+            }
+            else {
+                toast.warning("Failed to get a response", {
+                description: ("Please try again later."),
+                });
+                console.error("Error favoriting study set.");
+            }
+        } catch (err) {
+            console.error(`Error favoriting study set: `, err);
+        } finally {
+            setFavoriteLoading(false);
         }
     }
 
@@ -299,7 +364,7 @@ export function StudySetPage() {
                 </Breadcrumb>
                 <Tabs
                     defaultValue={notesType}
-                    className="flex gap-12 min-h-screen"
+                    className="flex min-h-screen"
                     onValueChange={(val) => {
                         setNotesType(val);
                     }}
@@ -326,6 +391,44 @@ export function StudySetPage() {
                             Progress 
                         </TabsTrigger>    
                     </TabsList>
+                    {!loading && 
+                        <div className="flex gap-1 w-fit md:p-2 p-1 rounded-lg md:mx-12 md:mb-12 mb-8 md:text-sm text-xs select-none
+                        dark:bg-slate-900 bg-indigo-300 relative">
+                            {favoriteLoading && <LoadingOverlay />}
+                            <div 
+                                className="flex gap-1 items-center justify-start font-semibold rounded-lg p-1 pr-2 
+                                hover:dark:bg-slate-700 hover:bg-indigo-400 duration-150"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/profile/${studySet.userId}`);
+                                }}
+                            >
+                                <Avatar className="size-6 rounded-2xl">
+                                    <AvatarImage src="https://github.com/evilrabbit.png" alt="@shadcn" />
+                                    <AvatarFallback>Icon</AvatarFallback>
+                                </Avatar>
+                                <p className="truncate">
+                                    { studySet?.user?.displayName }
+                                </p>
+                            </div>
+                            <p 
+                            className="flex items-center gap-1 font-semibold py-1 px-2 rounded-lg
+                            dark:text-indigo-100 text-indigo-950
+                            hover:dark:bg-slate-700 hover:bg-indigo-400 duration-150"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleFavorite(studySet);
+                            }}
+                            >
+                                { studySet?.favoritedBy?.some((userInfo) => userInfo.id === user.id) ? (
+                                    <FaHeart className="dark:text-rose-700 text-rose-400" /> 
+                                ) : (
+                                    <FaRegHeart />
+                                )}
+                                {studySet?.favoritedBy?.length}
+                            </p>
+                        </div>
+                    }   
                     {/* ------------------------------------------------------- DECK ------------------------------------------------------- */}
                     <TabsContent 
                         value="deck"
