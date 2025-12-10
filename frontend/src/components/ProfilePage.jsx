@@ -846,7 +846,7 @@ export function ProfilePage() {
                                             <p 
                                                 className="flex items-center gap-1 text-sm font-semibold py-1 px-2 rounded-lg
                                                 dark:text-indigo-100 text-indigo-950
-                                                hover:dark:bg-rose-500 hover:bg-rose-300 duration-150"
+                                                hover:dark:bg-slate-700 hover:bg-blue-300 duration-150"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleFavorite(studySet);
