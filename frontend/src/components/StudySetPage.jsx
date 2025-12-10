@@ -392,7 +392,9 @@ export function StudySetPage() {
                         </TabsTrigger>    
                     </TabsList>
                     {!loading && 
-                        <div className="flex gap-1 w-fit md:p-2 p-1 rounded-lg md:mx-12 md:mb-12 mb-8 md:mt-4 mt-2 md:text-sm text-xs select-none
+                        <div className="flex gap-1 w-fit md:p-2 p-1 rounded-lg 
+                        md:mx-12 md:mb-12 mb-8 md:mt-4 mt-2 
+                        md:text-sm text-xs select-none
                         dark:bg-slate-900 bg-indigo-300 relative">
                             {favoriteLoading && <LoadingOverlay />}
                             <div 
