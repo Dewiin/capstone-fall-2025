@@ -703,7 +703,7 @@ export function ProfilePage() {
                                 { !loading && accountUser?.studySets.map((studySet) => (
                                     <Card
                                         key={studySet.id}
-                                        className="border-none cursor-pointer relative
+                                        className="border-none cursor-pointer relative justify-between
                                         dark:bg-slate-900 bg-indigo-100 
                                         hover:dark:bg-slate-800 hover:bg-blue-200 duration-150"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
@@ -796,7 +796,7 @@ export function ProfilePage() {
                                 { !loading && accountUser?.favorites.map((studySet) => (
                                     <Card
                                         key={studySet.id}
-                                        className="cursor-pointer border-none relative
+                                        className="cursor-pointer border-none relative justify-between
                                         dark:bg-slate-900 bg-[rgba(255,255,255,0.4)]
                                         hover:dark:bg-slate-800 hover:bg-blue-200 duration-150"
                                         onClick={() => navigate(`/study-set/${studySet.id}`)}
