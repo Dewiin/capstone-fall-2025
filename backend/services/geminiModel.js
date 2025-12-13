@@ -20,7 +20,7 @@ const promptConfig = {
                 type: Type.STRING,
             }
         },
-        required: ["status", "output"],
+        required: ["status", "output", "studySetName"],
     }
 }
 
