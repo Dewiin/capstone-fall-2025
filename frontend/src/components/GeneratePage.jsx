@@ -55,6 +55,7 @@ export function GeneratePage() {
     const navigate = useNavigate();
     const { user, authLoading } = useAuth();
     const [ loading, setLoading ] = useState(false);
+    const [ generateLoading, setGenerateLoading ] = useState(false);
     const [ file, setFile ] = useState();
     
     // tabs
@@ -85,12 +86,10 @@ export function GeneratePage() {
         fileInput: z.array(z.instanceof(File)).max(1, {
             message: "You can only upload one file."
         }).optional(),
-    
-        promptInput: z.string()
     });
 
     const promptSchema = z.object({
-        promptInput: z.string(),
+        promptInput: z.string().optional(),
     });
 
     // forms
@@ -140,6 +139,8 @@ export function GeneratePage() {
     }
 
     async function onSubmit(data) {
+        setGenerateLoading(true);
+
         try {
             let body;
             let headers = {};
@@ -195,6 +196,8 @@ export function GeneratePage() {
                 description: "There was an error submitting your request to the server."
             });
             console.error(`Error submitting data for generation: `, err);
+        } finally {
+            setGenerateLoading(false);
         }
     }
 
@@ -582,7 +585,9 @@ export function GeneratePage() {
                                                 </FormItem>
                                             )}
                                         />
-                                        <Button type="submit" className="w-fit">Generate</Button>
+                                        <Button type="submit" className="w-fit">
+                                            {generateLoading ? <Spinner /> : "Generate"}
+                                        </Button>
                                     </form>
                                 </Form>
                             </CardContent>
@@ -786,7 +791,9 @@ export function GeneratePage() {
                                                 </FormItem>
                                             )}
                                         />
-                                        <Button type="submit" className="w-fit">Generate</Button>
+                                        <Button type="submit" className="w-fit">
+                                            {generateLoading ? <Spinner /> : "Generate"}
+                                        </Button>
                                     </form>
                                 </Form>
                             </CardContent>
