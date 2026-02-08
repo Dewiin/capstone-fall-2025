@@ -179,7 +179,7 @@ async function textInputDeck(text) {
         2. Each flash card should be clear, concise, and educational.  
         3. Extract only relevant and factual content from the text — skip filler or uninformative content.  
         4. Add a list of relevant categories. Categories should represent broad topics covered in the text (e.g., “Biology”, “World History”, “Economics”).  
-        5. If the text has no meaningful content or cannot produce valid flash cards, set "status": 0 and leave "categories" and "flashcards" empty.
+        5. If the text is inappropriate, has no meaningful content or cannot produce valid flash cards, set "status": 0 and leave "categories" and "flashcards" empty.
         Here is the text:
         ${text}
         `,
@@ -259,7 +259,7 @@ async function pdfInputDeck(pdfData) {
         3. Each flash card should capture an essential concept, fact, or relationship from the PDF.
         4. Keep terms and definitions concise, factual, and relevant to the source material.
         5. Include categories that describe the main themes or academic areas of the PDF.
-        6. If the PDF is empty, irrelevant, or unreadable, set "status": 0 and leave "categories" and "flashcards" empty.
+        6. If the PDF is empty, inappropriate, irrelevant, or unreadable, set "status": 0 and leave "categories" and "flashcards" empty.
         `
     ];
 
